@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="430" viewBox="0 0 1040 430" role="img" aria-labelledby="title desc">
+  <title id="title">Laravel React APIの全体の流れ</title>
+  <desc id="desc">ブラウザ、Laravel、Blade、Vite、React、API、DBがつながる流れ</desc>
+  <rect width="1040" height="430" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="35" y="78" width="150" height="110" rx="8"/>
+    <rect x="235" y="78" width="150" height="110" rx="8"/>
+    <rect x="435" y="78" width="150" height="110" rx="8"/>
+    <rect x="635" y="78" width="150" height="110" rx="8"/>
+    <rect x="835" y="78" width="150" height="110" rx="8"/>
+    <rect x="235" y="260" width="150" height="110" rx="8"/>
+    <rect x="435" y="260" width="150" height="110" rx="8"/>
+    <rect x="635" y="260" width="150" height="110" rx="8"/>
+    <rect x="835" y="260" width="150" height="110" rx="8"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="110" y="116" text-anchor="middle" font-size="18" font-weight="800">ブラウザ</text>
+    <text x="110" y="148" text-anchor="middle" font-size="13">URLを開く</text>
+    <text x="310" y="116" text-anchor="middle" font-size="18" font-weight="800">routes/web.php</text>
+    <text x="310" y="148" text-anchor="middle" font-size="13">画面URL</text>
+    <text x="510" y="116" text-anchor="middle" font-size="18" font-weight="800">Blade</text>
+    <text x="510" y="148" text-anchor="middle" font-size="13">Reactの置き場</text>
+    <text x="710" y="116" text-anchor="middle" font-size="18" font-weight="800">Vite</text>
+    <text x="710" y="148" text-anchor="middle" font-size="13">JS/CSSを読む</text>
+    <text x="910" y="116" text-anchor="middle" font-size="18" font-weight="800">React</text>
+    <text x="910" y="148" text-anchor="middle" font-size="13">画面を作る</text>
+    <text x="310" y="298" text-anchor="middle" font-size="18" font-weight="800">React API関数</text>
+    <text x="310" y="330" text-anchor="middle" font-size="13">fetchする</text>
+    <text x="510" y="298" text-anchor="middle" font-size="18" font-weight="800">routes/api.php</text>
+    <text x="510" y="330" text-anchor="middle" font-size="13">APIのURL</text>
+    <text x="710" y="298" text-anchor="middle" font-size="18" font-weight="800">Controller</text>
+    <text x="710" y="330" text-anchor="middle" font-size="13">処理を呼ぶ</text>
+    <text x="910" y="298" text-anchor="middle" font-size="18" font-weight="800">Model / DB</text>
+    <text x="910" y="330" text-anchor="middle" font-size="13">保存・取得</text>
+  </g>
+  <g stroke="#2f9e44" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M190 133H230"/><path d="M225 123l12 10-12 10"/>
+    <path d="M390 133H430"/><path d="M425 123l12 10-12 10"/>
+    <path d="M590 133H630"/><path d="M625 123l12 10-12 10"/>
+    <path d="M790 133H830"/><path d="M825 123l12 10-12 10"/>
+    <path d="M910 192V248"/><path d="M900 243l10 12 10-12"/>
+    <path d="M835 315H790"/><path d="M795 305l-12 10 12 10"/>
+    <path d="M635 315H590"/><path d="M595 305l-12 10 12 10"/>
+    <path d="M435 315H390"/><path d="M395 305l-12 10 12 10"/>
+  </g>
+  <text x="520" y="405" text-anchor="middle" fill="#52606d" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700">画面表示は上の流れ、API通信は下の流れ。ReactからAPIを呼ぶとLaravel側の処理に入る。</text>
+</svg>

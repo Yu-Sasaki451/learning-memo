@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>全体の流れ</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./syntax.html">コードの記号へ</a></h2>
+        <h2 class="header"><a href="../environment/index.html">環境構築へ</a></h2>
+        <h2 class="header"><a href="../laravel/index.html">Laravelへ</a></h2>
+        <h2 class="header"><a href="../react/index.html">Reactへ</a></h2>
+    </div>
+
+    <h1 class="head">全体の流れ</h1>
+    <p class="head-text">
+        Laravel、React、API、JavaScript、TypeScriptがどこでつながるかを見るページ。<br>
+        迷ったらまずここを見る。
+    </p>
+
+    <section class="code-block">
+        <h2>このページの見方</h2>
+        <p>
+            細かいコードを読む前に、「何を作りたいのか」と「どのファイルに書くのか」を決める。<br>
+            例えば、URLを増やしたいならルーティング、画面を変えたいならReactのpage、DBを変えたいならmigrationを見る。
+        </p>
+        <div class="learning-flow">
+                <div class="learning-flow__item">
+                    <strong>1. 記号を見る</strong>
+                    <span>[]、{}、()、-&gt;など、まとまりの形を先に見る。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>2. 何を作るか</strong>
+                    <span>画面、API、DB、部品、見た目のどれかに分ける。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>3. 書く場所を決める</strong>
+                    <span>URLならroutes、画面ならpages、部品ならcomponents。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>4. データの流れを見る</strong>
+                    <span>ReactからAPI、APIからDB、DBからJSONで返る。</span>
+                </div>
+            </div>
+            <p class="next-action">
+                <strong>コードの記号が分からない時:</strong>
+                <a href="./syntax.html">コードの記号と読み方</a> を先に見る。
+            </p>
+        </section>
+
+    <section class="code-block">
+        <h2>Laravel + React + APIの仕組み</h2>
+        <p>
+            最初にブラウザでURLを開く時は、LaravelのwebルートからBladeを返し、BladeがReactを読み込む。<br>
+            画面表示後にデータが必要になったら、ReactがLaravel APIへfetchする。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/full-stack-flow.svg" alt="Laravel、Blade、Vite、React、API、DBがつながる流れ">
+            <figcaption>画面表示は上の流れ、API通信は下の流れ</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>どこに何を書くか</h2>
+        <p>
+            迷ったら、まずこの表で書く場所を決める。<br>
+            ファイル名まで決まると、次に読むページも決めやすい。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/where-to-write.svg" alt="URL、画面、部品、API、DBを書く場所の図">
+            <figcaption>作業内容ごとに書く場所を分ける</figcaption>
+        </figure>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>画面URLを増やす</th>
+                    <td>
+                        <span class="file-path">routes/web.php</span><br>
+                        LaravelがどのURLでBladeを返すかを書く。React Routerを使う時は、どのURLでも同じBladeを返す設定にする。
+                    </td>
+                </tr>
+                <tr>
+                    <th>Reactの画面を作る</th>
+                    <td>
+                        <span class="file-path">resources/js/pages/Index.jsx</span><br>
+                        <span class="file-path">resources/js/pages/Category.jsx</span><br>
+                        1ページ分の画面を書く。Todo一覧ページ、カテゴリページなど。
+                    </td>
+                </tr>
+                <tr>
+                    <th>ReactのURLを分ける</th>
+                    <td>
+                        <span class="file-path">resources/js/routes/routes.js</span><br>
+                        <span class="file-path">resources/js/routes/AppRoutes.jsx</span><br>
+                        React Routerで、URLと表示するpageを対応させる。
+                    </td>
+                </tr>
+                <tr>
+                    <th>共通部品を作る</th>
+                    <td>
+                        <span class="file-path">resources/js/components/Header.jsx</span><br>
+                        <span class="file-path">resources/js/components/Button.jsx</span><br>
+                        複数のページで使うヘッダー、ボタン、フォームを書く。
+                    </td>
+                </tr>
+                <tr>
+                    <th>見た目を変える</th>
+                    <td>
+                        <span class="file-path">resources/css/pages</span><br>
+                        <span class="file-path">resources/css/components</span><br>
+                        page用CSSとcomponent用CSSを分ける。
+                    </td>
+                </tr>
+                <tr>
+                    <th>APIのURLを作る</th>
+                    <td>
+                        <span class="file-path">routes/api.php</span><br>
+                        /api/todos のようなAPI用URLを書く。
+                    </td>
+                </tr>
+                <tr>
+                    <th>APIの処理を書く</th>
+                    <td>
+                        <span class="file-path">app/Http/Controllers/Api/TodoController.php</span><br>
+                        一覧取得、登録、更新、削除などの処理を書く。
+                    </td>
+                </tr>
+                <tr>
+                    <th>バリデーションを書く</th>
+                    <td>
+                        <span class="file-path">app/Http/Requests/StoreTodoRequest.php</span><br>
+                        <span class="file-path">app/Http/Requests/UpdateTodoRequest.php</span><br>
+                        入力チェックはフォームリクエストに書く。コントローラには基本書かない。
+                    </td>
+                </tr>
+                <tr>
+                    <th>DBのテーブルを作る</th>
+                    <td>
+                        <span class="file-path">database/migrations</span><br>
+                        テーブル名、カラム名、型を書く。
+                    </td>
+                </tr>
+                <tr>
+                    <th>DB操作の入口</th>
+                    <td>
+                        <span class="file-path">app/Models/Todo.php</span><br>
+                        どのカラムを保存できるか、booleanや日付の型変換を書く。
+                    </td>
+                </tr>
+                <tr>
+                    <th>JSONの形を整える</th>
+                    <td>
+                        <span class="file-path">app/Http/Resources/TodoResource.php</span><br>
+                        Reactへ返すJSONの形を決める。
+                    </td>
+                </tr>
+                <tr>
+                    <th>ReactからAPIを呼ぶ</th>
+                    <td>
+                        <span class="file-path">resources/js/api/todoApi.js</span><br>
+                        fetchを書く。ページ側にAPI通信を直接書きすぎない。
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>Todo機能を作る順番</h2>
+        <p>
+            Todo機能を作るなら、この順番で進めると迷いにくい。<br>
+            先にDBとAPI、次にReact画面、最後に見た目を整える。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>1. DBの形を決める</th>
+                    <td><span class="file-path">database/migrations</span> にtitleやis_doneを書く。</td>
+                </tr>
+                <tr>
+                    <th>2. Modelを設定する</th>
+                    <td><span class="file-path">app/Models/Todo.php</span> にfillableやcastsを書く。</td>
+                </tr>
+                <tr>
+                    <th>3. APIのURLを作る</th>
+                    <td><span class="file-path">routes/api.php</span> にapiResourceを書く。</td>
+                </tr>
+                <tr>
+                    <th>4. APIの処理を書く</th>
+                    <td><span class="file-path">TodoController.php</span> にindex、store、update、destroyを書く。</td>
+                </tr>
+                <tr>
+                    <th>5. 入力チェックを書く</th>
+                    <td><span class="file-path">StoreTodoRequest.php</span> にrequiredやmaxを書く。</td>
+                </tr>
+                <tr>
+                    <th>6. JSONの形を作る</th>
+                    <td><span class="file-path">TodoResource.php</span> にReactへ返す項目を書く。</td>
+                </tr>
+                <tr>
+                    <th>7. ReactのAPI関数を書く</th>
+                    <td><span class="file-path">resources/js/api/todoApi.js</span> にgetTodosやcreateTodoを書く。</td>
+                </tr>
+                <tr>
+                    <th>8. Reactの画面を書く</th>
+                    <td><span class="file-path">resources/js/pages/Index.jsx</span> で一覧表示とフォームを書く。</td>
+                </tr>
+                <tr>
+                    <th>9. 部品に分ける</th>
+                    <td><span class="file-path">resources/js/components</span> にHeader、Button、StoreFormを分ける。</td>
+                </tr>
+                <tr>
+                    <th>10. 見た目を整える</th>
+                    <td><span class="file-path">resources/css</span> にpage用、component用CSSを書く。</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="next-action">
+            <strong>次に読む場所:</strong>
+            環境構築がまだなら「環境構築」、APIを作るなら「Laravel API作成」、画面を作るなら「Reactルーティング」から読む。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>最小のフォルダ構成</h2>
+        <p>
+            Laravel + ReactでTodoを作るなら、最初はこのくらいの構成を目安にする。<br>
+            どのファイルが何の担当かを見ながら増やす。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            app/
+              Http/
+                Controllers/
+                  Api/
+                    TodoController.php
+                Requests/
+                  StoreTodoRequest.php
+                  UpdateTodoRequest.php
+                Resources/
+                  TodoResource.php
+              Models/
+                Todo.php
+
+            database/
+              migrations/
+                xxxx_xx_xx_xxxxxx_create_todos_table.php
+
+            routes/
+              web.php
+              api.php
+
+            resources/
+              views/
+                index.blade.php
+              js/
+                app.jsx
+                api/
+                  todoApi.js
+                routes/
+                  routes.js
+                  AppRoutes.jsx
+                pages/
+                  Index.jsx
+                  Category.jsx
+                components/
+                  Header.jsx
+                  Button.jsx
+                  StoreForm.jsx
+              css/
+                pages/
+                  Index.css
+                  Category.css
+                components/
+                  Header.css
+                  Button.css
+                  StoreForm.css
+
+            vite.config.js
+        </code></pre>
+    </section>
+</body>
+
+</html>

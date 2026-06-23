@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>React 状態管理</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=12">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">React一覧</a></h2>
+        <h2 class="header"><a href="./api.html">API通信へ</a></h2>
+    </div>
+
+    <h1 class="head">React 状態管理</h1>
+    <p class="head-text">
+        stateは、画面に出す値をReactに覚えさせる仕組み。<br>
+        まずは「仕組みの3行 → コピペ用コード → 値の変化」の順で見る。
+    </p>
+
+    <section class="code-block">
+        <h2>まず見るのはこの3行</h2>
+        <p>
+            Reactの入力欄は、ほぼこの3行で考える。<br>
+            長いコードを見る前に、ここだけ押さえる。
+        </p>
+
+        <div class="translation-list">
+            <div class="translation-row">
+                <code class="translation-row__code">const [title, setTitle] = useState('');</code>
+                <div class="translation-row__text">titleという値を作る。最初は空文字。</div>
+            </div>
+            <div class="translation-row">
+                <code class="translation-row__code">value={title}</code>
+                <div class="translation-row__text">入力欄にtitleを表示する。</div>
+            </div>
+            <div class="translation-row">
+                <code class="translation-row__code">onChange={(e) =&gt; setTitle(e.target.value)}</code>
+                <div class="translation-row__text">入力された文字でtitleを変える。</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>まずこの4つだけ分かればいい</h2>
+        <p>
+            最初に覚える名前はこれだけ。<br>
+            ここが分かると、下のコードがかなり読める。
+        </p>
+
+        <div class="key-grid">
+            <div class="key-card">
+                <code>title</code>
+                <strong>今の文字</strong>
+                <span>入力欄に表示したい文字。</span>
+            </div>
+            <div class="key-card">
+                <code>setTitle</code>
+                <strong>titleを変える関数</strong>
+                <span>titleを変えたい時はこれを呼ぶ。</span>
+            </div>
+            <div class="key-card">
+                <code>e</code>
+                <strong>入力イベントの情報</strong>
+                <span>ReactがonChangeの中に渡す。</span>
+            </div>
+            <div class="key-card">
+                <code>e.target.value</code>
+                <strong>入力欄の今の文字</strong>
+                <span>ユーザーが打った文字が入る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>コピペ用の完成コード</h2>
+        <p>
+            実際にファイルへ書く時は、この形を使う。<br>
+            上の3行が、この完成コードの中に入っている。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import { useState } from 'react';
+
+            const TodoForm = () =&gt; {
+                const [title, setTitle] = useState('');
+
+                return (
+                    &lt;input
+                        type=&quot;text&quot;
+                        value={title}
+                        onChange={(e) =&gt; setTitle(e.target.value)}
+                    /&gt;
+                );
+            };
+
+            export default TodoForm;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>上のコードを日本語にすると</h2>
+        <p>
+            左がコード。右が意味。<br>
+            ここでは1行ずつではなく、役割ごとに見る。
+        </p>
+
+        <div class="translation-list">
+            <div class="translation-row">
+                <code class="translation-row__code">import { useState } from 'react';</code>
+                <div class="translation-row__text">ReactからuseStateを使えるようにする。</div>
+            </div>
+            <div class="translation-row">
+                <code class="translation-row__code">const [title, setTitle] = useState('');</code>
+                <div class="translation-row__text">titleという値と、titleを変えるsetTitleを作る。最初のtitleは空文字。</div>
+            </div>
+            <div class="translation-row">
+                <code class="translation-row__code">value={title}</code>
+                <div class="translation-row__text">inputにtitleを表示する。</div>
+            </div>
+            <div class="translation-row">
+                <code class="translation-row__code">onChange={(e) =&gt; setTitle(e.target.value)}</code>
+                <div class="translation-row__text">入力されたら、入力欄の文字をsetTitleに渡してtitleを更新する。</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>valueとonChangeはセット</h2>
+        <p>
+            stateでinputを管理する時は、この2つをセットで見る。<br>
+            片方だけだと流れが分かりにくい。
+        </p>
+
+        <div class="pair-note">
+            <div class="pair-note__box">
+                <strong>表示する</strong>
+                <code>value={title}</code>
+            </div>
+            <span class="pair-note__arrow">+</span>
+            <div class="pair-note__box">
+                <strong>変える</strong>
+                <code>onChange={(e) =&gt; setTitle(e.target.value)}</code>
+            </div>
+        </div>
+
+        <p class="mini-rule">
+            読み方: 「titleを表示して、入力されたらsetTitleでtitleを変える」
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>入力すると何が変わるか</h2>
+        <p>
+            たとえば「買い物」と入力した場合。<br>
+            コードの中ではこう動く。
+        </p>
+
+        <div class="change-strip">
+            <div class="change-step">
+                <strong>最初</strong>
+                <code>title = ''</code>
+            </div>
+            <div class="change-step">
+                <strong>入力する</strong>
+                <code>e.target.value = '買い物'</code>
+            </div>
+            <div class="change-step">
+                <strong>stateを変える</strong>
+                <code>setTitle('買い物')</code>
+            </div>
+            <div class="change-step change-step--result">
+                <strong>次の表示</strong>
+                <code>value={title}
+// 入力欄に買い物と出る</code>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>なぜ (e) =&gt; が必要か</h2>
+        <p>
+            onChangeには「入力された時に動かす関数」を渡す。<br>
+            だから、その場でsetTitleを実行するのではなく、あとで動く関数の形にする。
+        </p>
+
+        <div class="translation-list">
+            <div class="translation-row">
+                <code class="translation-row__code">onChange={setTitle(e.target.value)}</code>
+                <div class="translation-row__text">これはダメ。画面を作る時にすぐsetTitleを実行しようとしてしまう。</div>
+            </div>
+            <div class="translation-row">
+                <code class="translation-row__code">onChange={(e) =&gt; setTitle(e.target.value)}</code>
+                <div class="translation-row__text">これはOK。入力された時にReactがeを渡し、その時にsetTitleを実行する。</div>
+            </div>
+        </div>
+
+        <p class="mini-rule">
+            読み方: 「入力されたら、eを受け取って、入力欄の文字をsetTitleに渡す」
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>配列に追加する完成コード</h2>
+        <p>
+            Todoを増やす時は、今のtodosを直接変えない。<br>
+            新しい配列を作ってsetTodosに渡す。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const [todos, setTodos] = useState([]);
+
+            const addTodo = (newTodo) =&gt; {
+                setTodos([...todos, newTodo]);
+            };
+        </code></pre>
+
+        <div class="change-strip">
+            <div class="change-step">
+                <strong>今のtodos</strong>
+                <code>[掃除]</code>
+            </div>
+            <div class="change-step">
+                <strong>追加するTodo</strong>
+                <code>newTodo = 買い物</code>
+            </div>
+            <div class="change-step">
+                <strong>新しい配列を作る</strong>
+                <code>[...todos, newTodo]</code>
+            </div>
+            <div class="change-step change-step--result">
+                <strong>次のtodos</strong>
+                <code>[掃除, 買い物]</code>
+            </div>
+        </div>
+
+        <p class="mini-rule">
+            <span class="inline-code">...todos</span> は、今のtodosの中身を新しい配列へコピーする書き方。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>配列から削除する完成コード</h2>
+        <p>
+            削除は「消す」より「残す」で考える。<br>
+            filterで、削除したいid以外だけを残す。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const deleteTodo = (id) =&gt; {
+                const nextTodos = todos.filter((todo) =&gt; todo.id !== id);
+
+                setTodos(nextTodos);
+            };
+        </code></pre>
+
+        <div class="change-strip">
+            <div class="change-step">
+                <strong>今のtodos</strong>
+                <code>[id:1 掃除, id:2 買い物, id:3 勉強]</code>
+            </div>
+            <div class="change-step">
+                <strong>削除したいid</strong>
+                <code>id = 2</code>
+            </div>
+            <div class="change-step">
+                <strong>残す条件</strong>
+                <code>todo.id !== id</code>
+            </div>
+            <div class="change-step change-step--result">
+                <strong>次のtodos</strong>
+                <code>[id:1 掃除, id:3 勉強]</code>
+            </div>
+        </div>
+
+        <p class="mini-rule">
+            <span class="inline-code">!==</span> は「同じではない」という意味。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>idはどこから渡すか</h2>
+        <p>
+            deleteTodoのidは勝手に入らない。<br>
+            削除ボタンを押した時に、自分でtodo.idを渡す。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            &lt;ul&gt;
+                {todos.map((todo) =&gt; (
+                    &lt;li key={todo.id}&gt;
+                        {todo.title}
+                        &lt;button type=&quot;button&quot; onClick={() =&gt; deleteTodo(todo.id)}&gt;
+                            削除
+                        &lt;/button&gt;
+                    &lt;/li&gt;
+                ))}
+            &lt;/ul&gt;
+        </code></pre>
+
+        <div class="read-steps">
+            <div class="read-step">
+                <span class="read-step__number">1</span>
+                <div>
+                    <strong class="read-step__title">mapが1件ずつ渡す</strong>
+                    <code class="read-step__code">todos.map((todo) =&gt; ...)</code>
+                    <span class="read-step__text">todoには、todosの中の1件分が入る。</span>
+                </div>
+            </div>
+            <div class="read-step">
+                <span class="read-step__number">2</span>
+                <div>
+                    <strong class="read-step__title">クリックした時にidを渡す</strong>
+                    <code class="read-step__code">onClick={() =&gt; deleteTodo(todo.id)}</code>
+                    <span class="read-step__text">このボタンのTodoのidを、deleteTodoに渡す。</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>前のstateを使って更新する</h2>
+        <p>
+            今のstateを元に次のstateを作る時は、この形もよく使う。<br>
+            prevTodosはReactが渡す「更新前のtodos」。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            setTodos((prevTodos) =&gt; {
+                return [newTodo, ...prevTodos];
+            });
+        </code></pre>
+
+        <div class="change-strip">
+            <div class="change-step">
+                <strong>Reactが渡す</strong>
+                <code>prevTodos = 今のtodos</code>
+            </div>
+            <div class="change-step">
+                <strong>先頭に追加</strong>
+                <code>[newTodo, ...prevTodos]</code>
+            </div>
+            <div class="change-step change-step--result">
+                <strong>次のtodos</strong>
+                <code>新しいTodoが先頭に来る</code>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            React公式では、useStateは現在の値と更新用の関数を返す。<br>
+            配列やオブジェクトのstateは、直接変えずに新しい値を作って更新する。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://react.dev/reference/react/useState" target="_blank" rel="noreferrer">React公式 useState</a></li>
+            <li><a href="https://react.dev/learn/responding-to-events" target="_blank" rel="noreferrer">React公式 Responding to Events</a></li>
+            <li><a href="https://react.dev/learn/rendering-lists" target="_blank" rel="noreferrer">React公式 Rendering Lists</a></li>
+            <li><a href="https://react.dev/learn/updating-arrays-in-state" target="_blank" rel="noreferrer">React公式 Updating Arrays in State</a></li>
+        </ul>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel 環境構築1</title>
+
+    <!-- この階層専用CSS -->
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+
+    <!-- Copy機能（共通） -->
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+        <h2 class="header"><a href="./startup2.html">ファイル内容記載へ</a></h2>
+    </div>
+
+    <h1 class="head">自分で開発環境構築①</h1>
+
+    <section class="code-block">
+        <h2>ルートディレクトリを作成して移動</h2>
+        <p>laravel-practiceという名前で作る例。別名にしたい場合は、1行目と2行目のlaravel-practiceだけ同じ名前に変える。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            mkdir laravel-practice
+            cd laravel-practice
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Docker用ディレクトリを作成</h2>
+        <p>docker-compose.ymlで使うパスに合わせて、dockerの中にmysql、nginx、phpを作る。-pは途中のフォルダもまとめて作るためのオプション。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            mkdir -p docker/mysql/data docker/nginx docker/php src
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>docker-compose.ymlを作成</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            touch docker-compose.yml
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>MySQL設定ファイルを作成</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            touch docker/mysql/my.cnf
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Nginx設定ファイルを作成</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            touch docker/nginx/default.conf
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>PHP設定ファイルを作成</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            touch docker/php/php.ini docker/php/Dockerfile
+        </code></pre>
+    </section>
+</body>
+
+</html>

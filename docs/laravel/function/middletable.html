@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel 中間テーブル</title>
+
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+    </div>
+
+    <h1 class="head">中間テーブル</h1>
+
+    <section class="code-block">
+        <h2>中間テーブルを作る</h2>
+        <p>
+            多対多のリレーションで使うテーブル。<br>
+            基本はモデル名を単数形にして、アルファベット順でつなげた名前にする。<br>
+            例：album_song、product_season
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>中間テーブルにカラムを追加</h2>
+        <p>song_idとalbum_idを持つ中間テーブルの例。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>$table->foreignId('song_id')
+    ->constrained('songs')
+    ->cascadeOnDelete();
+
+$table->foreignId('album_id')
+    ->constrained('albums')
+    ->cascadeOnDelete();
+
+$table->unique(['song_id', 'album_id']);
+$table->timestamps();</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>リレーションを定義</h2>
+        <p>
+            中間テーブルとリレーションしたテーブルのモデルに定義する。<br>
+            テーブル名をLaravelの規約と違う名前にした場合は、第2引数にテーブル名を書く。
+        </p>
+
+        <p class="code-caption">Albumモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function songs()
+{
+    return $this->belongsToMany(Song::class, 'song_album', 'album_id', 'song_id')
+        ->withTimestamps();
+}</code></pre>
+
+        <p class="code-caption">Songモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function albums()
+{
+    return $this->belongsToMany(Album::class, 'song_album', 'song_id', 'album_id')
+        ->withTimestamps();
+}</code></pre>
+    </section>
+</body>
+
+</html>

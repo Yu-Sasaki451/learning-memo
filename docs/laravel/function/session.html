@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel セッション</title>
+
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+    </div>
+
+    <h1 class="head">セッション</h1>
+    <p class="head-text">一時的に状態を保持する機能のこと</p>
+
+    <section class="code-block">
+        <h2>フラッシュメッセージ</h2>
+        <p>
+            処理後のリダイレクト先で1回だけメッセージを表示したいときに使う。<br>
+            成功メッセージや「ログインしてください」などで使える。
+        </p>
+
+        <p class="code-caption">コントローラ</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function store(Request $request)
+{
+    Todo::create([
+        'content' => $request->content,
+    ]);
+
+    return redirect('/')
+        ->with('message', 'ToDoを作成しました');
+}</code></pre>
+
+        <p class="code-caption">Blade 成功メッセージ</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>@if (session('message'))
+    &lt;div class=&quot;alert alert--success&quot;&gt;
+        {{ session('message') }}
+    &lt;/div&gt;
+@endif</code></pre>
+
+        <p class="code-caption">Blade エラーメッセージ</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>@if($errors-&gt;any())
+    &lt;div class=&quot;todo__alert-error&quot;&gt;
+        @foreach($errors-&gt;all() as $error)
+            &lt;span&gt;{{ $error }}&lt;/span&gt;
+        @endforeach
+    &lt;/div&gt;
+@endif</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ログイン状態の保持</h2>
+        <p>
+            HTTPはリクエストごとに独立しているので、ログイン状態の保持にセッションを使う。<br>
+            ログイン成功後はsession()->regenerate()でセッションを再生成する。
+        </p>
+
+        <p class="code-caption">routes/web.php</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');</code></pre>
+
+        <p class="code-caption">コントローラ</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function showLogin()
+{
+    return view('auth.login');
+}
+
+public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+
+        return redirect()->intended('/')
+            ->with('message', 'ログインしました');
+    }
+
+    return back()->withErrors([
+        'email' => 'メールアドレスまたはパスワードが違います',
+    ])->onlyInput('email');
+}
+
+public function logout(Request $request)
+{
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login')->with('message', 'ログアウトしました');
+}</code></pre>
+
+        <p class="code-caption">Blade</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;form method=&quot;post&quot; action=&quot;/login&quot;&gt;
+    @csrf
+    &lt;input type=&quot;email&quot; name=&quot;email&quot; value=&quot;{{ old('email') }}&quot;&gt;
+    &lt;input type=&quot;password&quot; name=&quot;password&quot;&gt;
+    &lt;button type=&quot;submit&quot;&gt;ログイン&lt;/button&gt;
+&lt;/form&gt;
+
+@if ($errors-&gt;any())
+    @foreach ($errors-&gt;all() as $error)
+        &lt;p&gt;{{ $error }}&lt;/p&gt;
+    @endforeach
+@endif</code></pre>
+
+        <p class="code-caption">認証が必要なルート</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Route::middleware('auth')->group(function () {
+    Route::get('/mypage', [MypageController::class, 'index']);
+    Route::post('/todos', [TodoController::class, 'store']);
+});</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>検索、絞り込み条件の保持</h2>
+        <p>
+            検索条件をセッションに保存すると、別ページへ移動しても条件を保持できる。<br>
+            リセット用の処理も用意しておく。
+        </p>
+
+        <p class="code-caption">routes/web.php</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Route::get('/todos', [TodoController::class, 'index']);
+Route::post('/todos/search', [TodoController::class, 'search']);
+Route::post('/todos/search/clear', [TodoController::class, 'clearSearch']);</code></pre>
+
+        <p class="code-caption">コントローラ</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function search(Request $request)
+{
+    session(['todos.keyword' => $request->keyword]);
+
+    return redirect('/todos');
+}
+
+public function index()
+{
+    $keyword = session('todos.keyword');
+    $query = \App\Models\Todo::query();
+
+    if (!empty($keyword)) {
+        $query->where('content', 'like', &quot;%{$keyword}%&quot;);
+    }
+
+    $todos = $query->latest()->paginate(10);
+
+    return view('todos.index', compact('todos', 'keyword'));
+}
+
+public function clearSearch()
+{
+    session()->forget('todos.keyword');
+
+    return redirect('/todos');
+}</code></pre>
+
+        <p class="code-caption">Blade</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;form method=&quot;post&quot; action=&quot;/todos/search&quot;&gt;
+    @csrf
+    &lt;input type=&quot;text&quot; name=&quot;keyword&quot; value=&quot;{{ $keyword }}&quot;&gt;
+    &lt;button type=&quot;submit&quot;&gt;検索&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>マルチステップ</h2>
+        <p>
+            入力画面、確認画面、完了画面のように複数ページを使う場合、途中の入力内容をセッションに保存する。<br>
+            完了後は不要になったセッションを消す。
+        </p>
+
+        <p class="code-caption">確認画面へ進むコントローラ</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function confirm(Request $request)
+{
+    $request->validate([
+        'content' => 'required|string|max:20',
+    ]);
+
+    session(['form.content' => $request->content]);
+
+    return view('confirm', [
+        'content' => $request->content,
+    ]);
+}</code></pre>
+
+        <p class="code-caption">確認画面のBlade</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;p&gt;{{ $content }}&lt;/p&gt;
+
+&lt;form action=&quot;/complete&quot; method=&quot;post&quot;&gt;
+    @csrf
+    &lt;button&gt;確定&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;form action=&quot;/back&quot; method=&quot;post&quot;&gt;
+    @csrf
+    &lt;button&gt;戻る&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+
+        <p class="code-caption">完了処理</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function complete()
+{
+    $content = session('form.content');
+
+    if (!$content) {
+        return redirect('/input');
+    }
+
+    Todo::create([
+        'content' => $content,
+    ]);
+
+    session()->forget('form');
+
+    return redirect('/')->with('message', '登録しました');
+}</code></pre>
+
+        <p class="code-caption">戻る処理</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function back()
+{
+    return redirect('/input');
+}</code></pre>
+    </section>
+</body>
+
+</html>

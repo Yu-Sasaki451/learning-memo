@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>コマンドライン</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=9">
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header">
+            <a href="../index.html">memo</a>
+        </h1>
+    </div>
+
+    <h1 class="head">コマンドライン</h1>
+    <p class="head-text">
+        コマンドは「何のツールで」「何をするか」「対象は何か」を左から読む。<br>
+        コピペする時は、実行する場所も一緒に確認する。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            Docker Composeはcompose.ymlがあるプロジェクトでコンテナを操作する。<br>
+            Laravelのartisanは、コントローラ作成、マイグレーション実行、シーダー実行などをコマンドで行うための仕組み。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://docs.docker.com/reference/cli/docker/compose/up/" target="_blank" rel="noreferrer">Docker公式 docker compose up</a></li>
+            <li><a href="https://laravel.com/docs/12.x/artisan" target="_blank" rel="noreferrer">Laravel公式 Artisan Console</a></li>
+            <li><a href="https://laravel.com/docs/12.x/migrations" target="_blank" rel="noreferrer">Laravel公式 Migrations</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>コマンドの読み方</h2>
+        <p>
+            コマンドはスペースで区切って読む。<br>
+            たとえば、php artisan make:controller TodoController は4つのかたまりに分かれる。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">php</span></th>
+                    <td>PHPで実行する、という意味。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">artisan</span></th>
+                    <td>Laravelのコマンドを動かすためのファイル。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">make:controller</span></th>
+                    <td>コントローラを作る命令。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">TodoController</span></th>
+                    <td>作成するコントローラの名前。ここは作りたい名前に変える。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>今いる場所を確認する</h2>
+        <p>
+            pwdは、今ターミナルが開いている場所を表示する。<br>
+            Laravelのコマンドは、基本的にLaravelプロジェクトの直下で実行する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>pwd</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Dockerコンテナを起動する</h2>
+        <p>
+            compose.ymlがあるディレクトリで実行する。<br>
+            -dはバックグラウンドで起動するオプション。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>docker compose up -d</code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>docker</code></strong>
+                <span>Dockerを操作するコマンド。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>compose</code></strong>
+                <span>複数のコンテナをまとめて扱う。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>up</code></strong>
+                <span>コンテナを作成して起動する。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>-d</code></strong>
+                <span>ターミナルを占有せず、裏側で起動する。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>Dockerコンテナを停止する</h2>
+        <p>
+            コンテナを止めるだけならstopを使う。<br>
+            データを消すコマンドではないので、開発中に一時停止したい時に使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>docker compose stop</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>PHPコンテナに入る</h2>
+        <p>
+            Docker環境でPHPやComposerを直接触りたい時に使う。<br>
+            phpはcompose.ymlに定義しているサービス名なので、プロジェクトによって名前が違うことがある。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>docker compose exec php bash</code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>exec</code></strong>
+                <span>起動中のコンテナの中でコマンドを実行する。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>php</code></strong>
+                <span>入る対象のサービス名。compose.yml側の名前と合わせる。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>bash</code></strong>
+                <span>コンテナの中でコマンドを打てる状態にする。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>コントローラを作成する</h2>
+        <p>
+            TodoControllerを作る例。<br>
+            作成後は app/Http/Controllers の中にファイルができる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan make:controller TodoController</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>モデルを作成する</h2>
+        <p>
+            Todoモデルを作る例。<br>
+            作成後は app/Models の中にファイルができる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan make:model Todo</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>フォームリクエストを作成する</h2>
+        <p>
+            バリデーション専用のクラスを作る。<br>
+            このメモでは、バリデーションは基本的にコントローラではなくフォームリクエストに書く。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan make:request TodoRequest</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>マイグレーションを作成する</h2>
+        <p>
+            todosテーブルを作るためのマイグレーションファイルを作成する。<br>
+            作成後は database/migrations の中にファイルができる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan make:migration create_todos_table</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>マイグレーションを実行する</h2>
+        <p>
+            database/migrations の内容をDBに反映する。<br>
+            カラムを書いた後に実行する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan migrate</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>テーブルを作り直してマイグレーションする</h2>
+        <p>
+            migrate:freshは全テーブルを削除してから作り直す。<br>
+            本番環境や残したいデータがあるDBでは使わない。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan migrate:fresh</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>シーダーを作成する</h2>
+        <p>
+            ダミーデータを入れるためのファイルを作る。<br>
+            作成後は database/seeders の中にファイルができる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan make:seeder TodoSeeder</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>シーディングを実行する</h2>
+        <p>
+            シーダーに書いたダミーデータをDBに入れる。<br>
+            どのシーダーを呼ぶかは DatabaseSeeder.php 側も確認する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>php artisan db:seed</code></pre>
+    </section>
+</body>
+
+</html>

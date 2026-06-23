@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TypeScript 型の絞り込み</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=7">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">TypeScript一覧</a></h2>
+        <h2 class="header"><a href="./types.html">よく使う型へ</a></h2>
+        <h2 class="header"><a href="./functions-api.html">関数とAPIへ</a></h2>
+    </div>
+
+    <h1 class="head">TypeScript 型の絞り込み</h1>
+    <p class="head-text">
+        nullや複数候補の型を、ifで安全に使える形にする。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            TypeScript公式のNarrowingでは、typeof、if、等価比較などのJavaScriptの条件分岐から、TypeScriptが型を狭める仕組みが説明されている。<br>
+            初学者はまず「使う前に確認する」と覚える。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://www.typescriptlang.org/docs/handbook/2/narrowing.html" target="_blank" rel="noreferrer">TypeScript公式 Narrowing</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>型の絞り込みの流れ</h2>
+        <p>
+            値がstringかnullか分からない時、そのまま文字列として使うと危ない。<br>
+            ifでnullではないことを確認してから使う。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/ts-narrowing.svg" alt="複数の型の可能性をifで確認して安全に使う流れ">
+            <figcaption>型の絞り込みは、使う前に安全確認すること</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>nullを確認してから使う</h2>
+        <p>
+            string | null は、文字列かnullのどちらかという意味。<br>
+            nullではないことを確認すると、その中ではstringとして使える。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const userName: string | null = '太郎';
+
+            if (userName !== null) {
+                console.log(userName.length);
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>string | null</code></strong>
+                <span>文字列かnullのどちらかが入る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>userName !== null</code></strong>
+                <span>userNameがnullではないか確認している。!==は「同じではない」という意味。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>userName.length</code></strong>
+                <span>nullではない確認後なので、文字列の長さを安全に取れる。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>typeofで型を確認する</h2>
+        <p>
+            typeofは、値の種類を調べる。<br>
+            stringかnumberのどちらかを受け取る時に便利。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            function formatId(id: string | number) {
+                if (typeof id === 'string') {
+                    return id.toUpperCase();
+                }
+
+                return id.toString();
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>typeof id === 'string'</code></strong>
+                <span>idが文字列かどうか確認している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>id.toUpperCase()</code></strong>
+                <span>文字列だと分かった後なので、文字列用の処理を使える。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>id.toString()</code></strong>
+                <span>文字列ではない場合はnumberなので、文字列に変換している。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>API通信の状態を安全に分ける</h2>
+        <p>
+            union型は、API通信の状態管理でかなり便利。<br>
+            statusを見ると、その状態で使える値が分かる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            type RequestState =
+                | { status: 'idle' }
+                | { status: 'loading' }
+                | { status: 'success'; data: string[] }
+                | { status: 'error'; message: string };
+
+            function getMessage(state: RequestState) {
+                if (state.status === 'success') {
+                    return `${state.data.length}件取得しました`;
+                }
+
+                if (state.status === 'error') {
+                    return state.message;
+                }
+
+                return '読み込み前です';
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>status: 'success'</code></strong>
+                <span>成功状態だけdataを持つ、と型で決めている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>state.status === 'success'</code></strong>
+                <span>成功状態だと確認したので、その中ではstate.dataを使える。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>status: 'error'</code></strong>
+                <span>失敗状態だけmessageを持つ、と型で決めている。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

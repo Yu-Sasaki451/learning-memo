@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel バリデーション</title>
+
+    <!-- この階層専用CSS -->
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+
+    <!-- Copy機能（共通） -->
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+    </div>
+
+    <h1 class="head">バリデーション</h1>
+    <p class="head-text">
+        ルールから逸脱した情報を切り捨てるやつ<br>
+        フォームリクエスト・条件分岐の2種類やり方があるよ
+    </p>
+
+    <section class="code-block">
+        <h2>フォームリクエスト作成</h2>
+        <p>まずはファイルを作る。TodoRequestを作る例。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan make:request TodoRequest
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+
+        <h2>メソッドを記載</h2>
+        <p>フォームリクエストにメソッドを記載する</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            public function authorize(): bool
+            {
+                return true;
+            }
+
+            public function rules(): array
+            {
+                return [
+                    'content' => 'required|string|max:30',
+                ];
+            }
+
+            public function messages(): array
+            {
+                return [
+                    'content.required' => 'ToDoの内容を入力してください',
+                    'content.string' => '文字で入力してください',
+                    'content.max' => '入力は30文字以内',
+                ];
+            }
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>コントローラの設定もする</h2>
+        <p>useの追加と、メソッドの引数をRequestから作成したフォームリクエストに変更する。</p>
+
+        <p class="code-caption">use</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            use App\Http\Requests\TodoRequest;
+                    </code></pre>
+
+        <p class="code-caption">変更前</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            public function store(Request $request)
+                    </code></pre>
+
+        <p class="code-caption">変更後</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            public function store(TodoRequest $request)
+                    </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ブレード編集</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+        @if($errors-&gt;any())
+            &lt;div class=&quot;todo__alert-error&quot;&gt;
+                @foreach($errors-&gt;all() as $error)
+                    &lt;span&gt;{{ $error }}&lt;/span&gt;
+                @endforeach
+            &lt;/div&gt;
+        @endif
+        </code></pre>
+
+    </section>
+
+    <section class="code-block">
+        <h2>条件付きバリデーション</h2>
+        <p>新規は必須、更新はNULLでいいという条件とする</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                public function rules(): array
+                {
+                    $rules = [
+                        'content' => 'nullable|string|max:20',
+                    ];
+                
+                    if ($this->isMethod('post')) {
+                        $rules['content'] = 'required|string|max:20';
+                    }
+
+                    return $rules;
+                }
+
+                </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ステータスごとの条件バリデーション</h2>
+        <p>ステータスによって変わるという条件つきのやつ</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                $rules = [
+                    'title' => 'nullable|string|max:50',
+                    'status' => 'required|in:draft,published',
+                ];
+
+                if ($this->input('status') === 'published') {
+                    $rules['title'] = 'required|string|max:50';
+                }
+
+                    </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ユーザーごとの条件バリデーション</h2>
+        <p>普通のユーザーは20文字制限、管理者は制限なしってパターン</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            $rules = [
+                'content' => 'required|string',
+            ];
+            
+            if (!$this->user()->is_admin) {
+                $rules['content'] .= '|max:20';
+            }
+
+                    </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>データの状態によるバリデーション</h2>
+        <p>完了してるTodoは編集できないってパターン。&amp;&amp;は左も右も両方OKならtrueという意味</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            use Illuminate\Validation\Validator;
+
+            public function after(): array
+            {
+                return [
+                    function (Validator $validator) {
+                        $todo = Todo::find($this->id);
+
+                        if ($todo && $todo->is_completed) {
+                            $validator->errors()->add(
+                                'content',
+                                '完了済みのToDoは編集できません'
+                            );
+                        }
+                    },
+                ];
+            }
+
+                    </code></pre>
+    </section>
+</body>
+
+</html>

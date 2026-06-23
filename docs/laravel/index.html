@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel学習メモ</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+</head>
+<body>
+    <div class="header__inner">
+        <h1 class="header">
+            <a href="../index.html">memo</a>
+        </h1>
+    </div>
+    <div class="index-content">
+        <h1 class="head">Laravel</h1>
+        <section class="code-block">
+            <h2>Laravelのコードを見る前に</h2>
+            <p>
+                LaravelはPHPなので、JavaScriptとは記号が違う。<br>
+                まずは $、-&gt;、::、=&gt;、use の意味を見ると、コードが読みやすい。
+            </p>
+            <div class="syntax-grid">
+                <div class="syntax-card">
+                    <code>$todo</code>
+                    <strong>$ は変数</strong>
+                    <span>PHPでは変数の名前の前に$を書く。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>$todo-&gt;update()</code>
+                    <strong>-&gt; は中の処理を呼ぶ</strong>
+                    <span>取得したTodoに対してupdateを実行する。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>Route::get()</code>
+                    <strong>:: はクラスから呼ぶ</strong>
+                    <span>Routeのgetメソッドを呼ぶ。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>['title' =&gt; 'required']</code>
+                    <strong>=&gt; は対応</strong>
+                    <span>titleにはrequiredを対応させる。</span>
+                </div>
+            </div>
+            <p class="next-action">
+                <strong>最初に見る:</strong>
+                <a href="../overview/syntax.html">コードの記号</a>
+            </p>
+        </section>
+        <section class="code-block">
+            <h2>Laravelで書く場所</h2>
+            <p>
+                Laravelは、URL、API処理、DB操作、入力チェックを書く場所が分かれている。<br>
+                迷ったらまず全体の流れを見る。
+            </p>
+            <table class="map-table">
+                <tbody>
+                    <tr>
+                        <th>画面URL</th>
+                        <td><span class="file-path">routes/web.php</span> に書く。</td>
+                    </tr>
+                    <tr>
+                        <th>API URL</th>
+                        <td><span class="file-path">routes/api.php</span> に書く。</td>
+                    </tr>
+                    <tr>
+                        <th>処理</th>
+                        <td><span class="file-path">app/Http/Controllers</span> に書く。</td>
+                    </tr>
+                    <tr>
+                        <th>入力チェック</th>
+                        <td><span class="file-path">app/Http/Requests</span> に書く。</td>
+                    </tr>
+                    <tr>
+                        <th>DB</th>
+                        <td><span class="file-path">database/migrations</span> と <span class="file-path">app/Models</span> に書く。</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="next-action">
+                <strong>最初に見る:</strong>
+                <a href="../overview/index.html">全体の流れ</a>
+            </p>
+        </section>
+        <nav>
+            <ul class="index-nav">
+                <li class="nav__item">
+                    <a class="nav__link" href="./crud/crud.html">CRUD</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./function/function.html">Function</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./api/index.html">API</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

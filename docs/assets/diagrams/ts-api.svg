@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="340" viewBox="0 0 960 340" role="img" aria-labelledby="title desc">
+  <title id="title">TypeScriptとAPI型</title>
+  <desc id="desc">APIへ送る型とAPIから返る型を分けて考える図</desc>
+  <rect width="960" height="340" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="60" y="94" width="230" height="130" rx="8"/>
+    <rect x="365" y="94" width="230" height="130" rx="8"/>
+    <rect x="670" y="94" width="230" height="130" rx="8"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="175" y="132" text-anchor="middle" font-size="20" font-weight="800">Request型</text>
+    <text x="175" y="168" text-anchor="middle" font-size="15">APIへ送る形</text>
+    <text x="175" y="196" text-anchor="middle" font-size="15">titleだけなど</text>
+    <text x="480" y="132" text-anchor="middle" font-size="20" font-weight="800">fetch</text>
+    <text x="480" y="168" text-anchor="middle" font-size="15">通信して待つ</text>
+    <text x="480" y="196" text-anchor="middle" font-size="15">Promise</text>
+    <text x="785" y="132" text-anchor="middle" font-size="20" font-weight="800">Response型</text>
+    <text x="785" y="168" text-anchor="middle" font-size="15">APIから返る形</text>
+    <text x="785" y="196" text-anchor="middle" font-size="15">data: Todoなど</text>
+  </g>
+  <g stroke="#2f9e44" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M295 160H360"/>
+    <path d="M355 150l12 10-12 10"/>
+    <path d="M600 160H665"/>
+    <path d="M660 150l12 10-12 10"/>
+  </g>
+  <text x="480" y="285" text-anchor="middle" fill="#52606d" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" font-weight="700">APIは「送る形」と「返る形」を別々に型にすると読みやすい</text>
+</svg>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel スコープ</title>
+
+    <!-- この階層専用CSS -->
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+
+    <!-- Copy機能（共通） -->
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+    </div>
+
+    <h1 class="head">スコープ</h1>
+
+    <section class="code-block">
+        <h2>Laravelにおけるスコープとは</h2>
+        <p>
+            グローバルスコープは自動で常に動くもの。<br>
+            ローカルスコープは呼び出した時だけ動くもの。<br>
+            まずこれがLaravelでの前提。
+        </p>
+    </section>
+
+    <section class="code-block">
+
+        <h2>ローカルスコープはどうして使う</h2>
+        <p>
+            DBからデータを取得するとき、毎回whereを書くとRead、Update、Deleteで同じ条件式が増える。<br>
+            ローカルスコープにしておくと、条件をモデルにまとめて使い回せる。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>検索で使う場合</h2>
+        <p>
+            データを2択にできるものはローカルスコープにしやすい。<br>
+            例：完了・未完了、公開・非公開、入力済み・未入力。<br>
+            期間検索のように条件が複雑なものは、別の検索条件として扱うことが多い。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>ローカルスコープの型</h2>
+        <p>
+            基本の型があるわけですよ<br>
+            scope + 名前<br>
+            引数には必ず$query <br>
+            リターンで$query を必ず返す
+        </p>
+
+        <p class="code-caption">モデルに書くコード</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            public function scopeCompleted($query)
+            {
+                return $query->where('is_completed', true);
+            }
+        </code></pre>
+
+        <p class="code-caption">コントローラなどで呼び出すコード</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            Todo::completed()->get();
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>特定ユーザーのデータを扱う場合</h2>
+
+        <p class="code-caption">モデルに書くコード</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+        public function scopeForUser($query, $userId)
+        {
+            return $query->where('user_id', $userId);
+        }
+        </code></pre>
+
+        <p class="code-caption">コントローラなどで呼び出すコード</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+        Todo::forUser(auth()->id())->get();
+                </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>入力済み・未入力の２択パターン</h2>
+    
+        <p class="code-caption">モデルに書くコード</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                public function scopeFilled($query){
+                    return $query->whereNotNull('content');
+                }
+
+                public function scopeEmpty($query){
+                    return $query->whereNull('content');
+                }
+        </code></pre>
+
+        <p class="code-caption">コントローラなどで呼び出すコード</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                Todo::forUser(auth()->id())
+                    ->filled()
+                    ->get();
+                    </code></pre>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="340" viewBox="0 0 960 340" role="img" aria-labelledby="title desc">
+  <title id="title">非同期API通信の流れ</title>
+  <desc id="desc">ブラウザからAPIへリクエストし、JSONを受け取って画面に反映する流れ</desc>
+  <rect width="960" height="340" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="55" y="95" width="185" height="125" rx="8"/>
+    <rect x="300" y="95" width="160" height="125" rx="8"/>
+    <rect x="520" y="95" width="160" height="125" rx="8"/>
+    <rect x="740" y="95" width="165" height="125" rx="8"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="147" y="135" text-anchor="middle" font-size="20" font-weight="800">ブラウザ</text>
+    <text x="147" y="170" text-anchor="middle" font-size="15">画面の操作</text>
+    <text x="380" y="135" text-anchor="middle" font-size="20" font-weight="800">fetch</text>
+    <text x="380" y="170" text-anchor="middle" font-size="15">APIへ送る</text>
+    <text x="600" y="135" text-anchor="middle" font-size="20" font-weight="800">Laravel API</text>
+    <text x="600" y="170" text-anchor="middle" font-size="15">JSONを返す</text>
+    <text x="822" y="135" text-anchor="middle" font-size="20" font-weight="800">画面更新</text>
+    <text x="822" y="170" text-anchor="middle" font-size="15">結果を表示</text>
+  </g>
+  <g stroke="#2f9e44" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M245 158H295"/>
+    <path d="M290 148l12 10-12 10"/>
+    <path d="M465 158H515"/>
+    <path d="M510 148l12 10-12 10"/>
+    <path d="M685 158H735"/>
+    <path d="M730 148l12 10-12 10"/>
+  </g>
+  <text x="480" y="280" text-anchor="middle" fill="#52606d" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" font-weight="700">awaitは「APIの返事が返ってくるまで待つ」という目印</text>
+</svg>

@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>JavaScript 配列とオブジェクト</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">JavaScript一覧</a></h2>
+        <h2 class="header"><a href="./basic.html">基礎文法へ</a></h2>
+        <h2 class="header"><a href="./dom.html">DOM操作へ</a></h2>
+    </div>
+
+    <h1 class="head">JavaScript 配列とオブジェクト</h1>
+    <p class="head-text">
+        Todo、カテゴリ、ユーザー情報などを扱うための基本。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            配列のmapは新しい配列を作る。filterは条件に合う要素だけを残す。findは条件に合う最初の要素を返す。<br>
+            ReactでもLaravel APIの返却データでも、配列とオブジェクトを読む力が重要。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank" rel="noreferrer">MDN Array map</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank" rel="noreferrer">MDN Array filter</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find" target="_blank" rel="noreferrer">MDN Array find</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank" rel="noreferrer">MDN Array reduce</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>配列とオブジェクトの見方</h2>
+        <p>
+            配列は[]で囲む。オブジェクトは{}で囲む。<br>
+            配列は「順番で並んだデータ」、オブジェクトは「名前付きでまとまったデータ」。<br>
+            APIから返ってくるTodo一覧は、配列の中にオブジェクトが入っている形が多い。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/js-array-object.svg" alt="配列は順番で取り、オブジェクトは名前で取る図">
+            <figcaption>配列は番号、オブジェクトは名前で中身を取る</figcaption>
+        </figure>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>['買い物', '勉強']</code>
+                <strong>[] で囲むと配列</strong>
+                <span>複数の値を順番に並べる。最初は0番。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{ title: 'Todo' }</code>
+                <strong>{} で囲むとオブジェクト</strong>
+                <span>名前と値をセットで持つ。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{ id: 1, title: 'Todo' }</code>
+                <strong>, で区切る</strong>
+                <span>配列の値同士、オブジェクトの項目同士はカンマで区切る。</span>
+            </div>
+            <div class="syntax-card">
+                <code>title: 'Todo'</code>
+                <strong>: は名前と値の区切り</strong>
+                <span>titleという名前に'Todo'という値を入れている。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>配列の基本</h2>
+        <p>
+            配列は[]で複数の値をまとめるもの。<br>
+            0番目から数えるので、最初の値はtodos[0]で取る。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const todos = ['買い物', '勉強', '掃除'];
+
+            console.log(todos[0]);
+            console.log(todos.length);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>todos[0]</code></strong>
+                <span>配列の最初の値を取る。JavaScriptの配列は0番から始まる。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>todos.length</code></strong>
+                <span>配列に何件入っているかを数える。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>オブジェクトの基本</h2>
+        <p>
+            オブジェクトは{}で名前付きの情報をまとめるもの。<br>
+            todo.titleのように、ドットで中身を取り出す。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const todo = {
+                id: 1,
+                title: 'JavaScriptを勉強する',
+                isDone: false,
+            };
+
+            console.log(todo.id);
+            console.log(todo.title);
+            console.log(todo.isDone);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>id: 1</code></strong>
+                <span>idという名前に1という値を入れている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>todo.title</code></strong>
+                <span>todoオブジェクトの中からtitleを取り出す。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>isDone: false</code></strong>
+                <span>完了しているかどうかをtrue/falseで持っている。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>配列の中にオブジェクトを入れる</h2>
+        <p>
+            APIから返ってくるデータは、この形が多い。<br>
+            複数のTodoを配列で持ち、1件ずつのTodoをオブジェクトで表す。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const todos = [
+                {
+                    id: 1,
+                    title: 'JavaScriptを勉強する',
+                    isDone: false,
+                },
+                {
+                    id: 2,
+                    title: 'Laravel APIを作る',
+                    isDone: true,
+                },
+            ];
+
+            console.log(todos[0].title);
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>mapで一覧表示用の配列を作る</h2>
+        <p>
+            mapは、配列の1件ずつを別の形に変えて、新しい配列を作る。<br>
+            Reactの一覧表示でもよく使う。<br>
+            todoは自分で外から渡しているのではなく、mapが1件ずつ渡している。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const todos = [
+                { id: 1, title: 'JavaScriptを勉強する' },
+                { id: 2, title: 'Laravel APIを作る' },
+            ];
+
+            const titles = todos.map((todo) =&gt; {
+                return todo.title;
+            });
+
+            console.log(titles);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>todos.map(...)</code></strong>
+                <span>todosの中身を1件ずつ見て、新しい配列を作る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>(todo) =&gt; { ... }</code></strong>
+                <span>mapから渡される1件分のTodoを、todoという名前で受け取り、処理する。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>return todo.title;</code></strong>
+                <span>1件分のTodoからtitleだけを取り出して、新しい配列に入れる。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>map、filter、findの引数はどこから来るか</h2>
+        <p>
+            配列メソッドに渡した関数は、JavaScriptが配列の中身を1件ずつ渡しながら呼ぶ。<br>
+            todo、item、categoryのような名前は自分で決めてよい。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">todos.map((todo) =&gt; ...)</span></th>
+                    <td>mapがtodosの中身を1件ずつtodoとして渡す。戻り値を集めて新しい配列を作る。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">todos.filter((todo) =&gt; ...)</span></th>
+                    <td>filterがtodosの中身を1件ずつtodoとして渡す。trueを返したものだけ残す。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">todos.find((todo) =&gt; ...)</span></th>
+                    <td>findがtodosの中身を1件ずつtodoとして渡す。最初にtrueになった1件を返す。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">cartItems.reduce((total, item) =&gt; ...)</span></th>
+                    <td>reduceは、途中結果のtotalと、1件分のitemを渡す。最後に1つの値へまとめる。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>filterで条件に合うものだけ残す</h2>
+        <p>
+            filterは、条件がtrueになるものだけを残して、新しい配列を作る。<br>
+            削除処理や完了済みだけ表示する処理で使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const todos = [
+                { id: 1, title: 'JavaScriptを勉強する', isDone: false },
+                { id: 2, title: 'Laravel APIを作る', isDone: true },
+            ];
+
+            const doneTodos = todos.filter((todo) =&gt; {
+                return todo.isDone === true;
+            });
+
+            console.log(doneTodos);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>filter</code></strong>
+                <span>条件に合うものだけ残して、新しい配列を作る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>todo.isDone === true</code></strong>
+                <span>Todoが完了済みかどうかを確認している。===は値と型が同じかを見る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>findで1件だけ探す</h2>
+        <p>
+            findは、条件に合う最初の1件を返す。<br>
+            idから詳細データを探す時によく使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const todos = [
+                { id: 1, title: 'JavaScriptを勉強する' },
+                { id: 2, title: 'Laravel APIを作る' },
+            ];
+
+            const todo = todos.find((todo) =&gt; {
+                return todo.id === 2;
+            });
+
+            console.log(todo);
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>reduceで合計を作る</h2>
+        <p>
+            reduceは、配列を1つの値にまとめる。<br>
+            合計金額や件数集計で使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const cartItems = [
+                { id: 1, name: '本', price: 1200 },
+                { id: 2, name: 'ノート', price: 300 },
+            ];
+
+            const totalPrice = cartItems.reduce((total, item) =&gt; {
+                return total + item.price;
+            }, 0);
+
+            console.log(totalPrice);
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>スプレッド構文でコピーする</h2>
+        <p>
+            ...は、中身を展開する書き方。<br>
+            配列やオブジェクトを直接変更せず、新しい値を作るときに使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const todos = [
+                { id: 1, title: 'JavaScriptを勉強する' },
+            ];
+
+            const newTodo = {
+                id: 2,
+                title: 'Reactを勉強する',
+            };
+
+            const nextTodos = [...todos, newTodo];
+
+            const user = {
+                name: '太郎',
+                email: 'taro@example.com',
+            };
+
+            const nextUser = {
+                ...user,
+                name: '次郎',
+            };
+
+            console.log(nextTodos);
+            console.log(nextUser);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>[...todos, newTodo]</code></strong>
+                <span>今あるtodosの中身を展開して、最後にnewTodoを追加した新しい配列を作る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>{ ...user, name: '次郎' }</code></strong>
+                <span>今あるuserの中身をコピーして、nameだけ新しい値に上書きする。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

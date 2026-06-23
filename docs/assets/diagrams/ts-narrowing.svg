@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="330" viewBox="0 0 960 330" role="img" aria-labelledby="title desc">
+  <title id="title">型の絞り込み</title>
+  <desc id="desc">複数の型の可能性をifで確認して安全に使う流れ</desc>
+  <rect width="960" height="330" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="70" y="95" width="230" height="125" rx="8"/>
+    <rect x="365" y="95" width="230" height="125" rx="8"/>
+    <rect x="660" y="95" width="230" height="125" rx="8"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="185" y="135" text-anchor="middle" font-size="20" font-weight="800">string | null</text>
+    <text x="185" y="170" text-anchor="middle" font-size="15">文字か、nullか不明</text>
+    <text x="480" y="135" text-anchor="middle" font-size="20" font-weight="800">ifで確認</text>
+    <text x="480" y="170" text-anchor="middle" font-size="15">nullではないか見る</text>
+    <text x="775" y="135" text-anchor="middle" font-size="20" font-weight="800">stringとして使う</text>
+    <text x="775" y="170" text-anchor="middle" font-size="15">安全にlengthなどを使う</text>
+  </g>
+  <g stroke="#2f9e44" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M305 158H360"/>
+    <path d="M355 148l12 10-12 10"/>
+    <path d="M600 158H655"/>
+    <path d="M650 148l12 10-12 10"/>
+  </g>
+  <text x="480" y="276" text-anchor="middle" fill="#52606d" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" font-weight="700">型の絞り込みは「使う前に確認して、安全な型にする」こと</text>
+</svg>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TypeScript Reactで使う型</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=7">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">TypeScript一覧</a></h2>
+        <h2 class="header"><a href="./functions-api.html">関数とAPIへ</a></h2>
+        <h2 class="header"><a href="../react/index.html">React一覧</a></h2>
+    </div>
+
+    <h1 class="head">TypeScript Reactで使う型</h1>
+    <p class="head-text">
+        .tsx、props、useState、イベント、APIデータの型を整理する。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            React公式では、JSXを含むTypeScriptファイルは.tsx拡張子を使うと説明されている。<br>
+            Reactで最初に使う型は、props、Hooks、DOMイベント、childrenあたり。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://react.dev/learn/typescript" target="_blank" rel="noreferrer">React公式 Using TypeScript</a></li>
+            <li><a href="https://www.typescriptlang.org/docs/handbook/jsx.html" target="_blank" rel="noreferrer">TypeScript公式 JSX</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>Reactで型を付ける場所</h2>
+        <p>
+            Reactでは、props、state、event、APIレスポンスに型を付けると安心。<br>
+            最初から全部に型を書こうとせず、外から来る値とAPIデータから始める。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/ts-react.svg" alt="props、state、event、API responseに型を付ける流れ">
+            <figcaption>Reactでは値の入口に型を付けると読みやすい</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>TSXファイル</h2>
+        <p>
+            JSXを書くTypeScriptファイルは.tsxにする。<br>
+            例: Button.tsx、Index.tsx、AppRoutes.tsx。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            resources/js/components/Button.tsx
+            resources/js/pages/Index.tsx
+            resources/js/routes/AppRoutes.tsx
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>.ts</code></strong>
+                <span>普通のTypeScriptファイル。JSXを書かない時に使う。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>.tsx</code></strong>
+                <span>JSXを書くTypeScriptファイル。Reactコンポーネントで使う。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>propsに型を付ける</h2>
+        <p>
+            Buttonが受け取るpropsの形をtypeで作る。<br>
+            titleは文字列、disabledは省略できるtrue/falseにする。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            type ButtonProps = {
+                title: string;
+                disabled?: boolean;
+                onClick: () =&gt; void;
+            };
+
+            const Button = ({ title, disabled = false, onClick }: ButtonProps) =&gt; {
+                return (
+                    &lt;button type=&quot;button&quot; disabled={disabled} onClick={onClick}&gt;
+                        {title}
+                    &lt;/button&gt;
+                );
+            };
+
+            export default Button;
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>disabled?: boolean</code></strong>
+                <span>?が付いているので、disabledは渡しても渡さなくてもよい。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>() =&gt; void</code></strong>
+                <span>引数なしで実行し、戻り値を使わない関数という意味。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>disabled = false</code></strong>
+                <span>disabledが渡されなかった時の初期値。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>useStateに型を付ける</h2>
+        <p>
+            初期値から型推論できる時は、型を書かなくてもよい。<br>
+            空配列や複数候補の状態では、型を書くと安全。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import { useState } from 'react';
+
+            type Todo = {
+                id: number;
+                title: string;
+                is_done: boolean;
+            };
+
+            const Index = () =&gt; {
+                const [title, setTitle] = useState('');
+                const [todos, setTodos] = useState&lt;Todo[]&gt;([]);
+
+                return (
+                    &lt;main&gt;
+                        &lt;input
+                            value={title}
+                            onChange={(e) =&gt; setTitle(e.currentTarget.value)}
+                        /&gt;
+                        &lt;ul&gt;
+                            {todos.map((todo) =&gt; (
+                                &lt;li key={todo.id}&gt;{todo.title}&lt;/li&gt;
+                            ))}
+                        &lt;/ul&gt;
+                    &lt;/main&gt;
+                );
+            };
+
+            export default Index;
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>useState('')</code></strong>
+                <span>初期値が文字列なので、titleはstringだと推論される。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>useState&lt;Todo[]&gt;([])</code></strong>
+                <span>空配列だけでは中身が分かりにくいので、Todo配列だと明示している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>e.currentTarget.value</code></strong>
+                <span>イベントが発生したinputの入力値を取る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>イベントに型を付ける</h2>
+        <p>
+            関数を外に出す時は、イベントの型を書くと分かりやすい。<br>
+            inputの変更イベントならReact.ChangeEvent&lt;HTMLInputElement&gt;を使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import type { ChangeEvent, FormEvent } from 'react';
+
+            const handleChange = (e: ChangeEvent&lt;HTMLInputElement&gt;) =&gt; {
+                console.log(e.currentTarget.value);
+            };
+
+            const handleSubmit = (e: FormEvent&lt;HTMLFormElement&gt;) =&gt; {
+                e.preventDefault();
+            };
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>import type</code></strong>
+                <span>型だけを読み込む時の書き方。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>ChangeEvent&lt;HTMLInputElement&gt;</code></strong>
+                <span>inputの値が変わった時のイベント型。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>FormEvent&lt;HTMLFormElement&gt;</code></strong>
+                <span>form送信時のイベント型。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>React コンポーネント作成</title>
+
+    <!-- この階層専用CSS -->
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+
+    <!-- Copy機能（共通） -->
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">React一覧</a></h2>
+        <h2 class="header"><a href="./routes.html">Reactルーティングへ</a></h2>
+    </div>
+
+    <h1 class="head">React コンポーネント作成</h1>
+    <p class="head-text">
+        ここは、React Routerで画面表示できた後にやる作業。<br>
+        Header、Button、StoreFormをコンポーネントとして作り、ページから使う。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認した考え方</h2>
+        <p>
+            Reactコンポーネントは、JSXを返すJavaScript関数。<br>
+            コンポーネント名は大文字で始める。<br>
+            再利用したいUIは別ファイルに分け、exportして、使う側でimportする。<br>
+            親から子へ渡す値はpropsとして受け取る。
+        </p>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>&lt;Header /&gt;</code>
+                <strong>部品を表示する形</strong>
+                <span>Headerコンポーネントを画面に出す。</span>
+            </div>
+            <div class="syntax-card">
+                <code>&lt;Button type=&quot;submit&quot;&gt;登録&lt;/Button&gt;</code>
+                <strong>タグで囲む形</strong>
+                <span>開始タグと終了タグの間に文字や子要素を入れる。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{children}</code>
+                <strong>{} はJSの値を使う場所</strong>
+                <span>propsで受け取ったchildrenを表示している。</span>
+            </div>
+            <div class="syntax-card">
+                <code>showSelect &amp;&amp; (...)</code>
+                <strong>&amp;&amp; は条件表示</strong>
+                <span>showSelectがtrueの時だけ右側を表示する。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>コンポーネント用フォルダを作成</h2>
+        <p>componentsには再利用するUI、css/componentsにはそのCSSを置く。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            mkdir -p resources/js/components resources/css/components
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Headerコンポーネントを作成</h2>
+        <p>resources/js/components/Header.jsxを書く。共通のヘッダーはコンポーネントにする。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import { Link } from 'react-router';
+            import { ROUTES } from '../routes/routes';
+            import '../../css/components/Header.css';
+
+            const Header = () =&gt; {
+                return (
+                    &lt;header className=&quot;header&quot;&gt;
+                        &lt;Link className=&quot;headerLink&quot; to={ROUTES.HOME}&gt;
+                            Home
+                        &lt;/Link&gt;
+                        &lt;Link className=&quot;headerLink&quot; to={ROUTES.CATEGORY}&gt;
+                            Category
+                        &lt;/Link&gt;
+                    &lt;/header&gt;
+                );
+            };
+
+            export default Header;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>HeaderのCSSを作成</h2>
+        <p>resources/css/components/Header.cssを書く。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            .header {
+                display: flex;
+                gap: 16px;
+                padding: 16px 24px;
+                border-bottom: 1px solid #dddddd;
+            }
+
+            .headerLink {
+                color: #222222;
+                font-weight: 700;
+                text-decoration: none;
+            }
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Buttonコンポーネントを作成</h2>
+        <p>
+            resources/js/components/Button.jsxを書く。<br>
+            childrenは、ボタンタグの中に書いた文字や要素を受け取るprops。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import '../../css/components/Button.css';
+
+            const Button = ({ children, type = 'button', onClick }) =&gt; {
+                return (
+                    &lt;button className=&quot;button&quot; type={type} onClick={onClick}&gt;
+                        {children}
+                    &lt;/button&gt;
+                );
+            };
+
+            export default Button;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ButtonのCSSを作成</h2>
+        <p>resources/css/components/Button.cssを書く。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            .button {
+                min-height: 40px;
+                padding: 0 16px;
+                border: 0;
+                border-radius: 6px;
+                color: #ffffff;
+                font-weight: 700;
+                background-color: #222222;
+                cursor: pointer;
+            }
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>登録フォームコンポーネントを作成</h2>
+        <p>
+            resources/js/components/StoreForm.jsxを書く。<br>
+            onSubmit、placeholder、showSelectは親から渡すprops。<br>
+            &amp;&amp;は左がtrueの時だけ右を表示するという意味。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import Button from './Button';
+            import '../../css/components/StoreForm.css';
+
+            const StoreForm = ({ onSubmit, placeholder, showSelect }) =&gt; {
+                return (
+                    &lt;form className=&quot;storeForm&quot; onSubmit={onSubmit}&gt;
+                        &lt;input
+                            className=&quot;formInput&quot;
+                            type=&quot;text&quot;
+                            placeholder={placeholder}
+                        /&gt;
+
+                        {showSelect &amp;&amp; (
+                            &lt;select className=&quot;formSelect&quot;&gt;
+                                &lt;option value=&quot;&quot;&gt;選んでね&lt;/option&gt;
+                            &lt;/select&gt;
+                        )}
+
+                        &lt;Button type=&quot;submit&quot;&gt;登録&lt;/Button&gt;
+                    &lt;/form&gt;
+                );
+            };
+
+            export default StoreForm;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>登録フォームのCSSを作成</h2>
+        <p>resources/css/components/StoreForm.cssを書く。ボタンの見た目はButton.css側で管理する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            .storeForm {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                margin-top: 24px;
+            }
+
+            .formInput,
+            .formSelect {
+                min-height: 40px;
+                padding: 0 12px;
+                border: 1px solid #cccccc;
+                border-radius: 6px;
+            }
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Indexページでコンポーネントを使う</h2>
+        <p>resources/js/pages/Index.jsxを書き換える。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import Header from '../components/Header';
+            import StoreForm from '../components/StoreForm';
+            import '../../css/pages/Index.css';
+
+            const Index = () =&gt; {
+                const handleSubmit = (e) =&gt; {
+                    e.preventDefault();
+                };
+
+                return (
+                    &lt;&gt;
+                        &lt;Header /&gt;
+                        &lt;main className=&quot;indexPage&quot;&gt;
+                            &lt;h1&gt;Todo&lt;/h1&gt;
+                            &lt;StoreForm
+                                onSubmit={handleSubmit}
+                                placeholder=&quot;Todoを入力&quot;
+                                showSelect={false}
+                            /&gt;
+                        &lt;/main&gt;
+                    &lt;/&gt;
+                );
+            };
+
+            export default Index;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Categoryページでコンポーネントを使う</h2>
+        <p>resources/js/pages/Category.jsxを書き換える。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import Header from '../components/Header';
+            import StoreForm from '../components/StoreForm';
+            import '../../css/pages/Category.css';
+
+            const Category = () =&gt; {
+                const handleSubmit = (e) =&gt; {
+                    e.preventDefault();
+                };
+
+                return (
+                    &lt;&gt;
+                        &lt;Header /&gt;
+                        &lt;main className=&quot;categoryPage&quot;&gt;
+                            &lt;h1&gt;Category&lt;/h1&gt;
+                            &lt;StoreForm
+                                onSubmit={handleSubmit}
+                                placeholder=&quot;カテゴリ名を入力&quot;
+                                showSelect={true}
+                            /&gt;
+                        &lt;/main&gt;
+                    &lt;/&gt;
+                );
+            };
+
+            export default Category;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Viteを起動して確認</h2>
+        <p>Header、Button、StoreFormが表示されるか確認する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            ./vendor/bin/sail npm run dev
+        </code></pre>
+    </section>
+</body>
+
+</html>

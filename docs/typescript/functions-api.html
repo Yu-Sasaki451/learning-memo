@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TypeScript 関数とAPI</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">TypeScript一覧</a></h2>
+        <h2 class="header"><a href="./narrowing.html">型の絞り込みへ</a></h2>
+        <h2 class="header"><a href="./react.html">Reactで使う型へ</a></h2>
+    </div>
+
+    <h1 class="head">TypeScript 関数とAPI</h1>
+    <p class="head-text">
+        引数、戻り値、Promise、APIレスポンスに型を付ける。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            TypeScript公式のMore on Functionsでは、関数の引数や戻り値へ型を付ける方法が整理されている。<br>
+            API通信では、Promiseと返却データの型を読むことが重要。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://www.typescriptlang.org/docs/handbook/2/functions.html" target="_blank" rel="noreferrer">TypeScript公式 More on Functions</a></li>
+            <li><a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html" target="_blank" rel="noreferrer">TypeScript公式 Everyday Types</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>関数の引数と戻り値</h2>
+        <p>
+            引数には受け取る値の型、関数の後ろには返す値の型を書く。<br>
+            戻り値の型は省略できることも多いが、最初は書くと読みやすい。<br>
+            TypeScriptの型は、呼ぶ側が渡せる値を制限する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            function createMessage(name: string): string {
+                return `${name}さん、こんにちは`;
+            }
+
+            const message = createMessage('太郎');
+
+            console.log(message);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>name: string</code></strong>
+                <span>nameには文字列だけ渡せる。createMessage(123)のような呼び方は型エラーになる。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>): string</code></strong>
+                <span>この関数は文字列を返す。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>TypeScriptの引数は何を守るか</h2>
+        <p>
+            JavaScriptでは、関数に何を渡しても実行時まで分かりにくい。<br>
+            TypeScriptでは、関数を呼ぶ時点で「渡してよい値か」を確認できる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            function addPrice(price: number, taxRate: number): number {
+                return price + price * taxRate;
+            }
+
+            const total = addPrice(1000, 0.1);
+
+            console.log(total);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>price: number</code></strong>
+                <span>priceには数値だけ渡せる。文字列を渡すとTypeScriptが止める。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>): number</code></strong>
+                <span>この関数は数値を返す。returnする値もnumberである必要がある。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong>なぜこの書き方か</strong>
+                <span>呼ぶ側と作る側の約束をコード上に書き、実行前に間違いを見つけるため。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>API型の考え方</h2>
+        <p>
+            APIでは、送るデータと返ってくるデータの形が違うことが多い。<br>
+            Request型とResponse型を分けると、どこで何を扱っているか分かりやすい。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/ts-api.svg" alt="APIへ送る型とAPIから返る型を分けて考える図">
+            <figcaption>APIは送る形と返る形を分けて読む</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>Todo APIの返却型を作る</h2>
+        <p>
+            Laravel APIから返るTodoの形をTypeScript側でも作っておく。<br>
+            これで、画面側でtodo.titleなどを安全に使える。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            type Todo = {
+                id: number;
+                title: string;
+                is_done: boolean;
+                created_at: string;
+                updated_at: string;
+            };
+
+            type TodoIndexResponse = {
+                data: Todo[];
+            };
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>Todo</code></strong>
+                <span>Todo1件分の形。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>Todo[]</code></strong>
+                <span>Todoが複数入った配列。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>data: Todo[]</code></strong>
+                <span>Laravel API Resourceの一覧返却でよく出る形。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>fetch関数に型を付ける</h2>
+        <p>
+            Promise&lt;TodoIndexResponse&gt; は、非同期処理の結果としてTodoIndexResponseが返るという意味。<br>
+            awaitした後は、TodoIndexResponseとして扱える。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            async function getTodos(): Promise&lt;TodoIndexResponse&gt; {
+                const response = await fetch('/api/todos', {
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Todoの取得に失敗しました');
+                }
+
+                return response.json();
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>async function</code></strong>
+                <span>非同期処理を書く関数。中でawaitを使える。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>Promise&lt;TodoIndexResponse&gt;</code></strong>
+                <span>待った結果、TodoIndexResponseが返るという意味。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>response.json()</code></strong>
+                <span>APIから返ったJSONをJavaScriptの値として受け取る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>登録用の型を分ける</h2>
+        <p>
+            登録時は、idやcreated_atはまだない。<br>
+            APIへ送る形と、APIから返る形は分けると分かりやすい。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            type StoreTodoRequest = {
+                title: string;
+            };
+
+            type StoreTodoResponse = {
+                data: Todo;
+            };
+
+            async function createTodo(payload: StoreTodoRequest): Promise&lt;StoreTodoResponse&gt; {
+                const response = await fetch('/api/todos', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Todoの登録に失敗しました');
+                }
+
+                return response.json();
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>StoreTodoRequest</code></strong>
+                <span>APIへ送るデータの形。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>StoreTodoResponse</code></strong>
+                <span>APIから返ってくるデータの形。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>payload</code></strong>
+                <span>登録APIへ送る中身。ここではtitleだけ。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

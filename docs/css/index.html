@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>CSS</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header">
+            <a href="../index.html">memo</a>
+        </h1>
+    </div>
+
+    <h1 class="head">CSS</h1>
+    <p class="head-text">
+        CSSはHTMLに見た目を付けるための言語。<br>
+        最初は「どのHTMLに」「何を」「どんな値で」指定しているかを見る。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            MDNでは、CSSはルールベースの言語で、セレクタで対象を選び、波かっこの中にプロパティと値を書く形として説明されている。<br>
+            初学では、まずセレクタ、プロパティ、値、波かっこの役割を分けて読む。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/What_is_CSS" target="_blank" rel="noreferrer">MDN What is CSS?</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Basic_selectors" target="_blank" rel="noreferrer">MDN Basic CSS selectors</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>CSSはどこに何を書くか</h2>
+        <p>
+            HTML側にはclass名を書く。CSS側では、そのclass名の前に . を付けて対象を選ぶ。<br>
+            その中に、色、文字サイズ、余白などの見た目を書く。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/css-rule-flow.svg" alt="HTMLのclassとCSSのセレクタ、プロパティ、値のつながり">
+            <figcaption>HTMLで名前を付けて、CSSでその名前を選ぶ</figcaption>
+        </figure>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>class="title"</code>
+                <strong>HTML側の目印</strong>
+                <span>このHTMLにCSSを当てたい、という名前を付ける。</span>
+            </div>
+            <div class="syntax-card">
+                <code>.title</code>
+                <strong>CSS側のセレクタ</strong>
+                <span>class="title" が付いたHTMLを選ぶ。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{ ... }</code>
+                <strong>指定を書く場所</strong>
+                <span>この中に、変えたい見た目をまとめて書く。</span>
+            </div>
+            <div class="syntax-card">
+                <code>color: red;</code>
+                <strong>プロパティと値</strong>
+                <span>colorが何を変えるか、redがどう変えるか。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>CSSの基本形</h2>
+        <p>
+            セレクタは「どれに当てるか」。<br>
+            プロパティは「何を変えるか」。<br>
+            値は「どう変えるか」。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            .title {
+                color: #0b7285;
+                font-size: 24px;
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>.title</code></strong>
+                <span>class="title" が付いたHTMLを選ぶ。. はclassを選ぶ記号。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>{ }</code></strong>
+                <span>この中に、titleに当てたい見た目をまとめる。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>color: #0b7285;</code></strong>
+                <span>文字色を指定している。colorが項目、#0b7285が色の値。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>font-size: 24px;</code></strong>
+                <span>文字サイズを指定している。pxは画面上の大きさの単位。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>HTMLとCSSのつながり</h2>
+        <p>
+            HTMLとCSSは別ファイルでも、class名でつながる。<br>
+            HTMLのclass名と、CSSの . の後ろの名前が同じなら、そのCSSが当たる。
+        </p>
+
+        <p class="code-caption">HTMLに書く</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            &lt;h1 class="title"&gt;Todoアプリ&lt;/h1&gt;
+            &lt;p class="lead"&gt;今日やることを管理する&lt;/p&gt;
+        </code></pre>
+
+        <p class="code-caption">CSSに書く</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            .title {
+                color: #102a43;
+            }
+
+            .lead {
+                color: #52606d;
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>class="title"</code></strong>
+                <span>HTMLにtitleという目印を付けている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>.title</code></strong>
+                <span>CSSでtitleという目印のHTMLを選んでいる。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>class="lead"</code></strong>
+                <span>別のHTMLにはleadという別の目印を付けている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>.lead</code></strong>
+                <span>leadだけに別の見た目を当てている。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>よく使うセレクタ</h2>
+        <p>
+            最初はclassセレクタを中心に使うと分かりやすい。<br>
+            idは1ページに1つだけの場所、タグ名は同じタグ全部に当てたい時に使う。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">.button</span></th>
+                    <td>class="button" が付いたHTMLを選ぶ。部品の見た目を作る時によく使う。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">#app</span></th>
+                    <td>id="app" が付いたHTMLを選ぶ。Reactの表示場所など、1つだけの場所に使う。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">h1</span></th>
+                    <td>ページ内のh1タグ全部を選ぶ。広く当てたい時だけ使う。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">.card .title</span></th>
+                    <td>cardの中にあるtitleだけを選ぶ。場所をしぼってCSSを当てたい時に使う。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>余白はmarginとpaddingを分けて考える</h2>
+        <p>
+            marginは外側の余白。paddingは内側の余白。<br>
+            カード同士を離したいならmargin、カードの中身をゆったりさせたいならpaddingを使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            .card {
+                margin-bottom: 16px;
+                padding: 20px;
+                border: 1px solid #d8e0e7;
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>margin-bottom: 16px;</code></strong>
+                <span>cardの外側、下方向に16pxの余白を作る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>padding: 20px;</code></strong>
+                <span>cardの内側に20pxの余白を作る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>border: 1px solid #d8e0e7;</code></strong>
+                <span>太さ1px、線の種類solid、色#d8e0e7の枠線を付ける。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>横並びはflexから覚える</h2>
+        <p>
+            横並びはdisplay: flexから始める。<br>
+            gapで要素同士の間隔を空け、align-itemsで上下の位置をそろえる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            .header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>display: flex;</code></strong>
+                <span>headerの中身を横並びで扱う。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>align-items: center;</code></strong>
+                <span>上下方向の位置を中央にそろえる。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>gap: 12px;</code></strong>
+                <span>中の要素同士の間隔を12px空ける。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

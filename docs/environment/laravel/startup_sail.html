@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel Sail 最低限の環境構築</title>
+
+    <!-- この階層専用CSS -->
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+
+    <!-- Copy機能（共通） -->
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+        <h2 class="header"><a href="../index.html">環境構築一覧</a></h2>
+        <h2 class="header"><a href="../../react/routes.html">Reactへ</a></h2>
+    </div>
+
+    <h1 class="head">Laravel Sail 最低限の環境構築</h1>
+    <p class="head-text">
+        ここは、LaravelをSailで起動してReactを表示できるところまで。<br>
+        ルーティング、ページ分割、コンポーネント化は次のページに分ける。
+    </p>
+
+    <section class="code-block">
+        <h2>Dockerを起動して確認</h2>
+        <p>Docker Desktopを起動してから実行する。ここでエラーなら、先にDocker Desktopを起動する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            docker info
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>プロジェクトを作る場所へ移動</h2>
+        <p>例としてデスクトップに作る。別の場所に作るなら、cdの後ろだけ変える。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            cd ~/Desktop
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Docker経由でLaravelを作成</h2>
+        <p>
+            この例では、laravel/laravel:^10.0 がLaravelのバージョン指定、todo-react がプロジェクト名。<br>
+            Laravel 12系で作るなら、laravel/laravel:^12.0 のように変える。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            docker run --rm \
+                -u "$(id -u):$(id -g)" \
+                -v "$(pwd):/var/www/html" \
+                -w /var/www/html \
+                -e COMPOSER_CACHE_DIR=/tmp/composer_cache \
+                laravelsail/php82-composer:latest \
+                composer create-project laravel/laravel:^10.0 todo-react
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>作成したプロジェクトへ移動</h2>
+        <p>ここから先は、作成したLaravelプロジェクトの中で実行する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            cd todo-react
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Sailをインストール</h2>
+        <p>docker-compose.ymlを作り、.envにDocker用のDB設定を追加するためのコマンド。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan sail:install
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>.envのDB設定を確認</h2>
+        <p>SailのMySQLへ接続するので、DB_HOSTはmysqlにする。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            DB_CONNECTION=mysql
+            DB_HOST=mysql
+            DB_PORT=3306
+            DB_DATABASE=laravel
+            DB_USERNAME=sail
+            DB_PASSWORD=password
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>phpMyAdminを追加</h2>
+        <p>docker-compose.ymlのservices内に追加する。networksはsailにする。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            phpmyadmin:
+                image: phpmyadmin/phpmyadmin
+                platform: linux/amd64
+                environment:
+                    - PMA_ARBITRARY=1
+                    - PMA_HOST=mysql
+                    - PMA_USER=${DB_USERNAME}
+                    - PMA_PASSWORD=${DB_PASSWORD}
+                depends_on:
+                    - mysql
+                ports:
+                    - 8080:80
+                networks:
+                    - sail
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Sailを起動</h2>
+        <p>-dは、ターミナルを占有せずに裏側で起動するためのオプション。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            ./vendor/bin/sail up -d
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>画面を確認</h2>
+        <p>Laravelはlocalhost、phpMyAdminは8080番で開く。</p>
+
+        <p class="code-caption">Laravel</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            http://localhost
+        </code></pre>
+
+        <p class="code-caption">phpMyAdmin</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            http://localhost:8080
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Nodeモジュールをインストール</h2>
+        <p>npmコマンドもSail経由で実行する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            ./vendor/bin/sail npm install
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Reactをインストール</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            ./vendor/bin/sail npm install react react-dom
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ViteのReactプラグインをインストール</h2>
+        <p>--save-devは、開発時に使うパッケージとして追加するという意味。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            ./vendor/bin/sail npm install @vitejs/plugin-react@4 --save-dev
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>vite.config.jsをReact用に変更</h2>
+        <p>resources/js/app.jsxをViteの読み込み対象にする。Blade側でも同じパスを書く。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import { defineConfig } from 'vite';
+            import laravel from 'laravel-vite-plugin';
+            import react from '@vitejs/plugin-react';
+
+            export default defineConfig({
+                plugins: [
+                    laravel([
+                        'resources/css/app.css',
+                        'resources/js/app.jsx',
+                    ]),
+                    react(),
+                ],
+            });
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>React表示用のapp.jsxを作成</h2>
+        <p>resources/js/app.jsxに書く。ここではまずReactが表示できるかだけ確認する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import React from 'react';
+            import ReactDOM from 'react-dom/client';
+
+            function App() {
+                return &lt;h1&gt;Hello React&lt;/h1&gt;;
+            }
+
+            ReactDOM.createRoot(document.getElementById('app')).render(&lt;App /&gt;);
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>BladeでReactを表示</h2>
+        <p>resources/views/index.blade.phpを作成して書く。@viteReactRefreshは@viteより前に書く。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            &lt;!DOCTYPE html&gt;
+            &lt;html lang=&quot;ja&quot;&gt;
+            &lt;head&gt;
+                &lt;meta charset=&quot;UTF-8&quot;&gt;
+                &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+                &lt;title&gt;Todo React&lt;/title&gt;
+                @viteReactRefresh
+                @vite(['resources/css/app.css', 'resources/js/app.jsx'])
+            &lt;/head&gt;
+            &lt;body&gt;
+                &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+            &lt;/body&gt;
+            &lt;/html&gt;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>最初の表示用ルート</h2>
+        <p>routes/web.phpに書く。ここでは最低限、トップページでindex.blade.phpを返すだけにする。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            Route::get('/', function () {
+                return view('index');
+            });
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Viteを起動</h2>
+        <p>Reactの画面を編集して確認する間は、このコマンドを動かしておく。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            ./vendor/bin/sail npm run dev
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ここまでが最低限</h2>
+        <p>
+            ここまでできれば、LaravelをSailで起動してReactを表示できる。<br>
+            React Router、URL定義、ページ分割、コンポーネント化はReactカテゴリで進める。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>次に進む</h2>
+        <p>環境構築後のReactルーティングとコンポーネント化へ進む。</p>
+
+        <p class="code-caption">次のページ</p>
+        <a class="nav__link" href="../../react/routes.html">Reactルーティングへ</a>
+    </section>
+
+    <section class="code-block">
+        <h2>Sailを停止</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            ./vendor/bin/sail stop
+        </code></pre>
+    </section>
+</body>
+
+</html>

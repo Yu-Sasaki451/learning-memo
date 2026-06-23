@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="420" viewBox="0 0 1040 420" role="img" aria-labelledby="title desc">
+  <title id="title">CSSの基本形</title>
+  <desc id="desc">HTMLのclassとCSSのセレクタ、プロパティ、値がつながる流れ</desc>
+  <rect width="1040" height="420" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="55" y="78" width="270" height="110" rx="8"/>
+    <rect x="385" y="78" width="270" height="110" rx="8"/>
+    <rect x="715" y="78" width="270" height="110" rx="8"/>
+    <rect x="220" y="250" width="600" height="90" rx="8"/>
+  </g>
+  <g fill="none" stroke="#2f9e44" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M325 133 H385"/>
+    <path d="M655 133 H715"/>
+    <path d="M520 188 V250"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="190" y="115" text-anchor="middle" font-size="18" font-weight="800">HTML</text>
+    <text x="190" y="148" text-anchor="middle" font-size="16">&lt;h1 class="title"&gt;</text>
+    <text x="520" y="115" text-anchor="middle" font-size="18" font-weight="800">CSSのセレクタ</text>
+    <text x="520" y="148" text-anchor="middle" font-size="18">.title { ... }</text>
+    <text x="850" y="115" text-anchor="middle" font-size="18" font-weight="800">見た目</text>
+    <text x="850" y="148" text-anchor="middle" font-size="16">色・サイズ・余白を変える</text>
+    <text x="520" y="286" text-anchor="middle" font-size="18" font-weight="800">CSSは「どのHTMLに」「どんな見た目を付けるか」を書く</text>
+    <text x="520" y="318" text-anchor="middle" font-size="16">セレクタで対象を選び、{} の中にプロパティと値を書く</text>
+  </g>
+</svg>

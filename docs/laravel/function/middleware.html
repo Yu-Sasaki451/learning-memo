@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel ミドルウェア</title>
+
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+    </div>
+
+    <h1 class="head">ミドルウェア</h1>
+
+    <section class="code-block">
+        <h2>どう使うのか</h2>
+        <p>
+            ミドルウェアは、コントローラの前段でリクエストを通して良いか判断する仕組み。<br>
+            ログインチェックや権限チェックなどで使う。<br>
+            Laravel 11以降は、登録が必要ならbootstrap/app.phpに書く。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>ミドルウェアの雛形</h2>
+        <p>処理前にチェックして、問題なければreturn $next($request);で次へ進める。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function handle(Request $request, Closure $next)
+{
+    $response = $next($request);
+
+    return $response;
+}</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>管理者だけを通すミドルウェア</h2>
+        <p>
+            !は否定の意味。<br>
+            ||はORの意味で、左か右のどちらか一方でも当てはまればtrueになる。<br>
+            つまり、ログインしていない、または管理者ではない場合は403エラーにする。
+        </p>
+
+        <p class="code-caption">ミドルウェア本体</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function handle(Request $request, Closure $next)
+{
+    if (!auth()->user() || !auth()->user()->is_admin) {
+        abort(403);
+    }
+
+    return $next($request);
+}</code></pre>
+
+        <p class="code-caption">bootstrap/app.phpに登録</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>use App\Http\Middleware\AdminOnly;
+use Illuminate\Foundation\Configuration\Middleware;
+
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'admin' => AdminOnly::class,
+    ]);
+})</code></pre>
+
+        <p class="code-caption">routes/web.php</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Route::middleware('admin')->group(function () {
+    Route::get('/admin', [AdminController::class, 'index']);
+});</code></pre>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>JavaScript 基礎文法</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">JavaScript一覧</a></h2>
+        <h2 class="header"><a href="./array-object.html">配列とオブジェクトへ</a></h2>
+    </div>
+
+    <h1 class="head">JavaScript 基礎文法</h1>
+    <p class="head-text">
+        まずは、変数、条件分岐、関数、イベントで使う最小限の文法を覚える。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            MDNのJavaScript Guideでは、文法、型、条件分岐、関数、オブジェクト、Promise、モジュールなどが章ごとに整理されている。<br>
+            このページでは、LaravelやReact学習で最初に必要になる部分だけを抜き出す。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" target="_blank" rel="noreferrer">MDN JavaScript Guide</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions" target="_blank" rel="noreferrer">MDN Functions</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let" target="_blank" rel="noreferrer">MDN let</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const" target="_blank" rel="noreferrer">MDN const</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions" target="_blank" rel="noreferrer">MDN Arrow functions</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>コードを読む順番</h2>
+        <p>
+            JavaScriptの基本は、値を用意して、変数に入れて、関数で処理して、結果を使う流れ。<br>
+            まずはこの順番だけ意識すると、コードがかなり読みやすくなる。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/js-basic.svg" alt="値を変数に入れ、関数で処理し、結果を表示する流れ">
+            <figcaption>値、変数、関数、結果の順番で読む</figcaption>
+        </figure>
+        <div class="term-grid">
+            <div class="term-card">
+                <strong>値</strong>
+                <span><code>'太郎'</code>、<code>20</code>、<code>false</code> のような実際のデータ。</span>
+            </div>
+            <div class="term-card">
+                <strong>変数</strong>
+                <span>値に名前を付けて、あとから使えるようにする入れ物。</span>
+            </div>
+            <div class="term-card">
+                <strong>関数</strong>
+                <span>処理に名前を付けて、必要な時に呼び出せるようにしたもの。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>JavaScriptを書く場所</h2>
+        <p>
+            HTMLからJavaScriptファイルを読み込む。<br>
+            deferを付けると、HTMLを読み取ったあとにJavaScriptを実行しやすくなる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            &lt;script src="./script.js" defer&gt;&lt;/script&gt;
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>src="./script.js"</code></strong>
+                <span>読み込むJavaScriptファイルの場所。HTMLと同じ階層にあるscript.jsを読む。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>defer</code></strong>
+                <span>HTMLを先に読み込んでからJavaScriptを実行するための指定。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>変数はconstから使う</h2>
+        <p>
+            constは再代入しない値、letはあとで入れ直す値に使う。<br>
+            迷ったらまずconst、あとで値を入れ直す必要がある時だけletにする。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const userName = '太郎';
+            const age = 20;
+
+            let count = 0;
+            count = count + 1;
+
+            console.log(userName);
+            console.log(age);
+            console.log(count);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>const userName = '太郎';</code></strong>
+                <span>userNameという名前で、'太郎'という文字を保存している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>let count = 0;</code></strong>
+                <span>countはあとで値を入れ直すのでletにしている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>console.log(count);</code></strong>
+                <span>今のcountの中身をブラウザの開発者ツールに表示する。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>よく使う型</h2>
+        <p>
+            文字列、数値、真偽値、配列、オブジェクトをよく使う。<br>
+            typeofを使うと、値の種類を確認できる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const title = 'Todo';
+            const price = 1000;
+            const isDone = false;
+            const categories = ['仕事', '勉強'];
+            const todo = {
+                id: 1,
+                title: 'JavaScriptを勉強する',
+                isDone: false,
+            };
+
+            console.log(typeof title);
+            console.log(typeof price);
+            console.log(typeof isDone);
+            console.log(categories);
+            console.log(todo.title);
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>条件分岐</h2>
+        <p>
+            ifは、条件がtrueなら中の処理を実行する。<br>
+            ===は、値と型が同じかを比較する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const status = 'done';
+
+            if (status === 'done') {
+                console.log('完了です');
+            } else {
+                console.log('未完了です');
+            }
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>関数</h2>
+        <p>
+            関数は、処理に名前を付けて使い回すもの。<br>
+            returnは、関数の結果を外に返す。<br>
+            引数は、関数を呼ぶ側が渡す値。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            function createMessage(name) {
+                return `${name}さん、こんにちは`;
+            }
+
+            const message = createMessage('太郎');
+
+            console.log(message);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>function createMessage(name)</code></strong>
+                <span>createMessageという名前の関数を作り、nameという引数を受け取る。ここではまだ中身は決まっていない。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>return</code></strong>
+                <span>関数の結果を外へ返す。ここでは完成したメッセージ文字列を返している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>createMessage('太郎')</code></strong>
+                <span>関数を実行して、nameに'太郎'を渡している。ここで初めてnameの中身が決まる。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>引数はどこから来るか</h2>
+        <p>
+            関数の丸括弧に書く名前は、あとから外から渡される値の仮の名前。<br>
+            下の例では、priceとtaxRateはcalculateTotalを呼ぶ時に渡している。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            function calculateTotal(price, taxRate) {
+                return price + price * taxRate;
+            }
+
+            const total = calculateTotal(1000, 0.1);
+
+            console.log(total);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>price, taxRate</code></strong>
+                <span>関数を作る時に付けた仮の名前。まだ具体的な値は入っていない。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>calculateTotal(1000, 0.1)</code></strong>
+                <span>呼ぶ側が1000と0.1を渡している。1000がprice、0.1がtaxRateに入る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong>なぜこの書き方か</strong>
+                <span>同じ計算処理を、違うpriceやtaxRateで何度も使えるようにするため。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>アロー関数</h2>
+        <p>
+            Reactや配列処理では、アロー関数をよく見る。<br>
+            =&gt; の左に受け取る値、右に処理を書く。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const createMessage = (name) =&gt; {
+                return `${name}さん、こんにちは`;
+            };
+
+            const message = createMessage('太郎');
+
+            console.log(message);
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>よく見る演算子</h2>
+        <p>
+            &amp;&amp;は、左がtrueの時だけ右を実行するという意味。<br>
+            ||は、左がfalseっぽい値なら右を使うという意味。<br>
+            !は、trueとfalseを反転するという意味。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const isLogin = true;
+            const userName = '';
+            const isOpen = false;
+
+            isLogin &amp;&amp; console.log('ログイン中です');
+
+            const displayName = userName || 'ゲスト';
+
+            console.log(displayName);
+            console.log(!isOpen);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>&amp;&amp;</code></strong>
+                <span>左側がtrueの時だけ右側を実行する。条件付き表示でもよく使う。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>||</code></strong>
+                <span>左側が空文字などfalseっぽい値なら、右側の値を使う。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>!</code></strong>
+                <span>trueとfalseを反転する。<code>!isOpen</code> は「開いていない」という意味になる。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

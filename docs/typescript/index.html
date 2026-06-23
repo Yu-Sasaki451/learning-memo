@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TypeScript学習メモ</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+</head>
+
+<body>
+    <main class="main">
+        <div class="header__inner">
+            <h1 class="header">
+                <a href="../index.html">memo</a>
+            </h1>
+        </div>
+
+        <h1 class="head">TypeScript</h1>
+        <p class="head-text">
+            JavaScriptに型を足して、実行前にミスを見つけるためのメモ。
+        </p>
+
+        <section class="code-block">
+            <h2>まず覚える順番</h2>
+            <p>
+                TypeScriptは新しい別言語というより、JavaScriptに「この値は文字です」「これはTodoの配列です」と説明を足すもの。<br>
+                先にJavaScriptの基礎が分かっていれば、型の読み方から始めればよい。
+            </p>
+            <div class="syntax-grid">
+                <div class="syntax-card">
+                    <code>title: string</code>
+                    <strong>: は型を書く</strong>
+                    <span>titleには文字列が入る。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>Todo[]</code>
+                    <strong>[] は配列型</strong>
+                    <span>Todoが複数入る配列。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>string | null</code>
+                    <strong>| は または</strong>
+                    <span>文字列かnullのどちらか。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>disabled?: boolean</code>
+                    <strong>? は省略できる</strong>
+                    <span>渡しても渡さなくてもよい。</span>
+                </div>
+            </div>
+            <div class="learning-flow">
+                <div class="learning-flow__item">
+                    <strong>1. 型チェックの目的</strong>
+                    <span>実行する前に、値の使い方の間違いを見つける。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>2. よく使う型</strong>
+                    <span>string、number、boolean、配列、オブジェクトを読む。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>3. 型を絞る</strong>
+                    <span>nullや複数候補の型を、ifで安全に扱う。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>4. Reactで使う</strong>
+                    <span>props、state、event、APIレスポンスに型を付ける。</span>
+                </div>
+            </div>
+            <p class="next-action">
+                <strong>このサイト内での役割:</strong>
+                TypeScriptはReactのprops、state、APIレスポンスの形を安全にするために使う。
+                記号が分からない時は <a href="../overview/syntax.html">コードの記号</a>、
+                どこにつながるかは <a href="../overview/index.html">全体の流れ</a> と一緒に見ると分かりやすい。
+            </p>
+        </section>
+
+        <div class="index-content">
+            <nav>
+                <ul class="index-nav">
+                    <li class="nav__item">
+                        <a class="nav__link" href="./basic.html">TypeScriptの基本</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./types.html">よく使う型</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./narrowing.html">型の絞り込み</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./functions-api.html">関数とAPI</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./react.html">Reactで使う型</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+</body>
+
+</html>

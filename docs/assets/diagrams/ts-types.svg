@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="350" viewBox="0 0 960 350" role="img" aria-labelledby="title desc">
+  <title id="title">TypeScriptの型の見方</title>
+  <desc id="desc">値に型名を付け、配列やオブジェクトの形を表す図</desc>
+  <rect width="960" height="350" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="60" y="88" width="240" height="160" rx="8"/>
+    <rect x="360" y="88" width="240" height="160" rx="8"/>
+    <rect x="660" y="88" width="240" height="160" rx="8"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="180" y="128" text-anchor="middle" font-size="21" font-weight="800">基本型</text>
+    <text x="180" y="164" text-anchor="middle" font-size="16">string</text>
+    <text x="180" y="194" text-anchor="middle" font-size="16">number</text>
+    <text x="180" y="224" text-anchor="middle" font-size="16">boolean</text>
+    <text x="480" y="128" text-anchor="middle" font-size="21" font-weight="800">配列</text>
+    <text x="480" y="164" text-anchor="middle" font-size="16">string[]</text>
+    <text x="480" y="194" text-anchor="middle" font-size="16">Todo[]</text>
+    <text x="480" y="224" text-anchor="middle" font-size="16">同じ形を複数持つ</text>
+    <text x="780" y="128" text-anchor="middle" font-size="21" font-weight="800">オブジェクト</text>
+    <text x="780" y="164" text-anchor="middle" font-size="16">{ id: number }</text>
+    <text x="780" y="194" text-anchor="middle" font-size="16">{ title: string }</text>
+    <text x="780" y="224" text-anchor="middle" font-size="16">名前付きの形</text>
+  </g>
+  <text x="480" y="295" text-anchor="middle" fill="#52606d" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" font-weight="700">型は「この値には何が入るか」を先に書いておく説明書</text>
+</svg>

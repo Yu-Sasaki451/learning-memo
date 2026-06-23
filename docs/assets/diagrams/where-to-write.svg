@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="420" viewBox="0 0 1040 420" role="img" aria-labelledby="title desc">
+  <title id="title">どこに何を書くか</title>
+  <desc id="desc">URL、画面、部品、API、DB、CSSを書く場所のまとめ</desc>
+  <rect width="1040" height="420" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="55" y="70" width="280" height="90" rx="8"/>
+    <rect x="380" y="70" width="280" height="90" rx="8"/>
+    <rect x="705" y="70" width="280" height="90" rx="8"/>
+    <rect x="55" y="205" width="280" height="90" rx="8"/>
+    <rect x="380" y="205" width="280" height="90" rx="8"/>
+    <rect x="705" y="205" width="280" height="90" rx="8"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="195" y="106" text-anchor="middle" font-size="18" font-weight="800">画面URL</text>
+    <text x="195" y="136" text-anchor="middle" font-size="14">routes/web.php</text>
+    <text x="520" y="106" text-anchor="middle" font-size="18" font-weight="800">React画面</text>
+    <text x="520" y="136" text-anchor="middle" font-size="14">resources/js/pages</text>
+    <text x="845" y="106" text-anchor="middle" font-size="18" font-weight="800">共通部品</text>
+    <text x="845" y="136" text-anchor="middle" font-size="14">resources/js/components</text>
+    <text x="195" y="241" text-anchor="middle" font-size="18" font-weight="800">API URL</text>
+    <text x="195" y="271" text-anchor="middle" font-size="14">routes/api.php</text>
+    <text x="520" y="241" text-anchor="middle" font-size="18" font-weight="800">API処理</text>
+    <text x="520" y="271" text-anchor="middle" font-size="14">app/Http/Controllers</text>
+    <text x="845" y="241" text-anchor="middle" font-size="18" font-weight="800">DBの形</text>
+    <text x="845" y="271" text-anchor="middle" font-size="14">database/migrations</text>
+  </g>
+  <text x="520" y="360" text-anchor="middle" fill="#52606d" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700">迷ったら「URL」「画面」「部品」「API」「DB」「見た目」のどれかで考える</text>
+</svg>

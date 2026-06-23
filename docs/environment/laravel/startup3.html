@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel 環境構築3</title>
+
+    <!-- この階層専用CSS -->
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+
+    <!-- Copy機能（共通） -->
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+        <h2 class="header"><a href="./startup4.html">シーディングへ</a></h2>
+    </div>
+
+    <h1 class="head">自分で開発環境構築③</h1>
+
+    <section class="code-block">
+        <h2>phpコンテナに入る</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            docker compose exec php bash
+
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Laravelインストール</h2>
+    
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                composer create-project "laravel/laravel"=8.* . --prefer-dist
+            </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>タイムゾーン変更</h2>
+        <p>config/app.phpのtimezoneをAsia/Tokyoに変更する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            'timezone' => 'Asia/Tokyo',
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>.envファイルのDB変更</h2>
+        <p>docker-compose.ymlのMySQL設定に合わせて.envを変更する。</p>
+    
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                DB_CONNECTION=mysql
+                DB_HOST=mysql
+                DB_PORT=3306
+                DB_DATABASE=song_db
+                DB_USERNAME=yorushika
+                DB_PASSWORD=atogaki
+                    </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>コンフィグクリア</h2>
+    
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan config:clear
+                        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>キャッシュクリア</h2>
+    
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                php artisan cache:clear
+                            </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>マイグレーションファイル(複数形)作成</h2>
+        <p>songsテーブルを作る例。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan make:migration create_songs_table
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>テーブルにカラム追加</h2>
+        <p>マイグレーションファイルのupメソッド内にカラムを追加する。</p>
+    
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                $table->id();
+                $table->string('name', 30)->nullable();
+                                    </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>マイグレーション実行</h2>
+        
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan migrate
+                                        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>phpmyadminへ</h2>
+    
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+                http://localhost:8080/
+                                            </code></pre>
+    </section>
+</body>
+
+</html>

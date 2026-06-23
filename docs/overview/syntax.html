@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>コードの記号と読み方</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">全体の流れへ</a></h2>
+        <h2 class="header"><a href="../javascript/index.html">JavaScriptへ</a></h2>
+        <h2 class="header"><a href="../typescript/index.html">TypeScriptへ</a></h2>
+    </div>
+
+    <h1 class="head">コードの記号と読み方</h1>
+    <p class="head-text">
+        初学者がまず見るべき「コードの形」をまとめる。<br>
+        意味を覚える前に、どこからどこまでが1つのまとまりかを見る。
+    </p>
+
+    <section class="code-block">
+        <h2>まず見る記号</h2>
+        <p>
+            コードは英単語だけではなく、記号でまとまりを作る。<br>
+            配列は[]、オブジェクトは{}、関数に渡す値は()、Reactの部品は&lt;Component /&gt;の形で読む。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/code-symbols.svg" alt="配列、オブジェクト、関数、React、TypeScript、Laravelの記号の図">
+            <figcaption>記号はコードのまとまりを見つける目印</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>JavaScriptでよく見る記号</h2>
+        <p>ReactやAPI通信を書く前に、この形を見慣れる。</p>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>['仕事', '勉強']</code>
+                <strong>[] は配列</strong>
+                <span>複数の値を順番に入れる。0番目、1番目のように番号で取る。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{ id: 1, title: 'Todo' }</code>
+                <strong>{} はオブジェクト</strong>
+                <span>名前付きの情報をまとめる。todo.titleのように名前で取る。</span>
+            </div>
+            <div class="syntax-card">
+                <code>createTodo('買い物')</code>
+                <strong>() は渡す値</strong>
+                <span>関数に渡す値を書く場所。ここでは'買い物'を渡している。</span>
+            </div>
+            <div class="syntax-card">
+                <code>() =&gt; { ... }</code>
+                <strong>=&gt; はアロー関数</strong>
+                <span>左で値を受け取り、右で処理を書く。</span>
+            </div>
+            <div class="syntax-card">
+                <code>const title = 'Todo';</code>
+                <strong>; は文の終わり</strong>
+                <span>この1行の処理はここで終わり、という目印。</span>
+            </div>
+            <div class="syntax-card">
+                <code>todo.title</code>
+                <strong>. は中身を取る</strong>
+                <span>todoの中にあるtitleを取る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>引数はどこから来るか</h2>
+        <p>
+            関数の丸括弧に入っている名前は「引数」。<br>
+            引数は勝手に生まれるのではなく、その関数を呼ぶ側が渡している。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">createTodo(title)</span></th>
+                    <td>
+                        自分でcreateTodoを呼ぶ時にtitleを渡す。<br>
+                        例: <span class="file-path">createTodo('買い物')</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">onChange={(e) =&gt; ...}</span></th>
+                    <td>
+                        inputの値が変わった時、Reactがeを渡す。<br>
+                        eの中に、どのinputで何が起きたかが入っている。
+                    </td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">todos.map((todo) =&gt; ...)</span></th>
+                    <td>
+                        mapが配列を1件ずつ取り出してtodoを渡す。<br>
+                        todosが3件なら、この関数も3回呼ばれる。
+                    </td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">setTodos((prevTodos) =&gt; ...)</span></th>
+                    <td>
+                        Reactが直前のtodosをprevTodosとして渡す。<br>
+                        前のstateを元に次のstateを作る時に使う。
+                    </td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">store(StoreTodoRequest $request)</span></th>
+                    <td>
+                        Laravelがリクエスト情報を$requestとして渡す。<br>
+                        フォームリクエストなら、バリデーション済みの値を取り出せる。
+                    </td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">show(Todo $todo)</span></th>
+                    <td>
+                        LaravelがURLのidからTodoを探して$todoとして渡す。<br>
+                        これはルートモデルバインディングという仕組み。
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>Reactでよく見る記号</h2>
+        <p>ReactはHTMLに似た見た目だが、JavaScriptの値を混ぜられる。</p>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>&lt;Header /&gt;</code>
+                <strong>部品を表示する</strong>
+                <span>Headerコンポーネントを画面に出す。</span>
+            </div>
+            <div class="syntax-card">
+                <code>&lt;Button title=&quot;登録&quot; /&gt;</code>
+                <strong>propsを渡す</strong>
+                <span>Buttonへtitleという値を渡している。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{title}</code>
+                <strong>{} はJSを書く場所</strong>
+                <span>JSXの中でJavaScriptの値を表示する。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{todos.map(...)}</code>
+                <strong>一覧表示</strong>
+                <span>配列の中身を1件ずつ画面に出す。</span>
+            </div>
+            <div class="syntax-card">
+                <code>className=&quot;button&quot;</code>
+                <strong>classではなくclassName</strong>
+                <span>ReactでCSS classを付ける時の書き方。</span>
+            </div>
+            <div class="syntax-card">
+                <code>&lt;&gt; ... &lt;/&gt;</code>
+                <strong>空のタグ</strong>
+                <span>余計なHTMLを増やさず、複数の要素をまとめる。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>TypeScriptでよく見る記号</h2>
+        <p>TypeScriptは、JavaScriptの値に「入っていい形」を書く。</p>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>const title: string</code>
+                <strong>: は型を書く</strong>
+                <span>titleには文字列が入る、という意味。</span>
+            </div>
+            <div class="syntax-card">
+                <code>Todo[]</code>
+                <strong>[] は配列型</strong>
+                <span>Todoが複数入った配列という意味。</span>
+            </div>
+            <div class="syntax-card">
+                <code>type Todo = { ... }</code>
+                <strong>型の名前を作る</strong>
+                <span>Todoという形を作り、何度も使えるようにする。</span>
+            </div>
+            <div class="syntax-card">
+                <code>string | null</code>
+                <strong>| は または</strong>
+                <span>文字列かnullのどちらか、という意味。</span>
+            </div>
+            <div class="syntax-card">
+                <code>disabled?: boolean</code>
+                <strong>? は省略できる</strong>
+                <span>disabledは渡しても渡さなくてもよい。</span>
+            </div>
+            <div class="syntax-card">
+                <code>Promise&lt;Todo&gt;</code>
+                <strong>&lt;&gt; は中身の型</strong>
+                <span>非同期処理の結果としてTodoが返る、という意味。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>Laravel/PHPでよく見る記号</h2>
+        <p>LaravelはPHPなので、JavaScriptとは違う記号が出る。</p>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>$todo</code>
+                <strong>$ は変数</strong>
+                <span>PHPの変数は必ず$から始まる。</span>
+            </div>
+            <div class="syntax-card">
+                <code>-&gt;create()</code>
+                <strong>-&gt; は中の処理を呼ぶ</strong>
+                <span>オブジェクトのメソッドやプロパティを呼ぶ。</span>
+            </div>
+            <div class="syntax-card">
+                <code>Route::get()</code>
+                <strong>:: はクラスから呼ぶ</strong>
+                <span>Routeクラスのgetメソッドを呼んでいる。</span>
+            </div>
+            <div class="syntax-card">
+                <code>['title' =&gt; 'required']</code>
+                <strong>=&gt; は対応</strong>
+                <span>titleにはrequiredルールを対応させている。</span>
+            </div>
+            <div class="syntax-card">
+                <code>use App\Models\Todo;</code>
+                <strong>use は読み込み</strong>
+                <span>別の場所にあるクラスをこのファイルで使えるようにする。</span>
+            </div>
+            <div class="syntax-card">
+                <code>public function index()</code>
+                <strong>処理の名前</strong>
+                <span>indexという処理を作っている。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>CSSでよく見る記号</h2>
+        <p>CSSは、どの要素に、どんな見た目を当てるかを書く。</p>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>.button</code>
+                <strong>. はclass</strong>
+                <span>class名がbuttonの要素に当てる。</span>
+            </div>
+            <div class="syntax-card">
+                <code>{ color: red; }</code>
+                <strong>{} の中に見た目を書く</strong>
+                <span>どの見た目を変えるかをまとめる。</span>
+            </div>
+            <div class="syntax-card">
+                <code>color: red;</code>
+                <strong>: は設定、; は終わり</strong>
+                <span>colorにredを設定して、この行を終える。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

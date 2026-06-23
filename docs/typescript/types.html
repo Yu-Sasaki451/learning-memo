@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TypeScript よく使う型</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">TypeScript一覧</a></h2>
+        <h2 class="header"><a href="./basic.html">基本へ</a></h2>
+        <h2 class="header"><a href="./narrowing.html">型の絞り込みへ</a></h2>
+    </div>
+
+    <h1 class="head">TypeScript よく使う型</h1>
+    <p class="head-text">
+        string、number、boolean、配列、オブジェクト、type、interface、unionを整理する。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            Everyday Typesでは、JavaScriptで日常的に使う値に型を付ける方法が整理されている。<br>
+            まずは基本型、配列、オブジェクト、unionを読めれば十分。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html" target="_blank" rel="noreferrer">TypeScript公式 Everyday Types</a></li>
+            <li><a href="https://www.typescriptlang.org/docs/handbook/2/objects.html" target="_blank" rel="noreferrer">TypeScript公式 Object Types</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>型の全体像</h2>
+        <p>
+            型は「この値には何が入るか」を表す説明書。<br>
+            配列なら中身の型、オブジェクトならプロパティの名前と型を見る。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/ts-types.svg" alt="基本型、配列、オブジェクトの型の見方">
+            <figcaption>型は値の形を先に決めるもの</figcaption>
+        </figure>
+        <div class="syntax-grid">
+            <div class="syntax-card">
+                <code>const title: string</code>
+                <strong>: の後ろが型</strong>
+                <span>titleには文字列が入る、という意味。</span>
+            </div>
+            <div class="syntax-card">
+                <code>string[]</code>
+                <strong>[] が付くと配列型</strong>
+                <span>文字列が複数入る配列。</span>
+            </div>
+            <div class="syntax-card">
+                <code>type Todo = { ... }</code>
+                <strong>{} の中に形を書く</strong>
+                <span>Todoが持つid、title、isDoneを書く。</span>
+            </div>
+            <div class="syntax-card">
+                <code>title?: string</code>
+                <strong>? は省略できる</strong>
+                <span>titleがあってもなくてもよい、という意味。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>基本型</h2>
+        <p>文字列、数値、true/falseを明示する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const title: string = 'Todo';
+            const count: number = 3;
+            const isDone: boolean = false;
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>string</code></strong>
+                <span>文字列。例: 'Todo'、'太郎'。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>number</code></strong>
+                <span>数値。例: 3、1000。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>boolean</code></strong>
+                <span>trueかfalse。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>配列の型</h2>
+        <p>
+            TypeScriptでは、配列の値は[]で囲み、配列の型も[]で表す。<br>
+            配列は、中に何が入る配列なのかを書く。<br>
+            string[]は文字列の配列、number[]は数値の配列。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const categories: string[] = ['仕事', '勉強'];
+            const scores: number[] = [80, 90, 100];
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>string[]</code></strong>
+                <span>文字列だけが入る配列。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>number[]</code></strong>
+                <span>数値だけが入る配列。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>typeでオブジェクトの形を作る</h2>
+        <p>
+            オブジェクトの型は{}で囲って、どんな名前の値を持つかを書く。<br>
+            Todoの形を先にtypeで作っておく。<br>
+            同じ形を何度も使えるので、APIレスポンスやReactのstateで便利。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            type Todo = {
+                id: number;
+                title: string;
+                isDone: boolean;
+            };
+
+            const todo: Todo = {
+                id: 1,
+                title: 'TypeScriptを勉強する',
+                isDone: false,
+            };
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>type Todo = { ... };</code></strong>
+                <span>Todoという名前で、オブジェクトの形を作っている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>id: number;</code></strong>
+                <span>idには数値が入る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>const todo: Todo</code></strong>
+                <span>todoにはTodo型の形に合う値だけ入れられる。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>interfaceでpropsの形を作る</h2>
+        <p>
+            interfaceもオブジェクトの形を表す。<br>
+            Reactのpropsではinterfaceを使う例も多い。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            interface ButtonProps {
+                title: string;
+                disabled: boolean;
+            }
+
+            const buttonProps: ButtonProps = {
+                title: '登録',
+                disabled: false,
+            };
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>interface ButtonProps</code></strong>
+                <span>ButtonPropsという名前でpropsの形を作っている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>disabled: boolean;</code></strong>
+                <span>disabledにはtrueかfalseだけ入る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>union型</h2>
+        <p>
+            | は「または」という意味。<br>
+            statusには、決めた4つの文字列だけ入れられる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            type Status = 'idle' | 'loading' | 'success' | 'error';
+
+            const status: Status = 'loading';
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>|</code></strong>
+                <span>「または」という意味。複数の候補から選べる型にする。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>Status</code></strong>
+                <span>API通信の状態や画面状態を安全に管理する時に便利。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

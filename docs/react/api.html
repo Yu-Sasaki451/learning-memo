@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>React API通信</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=6">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">React一覧</a></h2>
+        <h2 class="header"><a href="../laravel/api/rest.html">Laravel API作成へ</a></h2>
+        <h2 class="header"><a href="./state.html">状態管理へ</a></h2>
+    </div>
+
+    <h1 class="head">React API通信</h1>
+    <p class="head-text">
+        ReactからLaravel APIを呼ぶ基本。<br>
+        説明文とコピー用コードを分けて整理する。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            React公式では、手動でデータ取得する場合はuseEffectを使えるが、クリーンアップで古い通信結果を無視する考え方が大事。<br>
+            React Routerを使う場合は、loaderやclientLoaderでルート単位のデータ取得もできる。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://react.dev/reference/react/useEffect" target="_blank" rel="noreferrer">React公式 useEffect</a></li>
+            <li><a href="https://react.dev/learn/synchronizing-with-effects" target="_blank" rel="noreferrer">React公式 Synchronizing with Effects</a></li>
+            <li><a href="https://reactrouter.com/start/declarative/routing" target="_blank" rel="noreferrer">React Router公式 Routing</a></li>
+            <li><a href="https://reactrouter.com/start/framework/data-loading" target="_blank" rel="noreferrer">React Router公式 Data Loading</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>API用フォルダを作成</h2>
+        <p>API通信の処理はページに直接書きすぎず、apiフォルダに分ける。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            mkdir -p resources/js/api
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Todo API用の関数を作成</h2>
+        <p>
+            resources/js/api/todoApi.jsを書く。<br>
+            Laravel API Resourceの返却は基本的にdataの中に入るので、画面側ではresponse.dataを見る。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            export async function getTodos() {
+                const response = await fetch('/api/todos', {
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Todoの取得に失敗しました');
+                }
+
+                return response.json();
+            }
+
+            export async function createTodo(title) {
+                const response = await fetch('/api/todos', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                    }),
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message);
+                }
+
+                return response.json();
+            }
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>画面でAPIを呼ぶ</h2>
+        <p>
+            resources/js/pages/Index.jsxを書く。<br>
+            useEffectで初回表示時に一覧を取得し、フォーム送信で登録する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            import { useEffect, useState } from 'react';
+            import { createTodo, getTodos } from '../api/todoApi';
+            import '../../css/pages/Index.css';
+
+            const Index = () =&gt; {
+                const [todos, setTodos] = useState([]);
+                const [title, setTitle] = useState('');
+                const [isLoading, setIsLoading] = useState(true);
+                const [errorMessage, setErrorMessage] = useState('');
+
+                useEffect(() =&gt; {
+                    let ignore = false;
+
+                    async function loadTodos() {
+                        try {
+                            const response = await getTodos();
+
+                            if (!ignore) {
+                                setTodos(response.data);
+                            }
+                        } catch (error) {
+                            if (!ignore) {
+                                setErrorMessage(error.message);
+                            }
+                        } finally {
+                            if (!ignore) {
+                                setIsLoading(false);
+                            }
+                        }
+                    }
+
+                    loadTodos();
+
+                    return () =&gt; {
+                        ignore = true;
+                    };
+                }, []);
+
+                const handleSubmit = async (e) =&gt; {
+                    e.preventDefault();
+
+                    if (title.trim() === '') {
+                        setErrorMessage('Todoを入力してください');
+                        return;
+                    }
+
+                    try {
+                        const response = await createTodo(title);
+
+                        setTodos([response.data, ...todos]);
+                        setTitle('');
+                        setErrorMessage('');
+                    } catch (error) {
+                        setErrorMessage(error.message);
+                    }
+                };
+
+                return (
+                    &lt;main className=&quot;indexPage&quot;&gt;
+                        &lt;h1&gt;Todo&lt;/h1&gt;
+
+                        &lt;form onSubmit={handleSubmit}&gt;
+                            &lt;input
+                                type=&quot;text&quot;
+                                value={title}
+                                onChange={(e) =&gt; setTitle(e.target.value)}
+                                placeholder=&quot;Todoを入力&quot;
+                            /&gt;
+                            &lt;button type=&quot;submit&quot;&gt;登録&lt;/button&gt;
+                        &lt;/form&gt;
+
+                        {errorMessage !== '' ? &lt;p&gt;{errorMessage}&lt;/p&gt; : null}
+                        {isLoading ? &lt;p&gt;読み込み中&lt;/p&gt; : null}
+
+                        &lt;ul&gt;
+                            {todos.map((todo) =&gt; (
+                                &lt;li key={todo.id}&gt;{todo.title}&lt;/li&gt;
+                            ))}
+                        &lt;/ul&gt;
+                    &lt;/main&gt;
+                );
+            };
+
+            export default Index;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>このコードの注意点</h2>
+        <p>
+            !ignoreは、ignoreがfalseのときだけ処理するという意味。<br>
+            useEffectのreturnでignoreをtrueにして、古いAPI通信の結果が後から画面に反映されるのを防ぐ。<br>
+            setTodos([response.data, ...todos]) の ...todos は、既存のtodosを新しい配列へ展開する書き方。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>削除APIも使う場合</h2>
+        <p>削除もapiファイルに関数として分ける。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            export async function deleteTodo(id) {
+                const response = await fetch(`/api/todos/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Todoの削除に失敗しました');
+                }
+            }
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>React Routerのデータ取得</h2>
+        <p>
+            React Routerを本格的に使う場合、ルート単位でデータ取得をまとめる方法もある。<br>
+            まずはuseEffectで理解して、次にloaderやclientLoaderを調べるとよい。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            export async function clientLoader() {
+                const response = await fetch('/api/todos');
+                const todos = await response.json();
+
+                return todos;
+            }
+        </code></pre>
+    </section>
+</body>
+
+</html>

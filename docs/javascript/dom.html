@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>JavaScript DOM操作</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">JavaScript一覧</a></h2>
+        <h2 class="header"><a href="./array-object.html">配列とオブジェクトへ</a></h2>
+        <h2 class="header"><a href="./async-api.html">非同期とAPI通信へ</a></h2>
+    </div>
+
+    <h1 class="head">JavaScript DOM操作</h1>
+    <p class="head-text">
+        HTMLの要素を取得して、クリックや入力に反応させる基本。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            querySelectorはCSSセレクタに一致する最初の要素を返す。見つからない場合はnullになる。<br>
+            addEventListenerは、クリックなどのイベントに処理を登録する。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector" target="_blank" rel="noreferrer">MDN querySelector</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener" target="_blank" rel="noreferrer">MDN addEventListener</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset" target="_blank" rel="noreferrer">MDN dataset</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/classList" target="_blank" rel="noreferrer">MDN classList</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>DOM操作の読み方</h2>
+        <p>
+            DOM操作は、HTML要素を取得して、イベントを登録して、画面を変更する流れ。<br>
+            コードを読む時は「どの要素を取ったか」「いつ動くか」「何を変えるか」を見る。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/js-dom.svg" alt="HTML要素を取得し、イベントを登録し、表示を変える流れ">
+            <figcaption>DOM操作は「取る、待つ、変える」の順番で読む</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>イベントのeはどこから来るか</h2>
+        <p>
+            addEventListenerに渡した関数は、クリックや入力などのイベントが起きた時にブラウザが呼ぶ。<br>
+            その時、ブラウザがイベント情報を引数として渡す。よく e という名前で受け取る。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const button = document.querySelector('.js-button');
+
+            button.addEventListener('click', (e) =&gt; {
+                console.log(e.target);
+            });
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>(e) =&gt; { ... }</code></strong>
+                <span>eは自分で呼んで渡しているのではなく、ブラウザがイベント情報として渡してくれる。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>e.target</code></strong>
+                <span>イベントが起きたHTML要素。ここではクリックされたボタン。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong>なぜこの書き方か</strong>
+                <span>どの要素で何が起きたかを、イベント処理の中で使えるようにするため。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>HTMLを用意する</h2>
+        <p>
+            JavaScriptから触りたい要素には、classやidを付ける。<br>
+            ここではボタンと表示エリアを用意する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            &lt;button class=&quot;js-button&quot; type=&quot;button&quot;&gt;クリック&lt;/button&gt;
+            &lt;p class=&quot;js-message&quot;&gt;ここに表示されます&lt;/p&gt;
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>要素を取得する</h2>
+        <p>
+            document.querySelectorでHTML要素を取得する。<br>
+            .js-buttonは、class名がjs-buttonの要素という意味。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const button = document.querySelector('.js-button');
+            const message = document.querySelector('.js-message');
+
+            console.log(button);
+            console.log(message);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>document</code></strong>
+                <span>今開いているHTML全体を表す。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>querySelector('.js-button')</code></strong>
+                <span>class名がjs-buttonの要素を1つ取得する。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>const button</code></strong>
+                <span>取得したボタン要素にbuttonという名前を付けている。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>クリックに反応させる</h2>
+        <p>
+            addEventListenerで、クリックされた時の処理を登録する。<br>
+            textContentは、要素の中の文字を変更する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const button = document.querySelector('.js-button');
+            const message = document.querySelector('.js-message');
+
+            button.addEventListener('click', () =&gt; {
+                message.textContent = 'クリックされました';
+            });
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>addEventListener('click', ...)</code></strong>
+                <span>クリックされた時に動く処理を登録する。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>() =&gt; { ... }</code></strong>
+                <span>クリックされた時に実行する関数。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>message.textContent</code></strong>
+                <span>message要素の中の文字を変更する。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>入力値を取得する</h2>
+        <p>
+            inputのvalueで入力された文字を取得する。<br>
+            formのsubmitでは、e.preventDefault()で画面の再読み込みを止める。
+        </p>
+
+        <div class="copy-unit">
+            <p class="code-caption">HTML</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                &lt;form class=&quot;js-form&quot;&gt;
+                    &lt;input class=&quot;js-input&quot; type=&quot;text&quot;&gt;
+                    &lt;button type=&quot;submit&quot;&gt;送信&lt;/button&gt;
+                &lt;/form&gt;
+                &lt;p class=&quot;js-result&quot;&gt;&lt;/p&gt;
+            </code></pre>
+        </div>
+
+        <div class="copy-unit">
+            <p class="code-caption">JavaScript</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                const form = document.querySelector('.js-form');
+                const input = document.querySelector('.js-input');
+                const result = document.querySelector('.js-result');
+
+                form.addEventListener('submit', (e) =&gt; {
+                    e.preventDefault();
+
+                    result.textContent = input.value;
+                    input.value = '';
+                });
+            </code></pre>
+        </div>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>submit</code></strong>
+                <span>フォームが送信された時に発生するイベント。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>e.preventDefault()</code></strong>
+                <span>フォーム送信時の画面再読み込みを止める。eはブラウザが渡したイベント情報。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>input.value</code></strong>
+                <span>入力欄に入っている文字を取得する。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>classを付け外しする</h2>
+        <p>
+            classList.addでclassを追加、classList.removeで削除、classList.toggleで付け外しを切り替える。<br>
+            メニューの開閉やエラー表示でよく使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const button = document.querySelector('.js-button');
+            const box = document.querySelector('.js-box');
+
+            button.addEventListener('click', () =&gt; {
+                box.classList.toggle('is-active');
+            });
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>classList</code></strong>
+                <span>HTML要素についているclassを操作するためのもの。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>toggle('is-active')</code></strong>
+                <span>is-activeがなければ追加し、あれば外す。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>data属性を使う</h2>
+        <p>
+            data-idのような属性は、JavaScriptからdatasetで読める。<br>
+            削除ボタンにTodoのidを持たせる時に便利。
+        </p>
+
+        <div class="copy-unit">
+            <p class="code-caption">HTML</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                &lt;button class=&quot;js-delete&quot; type=&quot;button&quot; data-id=&quot;10&quot;&gt;
+                    削除
+                &lt;/button&gt;
+            </code></pre>
+        </div>
+
+        <div class="copy-unit">
+            <p class="code-caption">JavaScript</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                const deleteButton = document.querySelector('.js-delete');
+
+                deleteButton.addEventListener('click', () =&gt; {
+                    const id = deleteButton.dataset.id;
+
+                    console.log(id);
+                });
+            </code></pre>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>要素がない時のエラーを防ぐ</h2>
+        <p>
+            querySelectorは、見つからない時にnullを返す。<br>
+            nullのままaddEventListenerを呼ぶとエラーになるので、先に確認する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const button = document.querySelector('.js-button');
+
+            if (button !== null) {
+                button.addEventListener('click', () =&gt; {
+                    console.log('クリックされました');
+                });
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>button !== null</code></strong>
+                <span>buttonが見つかっているか確認している。!==は「同じではない」という意味。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong>なぜ必要か</strong>
+                <span>要素がないのにaddEventListenerを書くと、そこでJavaScriptが止まるため。</span>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

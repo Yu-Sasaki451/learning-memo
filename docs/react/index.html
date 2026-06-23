@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React学習メモ</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+</head>
+<body>
+    <div class="header__inner">
+        <h1 class="header">
+            <a href="../index.html">memo</a>
+        </h1>
+    </div>
+    <div class="index-content">
+        <h1 class="head">React</h1>
+        <section class="code-block">
+            <h2>Reactのコードを見る前に</h2>
+            <p>
+                ReactはHTMLっぽく見えるが、JavaScriptの値や関数を混ぜて書く。<br>
+                まずはタグ、props、{}、mapの形を見る。
+            </p>
+            <div class="syntax-grid">
+                <div class="syntax-card">
+                    <code>&lt;Header /&gt;</code>
+                    <strong>部品を表示</strong>
+                    <span>Headerコンポーネントを画面に出す。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>&lt;Button title=&quot;登録&quot; /&gt;</code>
+                    <strong>propsを渡す</strong>
+                    <span>Buttonにtitleを渡す。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>{title}</code>
+                    <strong>{} はJSを書く場所</strong>
+                    <span>JSXの中でJavaScriptの値を使う。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>{todos.map(...)}</code>
+                    <strong>配列を一覧表示</strong>
+                    <span>todos配列を1件ずつ画面に出す。</span>
+                </div>
+            </div>
+            <p class="next-action">
+                <strong>最初に見る:</strong>
+                <a href="../overview/syntax.html">コードの記号</a>
+            </p>
+        </section>
+        <section class="code-block">
+            <h2>Reactで書く場所</h2>
+            <p>
+                Reactは、画面、URL、共通部品、API通信、CSSを書く場所を分ける。<br>
+                ページに全部書かず、役割ごとにファイルを分けると読みやすい。
+            </p>
+            <table class="map-table">
+                <tbody>
+                    <tr>
+                        <th>最初に読み込む</th>
+                        <td><span class="file-path">resources/js/app.jsx</span></td>
+                    </tr>
+                    <tr>
+                        <th>React内のURL</th>
+                        <td><span class="file-path">resources/js/routes</span></td>
+                    </tr>
+                    <tr>
+                        <th>1ページ分の画面</th>
+                        <td><span class="file-path">resources/js/pages</span></td>
+                    </tr>
+                    <tr>
+                        <th>共通部品</th>
+                        <td><span class="file-path">resources/js/components</span></td>
+                    </tr>
+                    <tr>
+                        <th>API通信</th>
+                        <td><span class="file-path">resources/js/api</span></td>
+                    </tr>
+                    <tr>
+                        <th>見た目</th>
+                        <td><span class="file-path">resources/css</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="next-action">
+                <strong>最初に見る:</strong>
+                <a href="../overview/index.html">全体の流れ</a>
+            </p>
+        </section>
+        <nav>
+            <ul class="index-nav">
+                <li class="nav__item">
+                    <a class="nav__link" href="./routes.html">ルーティング</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./components.html">コンポーネント作成</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./api.html">API通信</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./state.html">状態管理</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>JavaScript 非同期とAPI通信</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=7">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">JavaScript一覧</a></h2>
+        <h2 class="header"><a href="./dom.html">DOM操作へ</a></h2>
+        <h2 class="header"><a href="./react-syntax.html">Reactでよく見る書き方へ</a></h2>
+    </div>
+
+    <h1 class="head">JavaScript 非同期とAPI通信</h1>
+    <p class="head-text">
+        API通信、保存、取得で必要になるasync、await、fetchの基本。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            Fetch APIはHTTPリクエストを送り、Promiseとして結果を返す。<br>
+            async functionの中ではawaitを使って、非同期処理の完了を待てる。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch" target="_blank" rel="noreferrer">MDN Using the Fetch API</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noreferrer">MDN Promise</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function" target="_blank" rel="noreferrer">MDN async function</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await" target="_blank" rel="noreferrer">MDN await</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>API通信の流れ</h2>
+        <p>
+            fetchは、ブラウザからAPIへリクエストを送る処理。<br>
+            Laravel APIから返ってきたJSONを受け取り、画面表示やstate更新に使う。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/js-async-api.svg" alt="ブラウザからAPIへリクエストし、JSONを受け取って画面に反映する流れ">
+            <figcaption>API通信は「送る、待つ、受け取る、表示する」の順番で読む</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>非同期処理の考え方</h2>
+        <p>
+            API通信はすぐに結果が返るとは限らない。<br>
+            asyncとawaitを使うと、結果を待ってから次の処理を書ける。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            async function loadMessage() {
+                const message = await Promise.resolve('読み込み完了');
+
+                console.log(message);
+            }
+
+            loadMessage();
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>async function</code></strong>
+                <span>この関数の中でawaitを使えるようにする。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>await</code></strong>
+                <span>右側の処理が終わるまで待って、その結果を受け取る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>Promise.resolve(...)</code></strong>
+                <span>非同期処理の結果が返ってくる例として書いている。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>GETでAPIから取得する</h2>
+        <p>
+            fetchでURLにアクセスする。<br>
+            response.okがfalseなら、通信はできてもHTTPステータスとして失敗している。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            async function getTodos() {
+                const response = await fetch('/api/todos', {
+                    headers: {
+                        Accept: 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Todoの取得に失敗しました');
+                }
+
+                const todos = await response.json();
+
+                return todos;
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>fetch('/api/todos')</code></strong>
+                <span>Laravelの/api/todosへHTTPリクエストを送る。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>Accept: 'application/json'</code></strong>
+                <span>APIに「JSONで返してください」と伝える。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>response.ok</code></strong>
+                <span>HTTPステータスが成功扱いかどうかを確認する。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>response.json()</code></strong>
+                <span>返ってきたJSONをJavaScriptで使える形に変換する。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>POSTでAPIに登録する</h2>
+        <p>
+            methodにPOSTを指定し、bodyに送信データを入れる。<br>
+            JSON.stringifyは、JavaScriptのオブジェクトをJSON文字列に変換する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            async function createTodo(title) {
+                const response = await fetch('/api/todos', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Todoの登録に失敗しました');
+                }
+
+                const todo = await response.json();
+
+                return todo;
+            }
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>method: 'POST'</code></strong>
+                <span>新しく登録するためのHTTPメソッドを指定している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>Content-Type</code></strong>
+                <span>送るデータがJSON形式だとAPIへ伝える。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>JSON.stringify(...)</code></strong>
+                <span>JavaScriptのオブジェクトをJSON文字列に変換して送る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>try catchでエラーを受け取る</h2>
+        <p>
+            tryの中で失敗した処理は、catchで受け取れる。<br>
+            API通信のエラーメッセージを画面に出す時によく使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            async function loadTodos() {
+                try {
+                    const todos = await getTodos();
+
+                    console.log(todos);
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+
+            loadTodos();
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>try</code></strong>
+                <span>失敗する可能性がある処理を書く場所。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>catch (error)</code></strong>
+                <span>tryの中でエラーが起きた時に、そのエラーを受け取る場所。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>error.message</code></strong>
+                <span>エラー内容のメッセージを取り出す。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>フォーム送信とAPI登録をつなげる</h2>
+        <p>
+            formのsubmitで入力値を取り、createTodoに渡す。<br>
+            awaitを使うので、イベント内の関数にもasyncを付ける。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const form = document.querySelector('.js-form');
+            const input = document.querySelector('.js-input');
+            const error = document.querySelector('.js-error');
+
+            form.addEventListener('submit', async (e) =&gt; {
+                e.preventDefault();
+
+                try {
+                    const todo = await createTodo(input.value);
+
+                    console.log(todo);
+                    input.value = '';
+                    error.textContent = '';
+                } catch (err) {
+                    error.textContent = err.message;
+                }
+            });
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>async (e) =&gt;</code></strong>
+                <span>イベント処理の中でawaitを使うため、asyncを付けている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>await createTodo(input.value)</code></strong>
+                <span>入力値をAPIへ送り、登録結果が返るまで待つ。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>catch (err)</code></strong>
+                <span>API登録に失敗した時、画面に出すエラーメッセージを受け取る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>Laravel APIとつなぐ時の基本ヘッダー</h2>
+        <p>
+            Acceptは、JSONで返してほしいと伝える。<br>
+            Content-Typeは、送るデータがJSONであると伝える。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const headers = {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            };
+        </code></pre>
+    </section>
+</body>
+
+</html>

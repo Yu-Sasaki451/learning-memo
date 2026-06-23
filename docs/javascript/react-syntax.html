@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>JavaScript Reactでよく見る書き方</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=7">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../index.html">memo</a></h2>
+        <h2 class="header"><a href="./index.html">JavaScript一覧</a></h2>
+        <h2 class="header"><a href="./async-api.html">非同期とAPI通信へ</a></h2>
+        <h2 class="header"><a href="../react/index.html">React一覧</a></h2>
+    </div>
+
+    <h1 class="head">JavaScript Reactでよく見る書き方</h1>
+    <p class="head-text">
+        Reactのコードを読んで怖くならないためのJavaScript文法。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            モジュールはexportで外に出し、importで別ファイルから読み込む。<br>
+            分割代入は、配列やオブジェクトから必要な値を取り出すための書き方。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules" target="_blank" rel="noreferrer">MDN JavaScript modules</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import" target="_blank" rel="noreferrer">MDN import</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export" target="_blank" rel="noreferrer">MDN export</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring" target="_blank" rel="noreferrer">MDN Destructuring</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>Reactのコードを読む順番</h2>
+        <p>
+            Reactでは、ファイルを分けて部品を作り、別ファイルで読み込んで使う。<br>
+            コードを読む時は「どのファイルから来た部品か」「親から何を受け取るか」を見る。
+        </p>
+        <figure class="visual-guide">
+            <img src="../assets/diagrams/js-react-syntax.svg" alt="Reactの部品をexportし、importしてpropsで値を渡す流れ">
+            <figcaption>ReactのJavaScriptは、部品をつなぐための書き方が多い</figcaption>
+        </figure>
+    </section>
+
+    <section class="code-block">
+        <h2>importとexport</h2>
+        <p>
+            exportは別ファイルで使えるように外へ出す。<br>
+            importは別ファイルから読み込む。
+        </p>
+
+        <div class="copy-unit">
+            <p class="code-caption">routes.js</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                export const ROUTES = {
+                    HOME: '/',
+                    CATEGORY: '/category',
+                };
+            </code></pre>
+        </div>
+
+        <div class="copy-unit">
+            <p class="code-caption">AppRoutes.jsx</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                import { ROUTES } from './routes';
+
+                console.log(ROUTES.HOME);
+            </code></pre>
+        </div>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>export const ROUTES</code></strong>
+                <span>ROUTESという定数を、別ファイルから使えるようにしている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>import { ROUTES }</code></strong>
+                <span>名前付きexportされたROUTESを読み込んでいる。波括弧が必要。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>'./routes'</code></strong>
+                <span>同じ階層にあるroutesファイルから読み込むという意味。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>default export</h2>
+        <p>
+            default exportは、そのファイルの代表として1つだけ外に出す書き方。<br>
+            Reactコンポーネントでよく使う。
+        </p>
+
+        <div class="copy-unit">
+            <p class="code-caption">Button.jsx</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                const Button = () =&gt; {
+                    return &lt;button type=&quot;button&quot;&gt;登録&lt;/button&gt;;
+                };
+
+                export default Button;
+            </code></pre>
+        </div>
+
+        <div class="copy-unit">
+            <p class="code-caption">Index.jsx</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                import Button from '../components/Button';
+
+                console.log(Button);
+            </code></pre>
+        </div>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>export default Button</code></strong>
+                <span>Buttonをこのファイルの代表として外に出している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>import Button</code></strong>
+                <span>default exportを読み込む時は、波括弧なしで読み込む。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>分割代入</h2>
+        <p>
+            分割代入は、配列やオブジェクトから必要な値だけを取り出す書き方。<br>
+            useStateやpropsでよく見る。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const user = {
+                name: '太郎',
+                email: 'taro@example.com',
+            };
+
+            const { name, email } = user;
+
+            console.log(name);
+            console.log(email);
+
+            const colors = ['red', 'blue'];
+            const [mainColor, subColor] = colors;
+
+            console.log(mainColor);
+            console.log(subColor);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>const { name, email } = user;</code></strong>
+                <span>user.nameとuser.emailを取り出して、nameとemailという変数にしている。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>const [mainColor, subColor] = colors;</code></strong>
+                <span>配列の0番目をmainColor、1番目をsubColorとして取り出している。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>propsの分割代入</h2>
+        <p>
+            Reactでは、propsを受け取る時に分割代入をよく使う。<br>
+            { title, onClick } は、props.titleとprops.onClickを取り出している。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const TodoButton = ({ title, onClick }) =&gt; {
+                return (
+                    &lt;button type=&quot;button&quot; onClick={onClick}&gt;
+                        {title}
+                    &lt;/button&gt;
+                );
+            };
+
+            export default TodoButton;
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>({ title, onClick })</code></strong>
+                <span>親コンポーネントから渡されたpropsの中から、titleとonClickだけを取り出している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>onClick={onClick}</code></strong>
+                <span>受け取ったonClick関数を、buttonのクリック処理として渡している。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>{title}</code></strong>
+                <span>JavaScriptの値をJSXの中に表示している。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>三項演算子</h2>
+        <p>
+            三項演算子は、条件によって表示を切り替える書き方。<br>
+            条件 ? trueの時 : falseの時、という順番で読む。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const isDone = true;
+
+            const label = isDone ? '完了' : '未完了';
+
+            console.log(label);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>isDone ?</code></strong>
+                <span>isDoneがtrueかどうかを確認する。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>'完了' : '未完了'</code></strong>
+                <span>trueなら'完了'、falseなら'未完了'を使う。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>&amp;&amp;で条件表示</h2>
+        <p>
+            &amp;&amp;は、左がtrueの時だけ右を使うという意味。<br>
+            Reactでは、条件を満たす時だけ要素を表示したい場合によく使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const errorMessage = '入力してください';
+
+            const view = (
+                &lt;&gt;
+                    {errorMessage !== '' &amp;&amp; &lt;p&gt;{errorMessage}&lt;/p&gt;}
+                &lt;/&gt;
+            );
+
+            console.log(view);
+        </code></pre>
+
+        <div class="code-guide">
+            <div class="code-guide__item">
+                <strong><code>errorMessage !== ''</code></strong>
+                <span>エラーメッセージが空ではないか確認している。!==は「同じではない」という意味。</span>
+            </div>
+            <div class="code-guide__item">
+                <strong><code>&amp;&amp;</code></strong>
+                <span>左側がtrueの時だけ、右側のpタグを表示する。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>||で代わりの値を入れる</h2>
+        <p>
+            ||は、左がfalseっぽい値なら右を使うという意味。<br>
+            空文字、0、null、undefined、falseなどはfalseっぽい値として扱われる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const userName = '';
+
+            const displayName = userName || 'ゲスト';
+
+            console.log(displayName);
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>オプショナルチェーン</h2>
+        <p>
+            ?. は、左側がnullやundefinedならそこで止める書き方。<br>
+            APIのデータがまだ読み込まれていない時のエラーを防ぎやすい。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            const response = {
+                data: {
+                    user: {
+                        name: '太郎',
+                    },
+                },
+            };
+
+            console.log(response.data?.user?.name);
+        </code></pre>
+    </section>
+</body>
+
+</html>

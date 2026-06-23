@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel リレーション</title>
+
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+    </div>
+
+    <h1 class="head">リレーション</h1>
+
+    <section class="code-block">
+        <h2>1:1,1:N,N:Nのどれなのかをまず考える</h2>
+        <p>
+            1:1は、ユーザーとプロフィールのように片方に対して1つだけ紐づく関係。<br>
+            1:Nは、カテゴリーとTodoのように1つの親に複数の子が紐づく関係。<br>
+            N:Nは、ギターと曲のように両方が複数ずつ紐づく関係。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>外部キー</h2>
+        <p>
+            1:NではN側が外部キーを持つ。<br>
+            1:1では、単体で成立しにくい従属側が外部キーを持つことが多い。<br>
+            N:Nでは元の2つのテーブル同士は外部キーを持たず、中間テーブルに両方の外部キーを持たせる。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>1:Nのリレーション</h2>
+        <p>カテゴリーが1側、TodoがN側の例。外部キーはN側のtodosテーブルに追加する。</p>
+
+        <p class="code-caption">マイグレーション</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>$table->foreignId('category_id')->constrained()->cascadeOnDelete();</code></pre>
+
+        <p class="code-caption">Categoryモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function todos()
+{
+    return $this->hasMany(Todo::class);
+}</code></pre>
+
+        <p class="code-caption">Todoモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function category()
+{
+    return $this->belongsTo(Category::class);
+}</code></pre>
+
+        <p class="code-caption">コントローラのuse</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>use Illuminate\Http\Request;
+use App\Models\Todo;
+use App\Models\Category;
+use App\Http\Requests\TodoRequest;</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>1:1のリレーション</h2>
+        <p>ユーザーとプロフィールの例。従属するprofilesテーブルにuser_idを持たせる。</p>
+
+        <p class="code-caption">マイグレーション</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>$table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();</code></pre>
+
+        <p class="code-caption">Userモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function profile()
+{
+    return $this->hasOne(Profile::class);
+}</code></pre>
+
+        <p class="code-caption">Profileモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function user()
+{
+    return $this->belongsTo(User::class);
+}</code></pre>
+
+        <p class="code-caption">コントローラのuse</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Profile;
+use App\Http\Requests\ProfileRequest;</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>N:Nのリレーション</h2>
+        <p>PostとTagの例。中間テーブルに両方の外部キーを持たせる。</p>
+
+        <p class="code-caption">中間テーブルのマイグレーション</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Schema::create('post_tag', function (Blueprint $table) {
+    $table->foreignId('post_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
+    $table->primary(['post_id', 'tag_id']);
+});</code></pre>
+
+        <p class="code-caption">Postモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function tags()
+{
+    return $this->belongsToMany(Tag::class);
+}</code></pre>
+
+        <p class="code-caption">Tagモデル</p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function posts()
+{
+    return $this->belongsToMany(Post::class);
+}</code></pre>
+    </section>
+</body>
+
+</html>

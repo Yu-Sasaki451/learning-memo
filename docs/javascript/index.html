@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>JavaScript学習メモ</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="../style.css?v=9">
+</head>
+
+<body>
+    <main class="main">
+        <div class="header__inner">
+            <h1 class="header">
+                <a href="../index.html">memo</a>
+            </h1>
+        </div>
+
+        <h1 class="head">JavaScript</h1>
+        <p class="head-text">
+            JavaScriptを怖くしないために、文法、配列、画面操作、API通信、Reactで出る書き方を分けて整理する。
+        </p>
+
+        <section class="code-block">
+            <h2>先に覚える順番</h2>
+            <p>
+                JavaScriptは全部を一気に覚えようとすると難しく見える。<br>
+                まずは、コードを上から読んだ時に「何を用意して、何を処理して、どこに反映するのか」を追えるようにする。
+            </p>
+            <div class="syntax-grid">
+                <div class="syntax-card">
+                    <code>['仕事', '勉強']</code>
+                    <strong>[] は配列</strong>
+                    <span>複数の値を順番に入れる。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>{ id: 1, title: 'Todo' }</code>
+                    <strong>{} はオブジェクト</strong>
+                    <span>名前付きの情報をまとめる。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>createTodo('買い物')</code>
+                    <strong>() は渡す値</strong>
+                    <span>関数に値を渡す場所。</span>
+                </div>
+                <div class="syntax-card">
+                    <code>() =&gt; { ... }</code>
+                    <strong>=&gt; は関数</strong>
+                    <span>短く関数を書く形。</span>
+                </div>
+            </div>
+            <div class="learning-flow">
+                <div class="learning-flow__item">
+                    <strong>1. 値を用意する</strong>
+                    <span>文字、数字、true/false、配列、オブジェクトを変数に入れる。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>2. 処理をまとめる</strong>
+                    <span>関数にして、同じ処理を何度も使えるようにする。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>3. 画面を動かす</strong>
+                    <span>ボタン、入力欄、表示エリアをJavaScriptから操作する。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>4. APIとつなぐ</strong>
+                    <span>fetch、async、awaitでLaravel APIなどと通信する。</span>
+                </div>
+            </div>
+            <p class="next-action">
+                <strong>このサイト内での役割:</strong>
+                JavaScriptはReactの画面、API通信、ボタン操作を書くための土台。
+                記号が分からない時は <a href="../overview/syntax.html">コードの記号</a>、
+                どこにつながるかは <a href="../overview/index.html">全体の流れ</a> で確認できる。
+            </p>
+        </section>
+
+        <div class="index-content">
+            <nav>
+                <ul class="index-nav">
+                    <li class="nav__item">
+                        <a class="nav__link" href="./basic.html">基礎文法</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./array-object.html">配列とオブジェクト</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./dom.html">DOM操作</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./async-api.html">非同期とAPI通信</a>
+                    </li>
+                    <li class="nav__item">
+                        <a class="nav__link" href="./react-syntax.html">Reactでよく見る書き方</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+</body>
+
+</html>

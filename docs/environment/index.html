@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>環境構築メモ</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=8">
+</head>
+<body>
+    <div class="header__inner">
+        <h1 class="header">
+            <a href="../index.html">memo</a>
+        </h1>
+    </div>
+    <div class="index-content">
+        <h1 class="head">環境構築</h1>
+        <p class="head-text">Docker、Sail、クローン後の起動など、フレームワーク本体とは別の準備メモです。</p>
+        <section class="code-block">
+            <h2>環境構築の後にやること</h2>
+            <p>
+                環境構築は、LaravelとReactを書き始めるための準備。<br>
+                起動できたら、次は全体の流れを見て、どのファイルに何を書くかを確認する。
+            </p>
+            <div class="learning-flow">
+                <div class="learning-flow__item">
+                    <strong>1. Laravelを作る</strong>
+                    <span>SailやDockerでプロジェクトを作る。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>2. Reactを表示する</strong>
+                    <span>Blade、Vite、app.jsxをつなぐ。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>3. 全体の流れを見る</strong>
+                    <span>Laravel、React、API、DBの関係を確認する。</span>
+                </div>
+                <div class="learning-flow__item">
+                    <strong>4. 機能を作る</strong>
+                    <span>DB、API、React画面の順に小さく作る。</span>
+                </div>
+            </div>
+            <p class="next-action">
+                <strong>次に見る:</strong>
+                <a href="../overview/index.html">全体の流れ</a>
+            </p>
+        </section>
+        <nav>
+            <ul class="index-nav">
+                <li class="nav__item">
+                    <a class="nav__link" href="./laravel/startup.html">Laravel向け 自作Docker</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./laravel/startup_clone.html">Laravel向け クローン環境</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./laravel/startup_sail.html">Laravel向け Sail</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

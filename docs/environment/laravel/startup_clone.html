@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel クローン環境構築</title>
+
+    <!-- この階層専用CSS -->
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../style.css?v=5">
+
+    <!-- Copy機能（共通） -->
+    <script src="./script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2><a href="../../index.html">memo</a></h2>
+    </div>
+
+    <h1 class="head">クローンして環境構築</h1>
+
+    <section class="code-block">
+        <h2>まずGitHubでリポジトリ作成</h2>
+        <p>
+            ブラウザでGitHubを開いて、空のリポジトリを作る。<br>
+            README、.gitignore、licenseはこの時点では追加しない。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>プロジェクトを作成したいディレクトリへ</h2>
+        <p>例としてデスクトップに移動する。別の場所に置きたい場合は、cdの後ろのパスだけ変える。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            cd ~/Desktop
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>自分用の値を設定</h2>
+        <p>
+            変数は、ターミナル内で一時的に値を覚える名前。<br>
+            TEMPLATE_REPOSITORY_URLは複製元、OWN_REPOSITORY_URLは自分のGitHubリポジトリのSSH URLに変える。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            PROJECT_NAME="laravel-practice"
+            TEMPLATE_REPOSITORY_URL="git@github.com:your-name/laravel-docker-template.git"
+            OWN_REPOSITORY_URL="git@github.com:your-name/laravel-practice.git"
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>クローン実行</h2>
+        <p>複製元リポジトリを、PROJECT_NAMEで指定した名前のディレクトリとして作る。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            git clone "$TEMPLATE_REPOSITORY_URL" "$PROJECT_NAME"
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>プロジェクトディレクトリに移動</h2>
+        <p>以降のgitコマンドやdocker composeコマンドは、プロジェクトディレクトリ内で実行する。</p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            cd "$PROJECT_NAME"
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>リモートリポジトリ変更</h2>
+        <p>
+            今のままだとただ複製しただけなので権利を変更する<br>
+            自分の作成したリポジトリに紐付け作業をする<br>
+            OWN_REPOSITORY_URLに入れた自分のGitHubリポジトリへ向ける
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            git remote set-url origin "$OWN_REPOSITORY_URL"
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>紐付けできたか確認する</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            git remote -v
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>addしてコミットしてpush</h2>
+        <p>
+            まとめて下記に書くけど1行ずつ実行すること<br>
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            git add .
+            git commit -m "リモートリポジトリ変更"
+            git push origin main
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>ymlを確認してコンテナビルド</h2>
+        <p>
+            一旦ビルドしてみるけど<br>
+            エラーになるようならymlの中身を編集して再ビルド
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            docker compose up -d --build
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>コンポーザーをインストール</h2>
+        <p>
+            割愛するけどphpコンテナに入っておくこと<br>
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            composer install
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>.env複製＆編集</h2>
+        <p>
+            下記のコードで.envを作成する<br>
+            exampleってなってることあるから.envをちゃんと作る<br>
+            作ったらDBのとこをymlのmysqlに沿って編集する
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            cp .env.example .env
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>キーの設定</h2>
+        <p>
+            APP_KEYを作るために必須なので実行する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan key:generate
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>コンフィグクリア</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan config:clear
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>キャッシュクリア</h2>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            php artisan cache:clear
+        </code></pre>
+    </section>
+</body>
+
+</html>

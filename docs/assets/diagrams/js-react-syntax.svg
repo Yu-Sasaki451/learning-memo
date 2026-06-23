@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="330" viewBox="0 0 960 330" role="img" aria-labelledby="title desc">
+  <title id="title">Reactでよく見るJavaScript</title>
+  <desc id="desc">ファイルを分け、importとpropsでReactコンポーネントをつなぐ流れ</desc>
+  <rect width="960" height="330" fill="#f8fafc"/>
+  <g fill="#ffffff" stroke="#9fb3c8" stroke-width="2">
+    <rect x="55" y="92" width="190" height="130" rx="8"/>
+    <rect x="295" y="92" width="170" height="130" rx="8"/>
+    <rect x="515" y="92" width="170" height="130" rx="8"/>
+    <rect x="735" y="92" width="170" height="130" rx="8"/>
+  </g>
+  <g fill="#102a43" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+    <text x="150" y="130" text-anchor="middle" font-size="20" font-weight="800">部品を作る</text>
+    <text x="150" y="165" text-anchor="middle" font-size="15">Button.jsx</text>
+    <text x="380" y="130" text-anchor="middle" font-size="20" font-weight="800">export</text>
+    <text x="380" y="165" text-anchor="middle" font-size="15">外に出す</text>
+    <text x="600" y="130" text-anchor="middle" font-size="20" font-weight="800">import</text>
+    <text x="600" y="165" text-anchor="middle" font-size="15">読み込む</text>
+    <text x="820" y="130" text-anchor="middle" font-size="20" font-weight="800">props</text>
+    <text x="820" y="165" text-anchor="middle" font-size="15">値を渡す</text>
+  </g>
+  <g stroke="#2f9e44" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M250 157H290"/>
+    <path d="M285 147l12 10-12 10"/>
+    <path d="M470 157H510"/>
+    <path d="M505 147l12 10-12 10"/>
+    <path d="M690 157H730"/>
+    <path d="M725 147l12 10-12 10"/>
+  </g>
+  <text x="480" y="278" text-anchor="middle" fill="#52606d" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="17" font-weight="700">Reactのコードは「部品を作る → 外に出す → 読み込む → 値を渡す」で読む</text>
+</svg>

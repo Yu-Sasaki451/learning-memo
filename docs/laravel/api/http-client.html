@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Laravel 外部API通信</title>
+    <link rel="stylesheet" href="../../reset.css">
+    <link rel="stylesheet" href="../../style.css?v=6">
+    <script src="../../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h2 class="header"><a href="../../index.html">memo</a></h2>
+        <h2 class="header"><a href="../index.html">Laravel一覧</a></h2>
+        <h2 class="header"><a href="./index.html">API一覧</a></h2>
+        <h2 class="header"><a href="./rest.html">API作成へ</a></h2>
+    </div>
+
+    <h1 class="head">Laravel 外部API通信</h1>
+    <p class="head-text">
+        Laravelから外部サービスのAPIを呼ぶときの基本。<br>
+        Httpファサードを使う。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            Laravel公式では、外部WebアプリケーションへHTTPリクエストを送るためにHttpファサードを使う。<br>
+            get、post、put、patch、deleteなどのメソッドが用意されている。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://laravel.com/docs/12.x/http-client" target="_blank" rel="noreferrer">Laravel公式 HTTP Client</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>GETで取得する</h2>
+        <p>
+            外部APIからデータを取る一番基本の形。<br>
+            acceptJsonは、JSONで返してほしいと伝える設定。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            use Illuminate\Support\Facades\Http;
+
+            $response = Http::acceptJson()-&gt;get('https://example.com/api/items');
+
+            $items = $response-&gt;json();
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>クエリパラメータを送る</h2>
+        <p>
+            検索条件やページ番号を送るときは、getの第2引数に配列で渡す。<br>
+            例では ?keyword=todo&amp;page=1 のようなURLになる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            use Illuminate\Support\Facades\Http;
+
+            $response = Http::acceptJson()-&gt;get('https://example.com/api/items', [
+                'keyword' =&gt; 'todo',
+                'page' =&gt; 1,
+            ]);
+
+            $items = $response-&gt;json();
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>POSTで登録する</h2>
+        <p>
+            外部APIへ登録データを送るときはpostを使う。<br>
+            LaravelのHttpクライアントは、配列をJSONとして送る用途に使いやすい。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            use Illuminate\Support\Facades\Http;
+
+            $response = Http::acceptJson()-&gt;post('https://example.com/api/items', [
+                'title' =&gt; '買い物に行く',
+            ]);
+
+            $createdItem = $response-&gt;json();
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>Bearerトークンを付ける</h2>
+        <p>
+            APIキーやアクセストークンが必要なAPIでは、withTokenを使う。<br>
+            トークンはコードに直接書かず、.envに入れる。
+        </p>
+
+        <div class="copy-unit">
+            <p class="code-caption">.env</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                EXTERNAL_API_TOKEN=ここにトークンを書く
+            </code></pre>
+        </div>
+
+        <div class="copy-unit">
+            <p class="code-caption">PHP</p>
+            <button class="copy-btn" type="button">Copy</button>
+            <pre><code>
+                use Illuminate\Support\Facades\Http;
+
+                $response = Http::withToken(config('services.external.token'))
+                    -&gt;acceptJson()
+                    -&gt;get('https://example.com/api/items');
+
+                $items = $response-&gt;json();
+            </code></pre>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>config/services.phpに設定する</h2>
+        <p>
+            .envの値はconfig経由で読む形にしておくと、あとで管理しやすい。<br>
+            services.phpにexternalという設定を追加する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            'external' =&gt; [
+                'token' =&gt; env('EXTERNAL_API_TOKEN'),
+            ],
+        </code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>失敗時の処理を書く</h2>
+        <p>
+            APIは失敗することがあるので、successfulで成功したか確認する。<br>
+            失敗したらログに残して、画面や呼び出し元へ分かる形で返す。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>
+            use Illuminate\Support\Facades\Http;
+            use Illuminate\Support\Facades\Log;
+
+            $response = Http::timeout(10)
+                -&gt;acceptJson()
+                -&gt;get('https://example.com/api/items');
+
+            if ($response-&gt;successful()) {
+                return $response-&gt;json();
+            }
+
+            Log::error('外部API通信に失敗しました', [
+                'status' =&gt; $response-&gt;status(),
+                'body' =&gt; $response-&gt;body(),
+            ]);
+
+            return [];
+        </code></pre>
+    </section>
+</body>
+
+</html>
