@@ -6,6 +6,12 @@ Laravel、React、JavaScript、TypeScript、CSS、環境構築、コマンドラ
 
 GitHub Pagesで公開します。
 
+公開URL:
+
+```text
+https://yu-sasaki451.github.io/learning-memo/
+```
+
 リポジトリの `Settings > Pages` で次の設定にします。
 
 - Source: `Deploy from a branch`
