@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>CentOSの基本</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=1">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header">
+            <a href="../index.html">memo</a>
+        </h1>
+        <h2 class="header">
+            <a href="./index.html">開発手順へ</a>
+        </h2>
+    </div>
+
+    <h1 class="head">CentOSとは何か</h1>
+    <p class="head-text">
+        CakePHP 2.0の開発で出てくるCentOSの役割、通常のローカル開発との違い、確認コマンドの使い方をまとめたページです。<br>
+        まず「自分のPCで作業しているのか」「CentOSサーバーで作業しているのか」を分けて考える。
+    </p>
+
+    <section class="code-block">
+        <h2>公式で確認する情報</h2>
+        <p>
+            CentOSはLinux系のOSで、会社のWebアプリを動かすサーバーとして使われることがある。<br>
+            古いCentOSはサポート終了しているものがあるので、まずバージョン確認が必要。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://www.centos.org/centos-linux-eol/" target="_blank" rel="noreferrer">CentOS公式 CentOS Linux EOL</a></li>
+            <li><a href="https://code.visualstudio.com/docs/remote/ssh" target="_blank" rel="noreferrer">VS Code公式 Remote SSH</a></li>
+            <li><a href="https://code.visualstudio.com/docs/terminal/basics" target="_blank" rel="noreferrer">VS Code公式 Terminal Basics</a></li>
+            <li><a href="https://httpd.apache.org/docs/2.4/logs.html" target="_blank" rel="noreferrer">Apache公式 Log Files</a></li>
+            <li><a href="https://httpd.apache.org/docs/2.4/programs/apachectl.html" target="_blank" rel="noreferrer">Apache公式 apachectl</a></li>
+            <li><a href="https://www.man7.org/linux/man-pages/man1/systemctl.1.html" target="_blank" rel="noreferrer">systemctl man page</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>CentOSの役割</h2>
+        <p>
+            CentOSは、CakePHPのコードを動かす土台になるOS。<br>
+            ブラウザからアクセスが来ると、Apacheが受け取り、PHPがCakePHPのコードを実行し、必要ならDBへアクセスする。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>自分のPC</th>
+                    <td>VS Code、ブラウザ、チャットを開いて操作する端末。MacやWindowsのことが多い。</td>
+                </tr>
+                <tr>
+                    <th>CentOSサーバー</th>
+                    <td>PHP、Apache、CakePHP、ログ、DB接続設定がある場所。VS Code Remote SSHで入って作業することがある。</td>
+                </tr>
+                <tr>
+                    <th>Apache</th>
+                    <td>ブラウザから来たHTTPアクセスを受け取るWebサーバー。CentOSではサービス名が <span class="file-path">httpd</span> のことが多い。</td>
+                </tr>
+                <tr>
+                    <th>PHP</th>
+                    <td>CakePHP 2.0のコードを実行する。サーバー側に入っているPHPバージョンで動く。</td>
+                </tr>
+                <tr>
+                    <th>CakePHP</th>
+                    <td>PHPで作られたフレームワーク。Controller、Model、Viewに分けてアプリを書く。</td>
+                </tr>
+                <tr>
+                    <th>DB</th>
+                    <td>ユーザー、商品、注文などのデータを保存する場所。CakePHPのModelから接続する。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>通常のローカル開発との違い</h2>
+        <p>
+            通常のローカル開発では、自分のPCにコード、PHP、DB、Webサーバーを入れて動かすことが多い。<br>
+            CentOS開発では、それらがサーバー側にあり、VS Codeから接続して触ることがある。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>コードの場所</th>
+                    <td>
+                        ローカル開発: 自分のPC内のフォルダ。<br>
+                        CentOS開発: サーバー上のフォルダをVS Code越しに開いていることがある。
+                    </td>
+                </tr>
+                <tr>
+                    <th>コマンドの実行場所</th>
+                    <td>
+                        ローカル開発: 自分のPCで動く。<br>
+                        Remote SSH: CentOSサーバー上で動く。
+                    </td>
+                </tr>
+                <tr>
+                    <th>Webサーバー</th>
+                    <td>
+                        ローカル開発: PHP内蔵サーバー、Docker、MAMPなどを使うことがある。<br>
+                        CentOS開発: Apacheの <span class="file-path">httpd</span> が使われることが多い。
+                    </td>
+                </tr>
+                <tr>
+                    <th>ログ</th>
+                    <td>
+                        ローカル開発: ターミナルやアプリ内ログを見ることが多い。<br>
+                        CentOS開発: <span class="file-path">app/tmp/logs</span> と <span class="file-path">/var/log/httpd</span> を分けて見る。
+                    </td>
+                </tr>
+                <tr>
+                    <th>権限</th>
+                    <td>
+                        ローカル開発: 自分のユーザーで書き込めることが多い。<br>
+                        CentOS開発: SSHユーザー、Apacheユーザー、ファイル所有者が違うと書き込みに失敗する。
+                    </td>
+                </tr>
+                <tr>
+                    <th>インストール</th>
+                    <td>
+                        Mac: <span class="file-path">brew</span>。Ubuntu系: <span class="file-path">apt</span>。CentOS: <span class="file-path">yum</span> や <span class="file-path">dnf</span>。<br>
+                        サーバーへ勝手にインストールせず、会社ルールを確認する。
+                    </td>
+                </tr>
+                <tr>
+                    <th>サービス操作</th>
+                    <td>
+                        CentOSでは <span class="file-path">systemctl</span> でApacheなどの状態を見る。<br>
+                        再起動は他の人に影響するので、確認なしに実行しない。
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>VS Code Remote SSHで起きていること</h2>
+        <p>
+            Remote SSHは、VS Codeの画面は自分のPCにあるまま、作業先をCentOSサーバーにする仕組み。<br>
+            つまり、VS Codeで保存したファイルやターミナルで実行したコマンドは、サーバー側に反映される。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>1. VS Codeを開く</th>
+                    <td>操作画面は自分のPCにある。</td>
+                </tr>
+                <tr>
+                    <th>2. SSH接続する</th>
+                    <td>VS CodeがCentOSサーバーに接続する。</td>
+                </tr>
+                <tr>
+                    <th>3. フォルダを開く</th>
+                    <td>Explorerに出ているのはサーバー上のプロジェクトフォルダ。</td>
+                </tr>
+                <tr>
+                    <th>4. ファイルを保存する</th>
+                    <td>保存されるのはサーバー上のファイル。</td>
+                </tr>
+                <tr>
+                    <th>5. ターミナルを開く</th>
+                    <td>コマンドはサーバー上で実行される。</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="next-action">
+            <strong>確認:</strong>
+            VS Code左下の接続先表示を見る。ターミナルで <span class="file-path">hostname</span> を実行すると、どのサーバーで作業しているか確認できる。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>コマンドを使う流れ</h2>
+        <p>
+            CentOS環境では、いきなり原因のファイルを直すのではなく、まず「どこで」「誰として」「何が動いているか」を確認する。<br>
+            次の順番で見ると、CakePHPの問題か、サーバーの問題かを分けやすい。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>hostname
+whoami
+pwd
+id
+cat /etc/centos-release
+which php
+php -v
+httpd -v</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>1. どのサーバーか</th>
+                    <td><span class="file-path">hostname</span><br>開発環境、検証環境、本番環境を間違えないために見る。</td>
+                </tr>
+                <tr>
+                    <th>2. 誰として操作しているか</th>
+                    <td><span class="file-path">whoami</span>、<span class="file-path">id</span><br>ファイルを書けるか、ログを読めるか、権限の判断に使う。</td>
+                </tr>
+                <tr>
+                    <th>3. どこで操作しているか</th>
+                    <td><span class="file-path">pwd</span><br>プロジェクト直下なのか、appの中なのかを確認する。</td>
+                </tr>
+                <tr>
+                    <th>4. OSは何か</th>
+                    <td><span class="file-path">cat /etc/centos-release</span><br>CentOSのバージョンを見る。古い環境では使えるPHPやパッケージが限られる。</td>
+                </tr>
+                <tr>
+                    <th>5. PHPは何か</th>
+                    <td><span class="file-path">which php</span>、<span class="file-path">php -v</span><br>どのPHPでCakePHPが動くかを確認する。</td>
+                </tr>
+                <tr>
+                    <th>6. Apacheは何か</th>
+                    <td><span class="file-path">httpd -v</span><br>Apacheのバージョンを見る。Apacheがない、または別構成なら会社ルールを確認する。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>ログを見る流れ</h2>
+        <p>
+            エラーを見る時は、CakePHPのログとApacheのログを分ける。<br>
+            ControllerやModelのエラーならCakePHPログ、サーバー設定や権限の問題ならApacheログに出ることがある。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>tail -f app/tmp/logs/error.log
+tail -f app/tmp/logs/debug.log
+sudo tail -f /var/log/httpd/error_log
+sudo tail -f /var/log/httpd/access_log</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>CakePHP error.log</th>
+                    <td><span class="file-path">app/tmp/logs/error.log</span><br>CakePHPの処理中に起きたエラーを見る。</td>
+                </tr>
+                <tr>
+                    <th>CakePHP debug.log</th>
+                    <td><span class="file-path">app/tmp/logs/debug.log</span><br>開発中に出したdebugログを見る。</td>
+                </tr>
+                <tr>
+                    <th>Apache error_log</th>
+                    <td><span class="file-path">/var/log/httpd/error_log</span><br>Apache、PHP読み込み、権限、.htaccessなどの問題を見る。</td>
+                </tr>
+                <tr>
+                    <th>Apache access_log</th>
+                    <td><span class="file-path">/var/log/httpd/access_log</span><br>どのURLへアクセスが来たか、HTTPステータスが何かを見る。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>権限を見る流れ</h2>
+        <p>
+            CentOSでは、ファイルの持ち主や権限が原因で、保存、ログ出力、キャッシュ更新に失敗することがある。<br>
+            CakePHP 2.0では <span class="file-path">app/tmp</span> にログやキャッシュを書くので、ここを確認する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>ls -ld app/tmp
+ls -ld app/tmp/logs
+ls -l app/tmp/logs
+whoami
+id</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>何を見るか</th>
+                    <td><span class="file-path">app/tmp</span> と <span class="file-path">app/tmp/logs</span> の所有者、グループ、書き込み権限を見る。</td>
+                </tr>
+                <tr>
+                    <th>よくある症状</th>
+                    <td>ログが出ない、画面が真っ白、キャッシュが更新されない、Permission deniedが出る。</td>
+                </tr>
+                <tr>
+                    <th>やってはいけないこと</th>
+                    <td>意味が分からないまま <span class="file-path">chmod 777</span> を実行しない。セキュリティ事故につながる。</td>
+                </tr>
+                <tr>
+                    <th>相談する時</th>
+                    <td>lsの結果、whoami、id、出ているエラーをセットで伝える。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>Apacheの状態を見る流れ</h2>
+        <p>
+            ブラウザで画面が開けない時は、CakePHPの前にApacheが動いているかを見る。<br>
+            ただし、再起動や設定変更は他の人に影響するので、確認なしに実行しない。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>sudo systemctl status httpd
+sudo apachectl configtest</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">systemctl status httpd</span></th>
+                    <td>Apacheが起動しているか、失敗していないかを見る。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">apachectl configtest</span></th>
+                    <td>Apacheの設定ファイルに文法エラーがないか確認する。</td>
+                </tr>
+                <tr>
+                    <th>再起動</th>
+                    <td><span class="file-path">restart</span> や <span class="file-path">reload</span> は勝手に実行しない。必要なら先輩や運用担当に確認する。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>困った時の切り分け</h2>
+        <p>
+            エラーが出た時は、どの層の問題かを分ける。<br>
+            これを分けると、どのログを見るか、誰に聞くか、どのファイルを直すかが決めやすい。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>画面の文言や入力欄</th>
+                    <td>View、Element、Layoutを見る。</td>
+                </tr>
+                <tr>
+                    <th>保存や検索</th>
+                    <td>Controller、Model、DB、バリデーションを見る。</td>
+                </tr>
+                <tr>
+                    <th>真っ白画面や500エラー</th>
+                    <td>CakePHPログとApache error_logを見る。</td>
+                </tr>
+                <tr>
+                    <th>アクセスできない</th>
+                    <td>Apache、URL、VirtualHost、hosts、ネットワーク、権限を確認する。</td>
+                </tr>
+                <tr>
+                    <th>ログが出ない</th>
+                    <td>app/tmp/logsの権限、CakePHPのdebug設定、Apacheログを見る。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>

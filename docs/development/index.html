@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>開発手順</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=1">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header">
+            <a href="../index.html">memo</a>
+        </h1>
+        <h2 class="header">
+            <a href="./centos.html">CentOSの基本へ</a>
+        </h2>
+        <h2 class="header">
+            <a href="../command-line/index.html">コマンドラインへ</a>
+        </h2>
+    </div>
+
+    <h1 class="head">CakePHP 2.0 + VS Code 開発手順</h1>
+    <p class="head-text">
+        バグ修正や機能追加を始める時に、何を確認し、どの順番で作業するかの手順です。<br>
+        CentOS環境そのものの説明は、別ページに分けています。
+    </p>
+
+    <section class="code-block">
+        <h2>先に見るページ</h2>
+        <p>
+            VS Codeで開いているファイルやターミナルのコマンドが、自分のPCではなくCentOSサーバー側で動くことがある。<br>
+            その前提が曖昧な時は、先にCentOSの基本ページを見る。
+        </p>
+        <p class="next-action">
+            <strong>先に確認:</strong>
+            <a href="./centos.html">CentOSとは何か、通常の開発と何が違うか</a>
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>公式で確認する情報</h2>
+        <p>
+            CakePHP 2.0は古いので、最新CakePHPの情報をそのまま使わない。<br>
+            調べる時はCakePHP 2.xの公式ドキュメントを見る。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://book.cakephp.org/2.x/getting-started/a-typical-cakephp-request.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 A Typical CakePHP Request</a></li>
+            <li><a href="https://book.cakephp.org/2.x/getting-started/cakephp-folder-structure.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Folder Structure</a></li>
+            <li><a href="https://book.cakephp.org/2.x/controllers.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Controllers</a></li>
+            <li><a href="https://book.cakephp.org/2.x/models/data-validation.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Data Validation</a></li>
+            <li><a href="https://book.cakephp.org/2.x/development/debugging.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Debugging</a></li>
+            <li><a href="https://book.cakephp.org/2.x/development/testing.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Testing</a></li>
+            <li><a href="https://code.visualstudio.com/docs/sourcecontrol/overview" target="_blank" rel="noreferrer">VS Code公式 Source Control</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>開発に入る前の確認</h2>
+        <p>
+            作業前に、今いる場所、ブランチ、変更差分、PHPのバージョンを確認する。<br>
+            ここを飛ばすと、違うブランチや古いコードに対して作業する危険がある。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>pwd
+git status
+git branch
+php -v</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">pwd</span></th>
+                    <td>今ターミナルが開いている場所を確認する。CakePHPのプロジェクト直下なのか、appの中なのかを見る。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">git status</span></th>
+                    <td>今のブランチと変更中のファイルを見る。知らない変更がある時は、作業前に確認する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">git branch</span></th>
+                    <td>ブランチ一覧を見る。先頭に * が付いている行が今いるブランチ。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">php -v</span></th>
+                    <td>PHPのバージョンを見る。CakePHP 2.0は古いので、環境差で動きが変わることがある。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>作業ブランチを作る</h2>
+        <p>
+            mainやdevelopを直接触らず、作業用ブランチを作る。<br>
+            会社の基準ブランチがdevelopならdevelop、mainならmainから作る。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>git switch develop
+git pull
+git switch -c fix/ticket-123-user-edit-error</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">git switch develop</span></th>
+                    <td>基準ブランチへ移動する。会社がmain運用なら <span class="file-path">main</span> に変える。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">git pull</span></th>
+                    <td>リモートの最新コードを取り込む。実行前に <span class="file-path">git status</span> で作業中の変更がないか見る。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">git switch -c</span></th>
+                    <td>新しい作業ブランチを作って、そのブランチへ移動する。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>CakePHP 2.0の見る順番</h2>
+        <p>
+            CakePHP 2.0では、URL、routes、Controller、Model、Viewの順に見る。<br>
+            バグ修正でも機能追加でも、まずこの流れで関係ファイルを探す。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>1. URL</th>
+                    <td>例: <span class="file-path">/users/edit/1</span>。URLからControllerとactionを推測する。</td>
+                </tr>
+                <tr>
+                    <th>2. routes</th>
+                    <td><span class="file-path">app/Config/routes.php</span>。特殊なURL設定がないか見る。</td>
+                </tr>
+                <tr>
+                    <th>3. Controller</th>
+                    <td><span class="file-path">app/Controller/UsersController.php</span>。<span class="file-path">edit()</span> などのactionを見る。</td>
+                </tr>
+                <tr>
+                    <th>4. Model</th>
+                    <td><span class="file-path">app/Model/User.php</span>。DB検索、保存、バリデーション、関連設定を見る。</td>
+                </tr>
+                <tr>
+                    <th>5. View</th>
+                    <td><span class="file-path">app/View/Users/edit.ctp</span>。フォーム、表示、リンク、エラーメッセージを見る。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>VS Codeで関係ファイルを探す</h2>
+        <p>
+            VS Codeでは <span class="file-path">Cmd + Shift + F</span> で全体検索する。<br>
+            ターミナルでは <span class="file-path">rg</span>、なければ <span class="file-path">grep -R</span> を使う。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>rg "UsersController"
+rg "function edit"
+rg "User-&gt;save"
+rg "email"
+rg "users"</code></pre>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>grep -R "UsersController" app
+grep -R "function edit" app
+grep -R "User-&gt;save" app
+grep -R "email" app</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>画面の文字で探す</th>
+                    <td>ボタン名、見出し、エラー文でViewを探す。</td>
+                </tr>
+                <tr>
+                    <th>URLで探す</th>
+                    <td>Controller名、action名、routes設定を探す。</td>
+                </tr>
+                <tr>
+                    <th>DB項目で探す</th>
+                    <td>email、status、user_idなどのカラム名でModel、Controller、Viewを探す。</td>
+                </tr>
+                <tr>
+                    <th>保存処理で探す</th>
+                    <td><span class="file-path">save</span>、<span class="file-path">saveAll</span>、<span class="file-path">validates</span> を探す。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>バグ修正の流れ</h2>
+        <p>
+            バグ修正は、原因を見つける前に直し始めない。<br>
+            まず再現し、ログを見て、関係ファイルを絞り、最小限だけ直す。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>1. 再現する</th>
+                    <td>どの画面で、何を入力し、何を押すと起きるか確認する。</td>
+                </tr>
+                <tr>
+                    <th>2. ログを見る</th>
+                    <td><span class="file-path">app/tmp/logs/error.log</span> と必要に応じてApacheログを見る。</td>
+                </tr>
+                <tr>
+                    <th>3. ファイルを絞る</th>
+                    <td>Controller、Model、View、routes、Configのどこが関係するか決める。</td>
+                </tr>
+                <tr>
+                    <th>4. 小さく直す</th>
+                    <td>関係ないリファクタリングを混ぜず、原因に関係する行だけ直す。</td>
+                </tr>
+                <tr>
+                    <th>5. 同じ操作で確認する</th>
+                    <td>最初にバグが出た操作をもう一度行い、直ったか確認する。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>実践例: 編集画面で保存できない</h2>
+        <p>
+            例として、ユーザー編集画面で保存できない時の見る順番。<br>
+            保存できない原因は、Controllerだけでなく、ModelのバリデーションやViewのフォーム名にもある。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>rg "function edit" app/Controller
+rg "public \\$validate" app/Model
+rg "Form-&gt;input" app/View/Users
+tail -f app/tmp/logs/error.log</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>Controller</th>
+                    <td><span class="file-path">UsersController::edit()</span> で、request data、save、redirect、Session flashを見る。</td>
+                </tr>
+                <tr>
+                    <th>Model</th>
+                    <td><span class="file-path">User.php</span> の <span class="file-path">$validate</span>、関連設定、beforeSaveを見る。</td>
+                </tr>
+                <tr>
+                    <th>View</th>
+                    <td><span class="file-path">edit.ctp</span> のFormHelper、input名、hidden id、エラー表示を見る。</td>
+                </tr>
+                <tr>
+                    <th>確認</th>
+                    <td>保存できるか、入力エラーが出るか、ログに新しいエラーが出ないかを見る。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>機能追加の流れ</h2>
+        <p>
+            機能追加は、作るものを小さく分けてから触る。<br>
+            画面、Controller、Model、DB、バリデーション、権限、確認方法を先に分ける。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>画面</th>
+                    <td><span class="file-path">app/View</span> のctp、Elements、Layoutsを確認する。</td>
+                </tr>
+                <tr>
+                    <th>処理</th>
+                    <td><span class="file-path">app/Controller</span> のactionを追加または変更する。</td>
+                </tr>
+                <tr>
+                    <th>DB</th>
+                    <td><span class="file-path">app/Model</span> のfind、save、関連設定を確認する。</td>
+                </tr>
+                <tr>
+                    <th>入力チェック</th>
+                    <td>CakePHP 2.0ではModelの <span class="file-path">$validate</span> に書かれていることが多い。</td>
+                </tr>
+                <tr>
+                    <th>確認方法</th>
+                    <td>正常系、異常系、権限、ログ、既存画面への影響を確認する。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>DBまわりの注意</h2>
+        <p>
+            DB変更は影響が大きい。<br>
+            カラム追加、型変更、データ修正、本番データ削除は、必ず会社の手順を確認してから行う。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>接続情報</th>
+                    <td><span class="file-path">app/Config/database.php</span> を見る。ただしパスワードをチャットやPRに貼らない。</td>
+                </tr>
+                <tr>
+                    <th>DB変更</th>
+                    <td>SQLファイル、SchemaShell、社内マイグレーション運用のどれかを確認する。</td>
+                </tr>
+                <tr>
+                    <th>データ修正</th>
+                    <td>UPDATEやDELETEはレビューなしで実行しない。実行前にSELECTで対象件数を見る。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>一時デバッグ</h2>
+        <p>
+            古いCakePHPやCentOS環境では、Xdebugをすぐ使えないことがある。<br>
+            その場合はログ出力で値を見る。ただしコミット前に必ず消す。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>CakeLog::write('debug', print_r($this->request->data, true));</code></pre>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>debug($this->request->data);</code></pre>
+
+        <p class="next-action">
+            <strong>消し忘れ確認:</strong>
+            VS Codeの全体検索で <span class="file-path">debug(</span>、<span class="file-path">CakeLog::write</span>、<span class="file-path">var_dump</span>、<span class="file-path">print_r</span> を探す。
+        </p>
+    </section>
+
+    <section class="code-block">
+        <h2>差分確認</h2>
+        <p>
+            コミット前に、VS CodeのSource Controlで変更ファイルを1つずつ開く。<br>
+            ターミナルでも <span class="file-path">git diff</span> を見て、不要な変更がないか確認する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>git status
+git diff</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>消し忘れ</th>
+                    <td>debug、var_dump、print_r、一時コメント、不要な空行。</td>
+                </tr>
+                <tr>
+                    <th>関係ない変更</th>
+                    <td>触る予定のないCSS、設定ファイル、改行だけの変更。</td>
+                </tr>
+                <tr>
+                    <th>危険な変更</th>
+                    <td>database.php、SQL、共通Component、共通Layout。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>確認とテスト</h2>
+        <p>
+            CakePHP 2.0では testsuite shell が使われる構成がある。<br>
+            まず <span class="file-path">app/Console/cake</span> で使えるコマンド一覧を確認する。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>app/Console/cake
+app/Console/cake testsuite app Model/User
+app/Console/cake testsuite app Controller/UsersController</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>正常系</th>
+                    <td>通常の入力で期待通り保存、表示、遷移するか。</td>
+                </tr>
+                <tr>
+                    <th>異常系</th>
+                    <td>空欄、長すぎる文字、不正な形式でエラー表示されるか。</td>
+                </tr>
+                <tr>
+                    <th>権限</th>
+                    <td>ログイン前、一般ユーザー、管理者、自分以外のデータでどうなるか。</td>
+                </tr>
+                <tr>
+                    <th>ログ</th>
+                    <td>操作後に <span class="file-path">error.log</span> やApacheログへ新しいエラーが出ていないか。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>コミットとPR</h2>
+        <p>
+            関係あるファイルだけをステージする。<br>
+            VS CodeのSource Controlでも、ターミナルでも確認できる。
+        </p>
+
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>git add app/Controller/UsersController.php
+git add app/Model/User.php
+git add app/View/Users/edit.ctp
+git commit -m "Fix user edit validation"
+git push origin fix/ticket-123-user-edit-error</code></pre>
+
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>PRの概要</th>
+                    <td>何のバグ、何の機能追加かを1行で書く。</td>
+                </tr>
+                <tr>
+                    <th>変更内容</th>
+                    <td>Controller、Model、View、DBなど、どこをどう変えたかを書く。</td>
+                </tr>
+                <tr>
+                    <th>確認方法</th>
+                    <td>URL、入力値、期待結果、ログ確認、テスト結果を書く。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>
