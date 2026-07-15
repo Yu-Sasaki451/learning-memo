@@ -25,11 +25,42 @@
     </p>
 
     <section class="code-block">
+        <h2>Modelコードの読み替え</h2>
+        <p>
+            Modelでは「どのテーブルを見るか」「どの条件で取るか」「保存前に何を確認するか」を読みます。<br>
+            SQLを直接書かず、CakePHPの配列で条件を書くことが多いです。
+        </p>
+        <div class="read-grid">
+            <div class="read-card">
+                <strong><span class="file-path">'conditions'</span></strong>
+                <span>SQLのWHEREに近い。「この条件に合う行だけ取る」という意味。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">'fields'</span></strong>
+                <span>SELECTするカラム。全部ではなく必要な項目だけ取る時に使う。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">'order'</span></strong>
+                <span>ORDER BYに近い。表示順、取得順を決める。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">'recursive'</span></strong>
+                <span>関連データをどこまで取るか。読みにくい配列や重い画面の原因になることがある。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
         <h2>Modelの基本形</h2>
         <p>
             Model名は単数形です。<br>
             <span class="file-path">User</span> モデルは、通常 <span class="file-path">users</span> テーブルを扱います。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「UserというModelを作る。このModelはusersテーブルを使い、idを主キーにして、代表表示名はnameにする」です。</p>
+            <p>参照している先はDBの <span class="file-path">users</span> テーブルです。Controllerからは <span class="file-path">$this-&gt;User</span> として呼ばれます。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>App::uses('AppModel', 'Model');
 
@@ -66,6 +97,11 @@ class User extends AppModel {
             関連は、別テーブルとつながる設定です。<br>
             コードリーディングでは、取得結果の配列に別Modelのデータが混ざる理由をここで確認します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「PostはUserに属している。PostはCommentを複数持っている。Postを取る時にUserやCommentが一緒に付いてくる可能性がある」です。</p>
+            <p>参照している先は <span class="file-path">users.id</span>、<span class="file-path">posts.user_id</span>、<span class="file-path">comments.post_id</span> のような外部キーです。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>class Post extends AppModel {
     public $belongsTo = array(
@@ -111,6 +147,11 @@ class User extends AppModel {
             CakePHP 2.0では、Modelの <span class="file-path">$validate</span> に入力チェックが書かれていることがよくあります。<br>
             保存できない時は、ControllerだけでなくModelのバリデーションを必ず見ます。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「nameは空欄禁止で50文字以内。emailはメールアドレス形式でないと保存しない。違反したらmessageの文章を画面へ出す」です。</p>
+            <p>参照元はControllerの <span class="file-path">$this-&gt;User-&gt;save($this-&gt;request-&gt;data)</span> です。save時にこのルールが使われます。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>public $validate = array(
     'name' =&gt; array(
@@ -158,6 +199,11 @@ class User extends AppModel {
             CakePHP 2.0のDB取得では、<span class="file-path">find()</span> が頻繁に出ます。<br>
             まず、何件取るのか、どんな条件か、どの項目を取るのかを見ます。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p><span class="file-path">find('first')</span> は「1件だけ探す」、<span class="file-path">find('all')</span> は「複数件探す」、<span class="file-path">find('count')</span> は「件数だけ数える」、<span class="file-path">find('list')</span> は「select用のidと名前の一覧を作る」です。</p>
+            <p><span class="file-path">'User.status' =&gt; 'active'</span> は「usersテーブルのstatusがactiveのもの」という条件です。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>$user = $this-&gt;User-&gt;find('first', array(
     'conditions' =&gt; array('User.id' =&gt; $id),
@@ -210,6 +256,11 @@ $list = $this-&gt;User-&gt;find('list', array(
             保存できない時は、送られてきた配列の形とModelのバリデーションを見ます。<br>
             CakePHP2では配列のキーにModel名が入る形がよく出ます。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「Userのnameとemailを保存する。新規登録なので先にcreateで新しい行として扱う準備をする」です。</p>
+            <p>CakePHP2の保存データは <span class="file-path">array('User' =&gt; array(...))</span> の形が基本です。FormHelperで作ったフォームもこの形で送られます。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>$data = array(
     'User' =&gt; array(
@@ -256,6 +307,11 @@ $this-&gt;User-&gt;saveAll($data);</code></pre>
             Controllerが長すぎる時は、検索条件や業務ルールがModelのメソッドに分けられていることがあります。<br>
             <span class="file-path">$this-&gt;User-&gt;findActiveByEmail()</span> のような呼び出しを見たら、Model内の同名メソッドを探します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「渡されたメールアドレスで、有効状態のUserを1件探して返す」です。</p>
+            <p>Controllerで <span class="file-path">$this-&gt;User-&gt;findActiveByEmail($email)</span> と書かれていたら、このModelメソッドが参照先です。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>public function findActiveByEmail($email) {
     return $this-&gt;find('first', array(
@@ -286,6 +342,11 @@ $this-&gt;User-&gt;saveAll($data);</code></pre>
             保存前に値が変わる場合は、Modelのコールバックを確認します。<br>
             画面では入力していない値がDBに入る時は、<span class="file-path">beforeSave()</span> を探します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「保存直前にemailがあれば、小文字に変換してから保存を続ける」です。</p>
+            <p>参照元は <span class="file-path">save()</span> です。Controllerからsaveを呼ぶと、保存前に自動でbeforeSaveが動きます。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>public function beforeSave($options = array()) {
     if (isset($this-&gt;data[$this-&gt;alias]['email'])) {

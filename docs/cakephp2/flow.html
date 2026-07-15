@@ -24,6 +24,19 @@
     </p>
 
     <section class="code-block">
+        <h2>コードを読む時の変換</h2>
+        <p>
+            CakePHP2では、URLやファイル名の規約から参照先が決まります。<br>
+            まず「このURLは、どのController、どのaction、どのViewに行くのか」を日本語に直します。
+        </p>
+        <div class="read-box">
+            <strong>例</strong>
+            <p><span class="file-path">/users/edit/5</span> は「UsersControllerのeditを呼び、5番のUserを編集する」です。</p>
+            <p>参照先は <span class="file-path">app/Controller/UsersController.php</span>、<span class="file-path">app/Model/User.php</span>、<span class="file-path">app/View/Users/edit.ctp</span> です。</p>
+        </div>
+    </section>
+
+    <section class="code-block">
         <h2>読む順番</h2>
         <table class="map-table">
             <tbody>
@@ -57,6 +70,11 @@
             CakePHP 2.0は、特別なroutesがなければURLからControllerとactionを推測できます。<br>
             複数形のController、単数形のModelという名前の差に注意します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「usersという画面グループの、editという処理を、id 5に対して実行する」です。</p>
+            <p>Controllerは複数形の <span class="file-path">UsersController</span>、Modelは単数形の <span class="file-path">User</span> になるので、ファイル名検索では両方を探します。</p>
+        </div>
         <table class="map-table">
             <tbody>
                 <tr>
@@ -89,6 +107,11 @@
             URLとController名が一致しない時は、routesで別名が付いている可能性があります。<br>
             画面のURLでControllerが見つからない時は、最初にroutesを検索します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「ブラウザでは/member/profile/5に見えるが、実際にはusers controllerのprofile actionを呼ぶ。URLのid部分をactionへ渡す」です。</p>
+            <p>この書き方をする理由は、画面に見せたいURLと、内部のController名を分けたい時があるためです。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>Router::connect(
     '/member/profile/:id',
@@ -123,6 +146,11 @@
             ControllerでDBから取得した値は、<span class="file-path">$this-&gt;set()</span> でViewへ渡します。<br>
             View側では、setした名前の変数として使います。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「idでUserを1件探す。見つからなければ404。見つかったらViewへuserという名前で渡す。Viewではuserのnameとemailを表示する」です。</p>
+            <p>参照の流れは、<span class="file-path">$this-&gt;User</span> が <span class="file-path">app/Model/User.php</span>、<span class="file-path">$this-&gt;set('user', $user)</span> が <span class="file-path">app/View/Users/profile.ctp</span> へ渡す、です。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>class UsersController extends AppController {
     public function profile($id = null) {
@@ -172,6 +200,11 @@
             CakePHP 2.0ではControllerのaction名とViewファイル名が強く結びつきます。<br>
             Laravelではroutesに明示して、Controllerからviewをreturnする形がよく使われます。
         </p>
+        <div class="read-box">
+            <strong>読み替え</strong>
+            <p>CakePHP2の <span class="file-path">$this-&gt;set('user', $user)</span> は、Laravelの <span class="file-path">return view('users.profile', ['user' =&gt; $user])</span> に近いです。</p>
+            <p>違いは、CakePHP2ではactionが終わると規約でctpが表示される点です。LaravelはController内でviewを明示してreturnすることが多いです。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>Route::get('/member/profile/{id}', [UserController::class, 'profile']);</code></pre>
         <button class="copy-btn" type="button">Copy</button>

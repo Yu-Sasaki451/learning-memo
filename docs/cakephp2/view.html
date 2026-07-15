@@ -25,11 +25,42 @@
     </p>
 
     <section class="code-block">
+        <h2>Viewコードの読み替え</h2>
+        <p>
+            Viewでは「Controllerから渡された変数を、HTMLのどこへ出しているか」を読みます。<br>
+            画面に見えている文字、フォーム項目、リンク先はctpに書かれていることが多いです。
+        </p>
+        <div class="read-grid">
+            <div class="read-card">
+                <strong><span class="file-path">&lt;?php echo ... ?&gt;</span></strong>
+                <span>PHPの値をHTMLへ出す。「この値を画面に表示する」という意味。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">h(...)</span></strong>
+                <span>表示前に危険な文字を逃がす。ユーザー入力をそのままHTMLにしないため。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">$user['User']['name']</span></strong>
+                <span>ControllerやModelから来た配列。Userモデルのnameカラムを見る。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">$this-&gt;Form</span></strong>
+                <span>CakePHPのフォーム作成用Helper。入力欄、送信ボタン、エラー表示を作る。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
         <h2>Controllerから来た変数を表示する</h2>
         <p>
             Controllerで <span class="file-path">$this-&gt;set('user', $user)</span> した値は、Viewで <span class="file-path">$user</span> として使います。<br>
             画面に出す時は、基本的に <span class="file-path">h()</span> でエスケープします。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「Controllerから渡されたuserの名前を見出しに出し、メールアドレスを段落に出す」です。</p>
+            <p>参照元はControllerの <span class="file-path">$this-&gt;set('user', $user)</span> です。setしていない名前はViewで使えません。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;h2&gt;&lt;?php echo h($user['User']['name']); ?&gt;&lt;/h2&gt;
 &lt;p&gt;&lt;?php echo h($user['User']['email']); ?&gt;&lt;/p&gt;</code></pre>
@@ -61,6 +92,11 @@
             一覧画面では、Controllerから渡された配列を <span class="file-path">foreach</span> で回します。<br>
             CakePHP2では、1件ごとの中にもModel名のキーが入ることを意識します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「usersの中身を1件ずつuserとして取り出し、ID、名前、メールをテーブルの1行として表示する」です。</p>
+            <p>参照元はControllerの <span class="file-path">$this-&gt;set('users', $users)</span> です。Modelの <span class="file-path">find('all')</span> やPaginatorで取った複数件が入ります。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;table&gt;
     &lt;thead&gt;
@@ -100,6 +136,11 @@
             権限、状態、データ有無によって表示を変える時に使います。<br>
             画面にボタンが出ない時は、Viewのif条件とControllerから渡された値を確認します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「Userのstatusがactiveなら有効と表示する。そうでなければ停止中と表示する」です。</p>
+            <p>ボタンや文言が出ない時は、この条件に使っている <span class="file-path">$user['User']['status']</span> の中身をControllerやDBで確認します。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;?php if ($user['User']['status'] === 'active'): ?&gt;
     &lt;span class="status status-active"&gt;有効&lt;/span&gt;
@@ -130,6 +171,11 @@
             CakePHP2では、フォームを <span class="file-path">$this-&gt;Form</span> で書くことが多いです。<br>
             Controllerの <span class="file-path">$this-&gt;request-&gt;data</span> とModelのバリデーションにつながります。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「User用のフォームを開始し、nameとemailの入力欄を作り、保存ボタンでフォームを閉じる」です。</p>
+            <p>このフォームを送信すると、Controllerの <span class="file-path">$this-&gt;request-&gt;data</span> に <span class="file-path">User.name</span> と <span class="file-path">User.email</span> が入ります。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;?php echo $this-&gt;Form-&gt;create('User'); ?&gt;
 &lt;?php echo $this-&gt;Form-&gt;input('name', array('label' =&gt; '名前')); ?&gt;
@@ -163,6 +209,11 @@
             画面遷移は <span class="file-path">HtmlHelper</span>、削除のようにPOSTで送りたいものは <span class="file-path">FormHelper</span> を使うことが多いです。<br>
             削除を普通のaタグだけで作っていないか確認します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「編集リンクを作る。クリックしたらusers controllerのedit actionへ、今のUserのidを付けて移動する。削除は確認メッセージを出してからPOSTでdelete actionへ送る」です。</p>
+            <p>参照先はControllerの <span class="file-path">edit($id)</span> と <span class="file-path">delete($id)</span> です。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;?php
 echo $this-&gt;Html-&gt;link(
@@ -202,6 +253,11 @@ echo $this-&gt;Form-&gt;postLink(
             Controllerで <span class="file-path">Session-&gt;setFlash()</span> したメッセージは、ViewやLayout側で表示します。<br>
             保存成功メッセージが出ない時は、Layoutに表示処理があるか見ます。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「Controllerがセットした一時メッセージを、この場所に表示する」です。</p>
+            <p>参照元はControllerの <span class="file-path">$this-&gt;Session-&gt;setFlash('...')</span> です。Viewにflashがなければ、メッセージをセットしても画面に出ません。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;?php echo $this-&gt;Session-&gt;flash(); ?&gt;</code></pre>
         <table class="map-table">
@@ -223,6 +279,11 @@ echo $this-&gt;Form-&gt;postLink(
         <p>
             一覧でページ移動や並び替えがある場合は、ControllerのPaginator設定とViewのPaginatorHelperをセットで見ます。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「名前の見出しをクリックで並び替えできるようにする。下に前へ、ページ番号、次へのリンクを出す」です。</p>
+            <p>参照元はControllerの <span class="file-path">$this-&gt;Paginator-&gt;paginate('User')</span> と <span class="file-path">$paginate</span> 設定です。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;th&gt;&lt;?php echo $this-&gt;Paginator-&gt;sort('User.name', '名前'); ?&gt;&lt;/th&gt;
 
@@ -255,6 +316,11 @@ echo $this-&gt;Form-&gt;postLink(
             ヘッダー、サイドバー、共通パーツは、今見ているctpに直接ないことがあります。<br>
             その場合はLayoutやElementを探します。
         </p>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「user_menuという共通部品を読み込み、その部品へuser変数を渡す」です。</p>
+            <p>参照先は <span class="file-path">app/View/Elements/user_menu.ctp</span> です。今見ているViewにHTMLがなくても、Element側に書かれていることがあります。</p>
+        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>&lt;?php echo $this-&gt;element('user_menu', array('user' =&gt; $user)); ?&gt;</code></pre>
         <table class="map-table">

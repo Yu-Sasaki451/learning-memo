@@ -24,6 +24,28 @@
     </p>
 
     <section class="code-block">
+        <h2>このページ群で見ること</h2>
+        <p>
+            MVCの概念説明ではなく、実際のコードを読んだ時に迷いやすい部分を日本語へ直して見ます。<br>
+            どのファイルを参照しているのか、なぜその形で書くのか、Laravelだとどの感覚に近いのかを確認します。
+        </p>
+        <div class="read-grid">
+            <div class="read-card">
+                <strong>日本語に直す</strong>
+                <span><span class="file-path">$this-&gt;User-&gt;save($this-&gt;request-&gt;data)</span> を「フォーム入力をUserとして保存する」のように読む。</span>
+            </div>
+            <div class="read-card">
+                <strong>参照先を見る</strong>
+                <span><span class="file-path">$this-&gt;User</span> なら <span class="file-path">app/Model/User.php</span>、<span class="file-path">$this-&gt;set</span> ならViewの変数を見る。</span>
+            </div>
+            <div class="read-card">
+                <strong>形の理由を見る</strong>
+                <span><span class="file-path">array('conditions' =&gt; ...)</span> は検索条件をCakePHP2のORMへ渡すための形として読む。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
         <h2>まず見るページ</h2>
         <p>
             CakePHP 2.0は、Controller、Model、Viewの3つを行き来して読む。<br>
