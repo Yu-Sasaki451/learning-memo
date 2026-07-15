@@ -24,6 +24,38 @@
     </p>
 
     <section class="code-block">
+        <h2>CakePHP2特有のURL設定</h2>
+        <p>
+            URLとControllerがそのまま一致しない時は、<span class="file-path">app/Config/routes.php</span> を見ます。<br>
+            ここに <span class="file-path">Router::connect()</span> があると、見た目のURLと実際に呼ぶControllerを変えています。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">Router::connect(...)</span></th>
+                    <td>日本語にすると「このURLが来たら、このControllerとactionに流す」という設定。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">':id'</span></th>
+                    <td>URLの一部を変数として受け取る場所。<span class="file-path">/member/profile/5</span> の5がidになる。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'controller' =&gt; 'users'</span></th>
+                    <td>実際に呼ぶController。<span class="file-path">UsersController</span> を指す。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'action' =&gt; 'profile'</span></th>
+                    <td>実際に呼ぶメソッド。<span class="file-path">UsersController::profile()</span> を指す。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'pass' =&gt; array('id')</span></th>
+                    <td>URLから取ったidを、actionの引数へ渡す設定。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
         <h2>コードを読む時の変換</h2>
         <p>
             CakePHP2では、URLやファイル名の規約から参照先が決まります。<br>

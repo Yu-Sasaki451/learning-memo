@@ -25,6 +25,42 @@
     </p>
 
     <section class="code-block">
+        <h2>CakePHP2特有の書き方</h2>
+        <p>
+            Modelの先頭や設定配列は、LaravelのEloquentと見た目が違います。<br>
+            ここでは「何を参照しているのか」を先に確認します。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">App::uses('AppModel', 'Model');</span></th>
+                    <td>日本語にすると「AppModelクラスはModelフォルダ側にあるので、使う時に読めるようCakePHPへ場所を教える」です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">class User extends AppModel</span></th>
+                    <td>「AppModelを土台にしてUserモデルを作る」。共通のDB処理やコールバックはAppModel側にあることがある。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">public $useTable = 'users';</span></th>
+                    <td>このModelが参照するDBテーブル名。Laravelの <span class="file-path">protected $table = 'users';</span> に近い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">public $validate = array(...);</span></th>
+                    <td>保存時の入力チェック。LaravelのFormRequestに近い役割だが、CakePHP2ではModelに置かれていることが多い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'User.id' =&gt; $id</span></th>
+                    <td>「Userテーブルのidカラムが、変数idと同じもの」という条件。SQLのWHEREに近い。</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="read-box">
+            <strong>このページのコードを読む時の結論</strong>
+            <p>Modelでは、まず <span class="file-path">どのテーブル</span>、<span class="file-path">どの条件</span>、<span class="file-path">保存前にどのルール</span> を見ているかを読む。</p>
+        </div>
+    </section>
+
+    <section class="code-block">
         <h2>Modelコードの読み替え</h2>
         <p>
             Modelでは「どのテーブルを見るか」「どの条件で取るか」「保存前に何を確認するか」を読みます。<br>
@@ -34,6 +70,10 @@
             <div class="read-card">
                 <strong><span class="file-path">'conditions'</span></strong>
                 <span>SQLのWHEREに近い。「この条件に合う行だけ取る」という意味。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">'Model.field'</span></strong>
+                <span>どのModelのどのカラムかを表す。<span class="file-path">'User.email'</span> はUserモデルのemailカラム。</span>
             </div>
             <div class="read-card">
                 <strong><span class="file-path">'fields'</span></strong>
@@ -74,6 +114,10 @@ class User extends AppModel {
                 <tr>
                     <th><span class="file-path">extends AppModel</span></th>
                     <td>共通Modelを継承する。全Model共通の処理がAppModelにあることが多い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">AppModel</span></th>
+                    <td>参照先は <span class="file-path">app/Model/AppModel.php</span>。全Model共通の親クラス。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">$useTable</span></th>
@@ -123,11 +167,11 @@ class User extends AppModel {
             <tbody>
                 <tr>
                     <th><span class="file-path">belongsTo</span></th>
-                    <td>このModelが親を持つ。PostはUserに所属する。</td>
+                    <td>このModelが親を持つ。PostはUserに所属する。DB上は <span class="file-path">posts.user_id</span> から <span class="file-path">users.id</span> を見る。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">hasMany</span></th>
-                    <td>このModelが複数の子を持つ。PostはCommentを複数持つ。</td>
+                    <td>このModelが複数の子を持つ。PostはCommentを複数持つ。DB上は <span class="file-path">comments.post_id</span> からPostを見に来る。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">foreignKey</span></th>
@@ -175,11 +219,11 @@ class User extends AppModel {
             <tbody>
                 <tr>
                     <th><span class="file-path">notBlank</span></th>
-                    <td>空欄を許可しない。</td>
+                    <td>空欄を許可しない。<span class="file-path">'rule' =&gt; 'notBlank'</span> は「この項目は空ではだめ」という指定。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">maxLength</span></th>
-                    <td>文字数の上限を決める。</td>
+                    <td>文字数の上限を決める。<span class="file-path">array('maxLength', 50)</span> は「50文字まで」という指定。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">email</span></th>

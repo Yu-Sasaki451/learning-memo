@@ -25,6 +25,38 @@
     </p>
 
     <section class="code-block">
+        <h2>CakePHP2特有の書き方</h2>
+        <p>
+            CakePHP2のViewは、Bladeではなく <span class="file-path">.ctp</span> にPHPを混ぜて書きます。<br>
+            Laravelの <span class="file-path">{{ $user-&gt;name }}</span> とは見た目が違うので、先に読み替えます。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">&lt;?php ... ?&gt;</span></th>
+                    <td>HTMLの中でPHPを実行する範囲。Bladeの <span class="file-path">@foreach</span> や <span class="file-path">{{ }}</span> と違い、PHPを直接書く。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">echo</span></th>
+                    <td>画面に出力する命令。<span class="file-path">&lt;?php echo h($name); ?&gt;</span> は「$nameを画面に出す」。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">h()</span></th>
+                    <td>HTML用にエスケープする関数。Laravelの <span class="file-path">{{ }}</span> が自動でしてくれる処理に近い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;Form-&gt;input('name')</span></th>
+                    <td>FormHelperでname入力欄を作る。送信後はControllerの <span class="file-path">$this-&gt;request-&gt;data['User']['name']</span> 側へつながる。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">array('label' =&gt; '名前')</span></th>
+                    <td>入力欄の設定。ここでは「label表示は名前にする」という意味。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
         <h2>Viewコードの読み替え</h2>
         <p>
             Viewでは「Controllerから渡された変数を、HTMLのどこへ出しているか」を読みます。<br>
@@ -185,11 +217,11 @@
             <tbody>
                 <tr>
                     <th><span class="file-path">Form-&gt;create('User')</span></th>
-                    <td>Userモデル用のフォームを開始する。</td>
+                    <td>Userモデル用のフォームを開始する。入力値を <span class="file-path">User</span> というキーの下にまとめるための指定。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">Form-&gt;input('name')</span></th>
-                    <td>name項目の入力欄を作る。バリデーションエラーも出やすい。</td>
+                    <td>name項目の入力欄を作る。参照先はModelの <span class="file-path">User.name</span> と、バリデーションの <span class="file-path">$validate['name']</span>。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">label</span></th>
@@ -197,7 +229,7 @@
                 </tr>
                 <tr>
                     <th><span class="file-path">Form-&gt;end('保存')</span></th>
-                    <td>送信ボタンとform終了タグを作る。</td>
+                    <td>送信ボタンとform終了タグを作る。ここで押された内容がControllerのaddやeditへPOSTされる。</td>
                 </tr>
             </tbody>
         </table>

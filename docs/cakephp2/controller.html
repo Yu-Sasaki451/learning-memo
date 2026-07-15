@@ -25,7 +25,47 @@
     </p>
 
     <section class="code-block">
-        <h2>先に覚える読み替え</h2>
+        <h2>CakePHP2特有の書き方</h2>
+        <p>
+            Controllerの先頭に出る書き方は、LaravelのControllerと見た目がかなり違います。<br>
+            まずここを読んでから、下のコード例を見る。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">App::uses('AppController', 'Controller');</span></th>
+                    <td>日本語にすると「AppControllerクラスはControllerフォルダ側にあるので、使う時に読めるようCakePHPへ場所を教える」です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">App</span></th>
+                    <td>CakePHP2が持っているクラス読み込み用の仕組み。ファイルの場所を探す役割。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">::</span></th>
+                    <td>クラスそのものが持つ機能を呼ぶ記号。<span class="file-path">App::uses()</span> は「Appクラスのuses機能を呼ぶ」と読む。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'AppController'</span></th>
+                    <td>読み込みたいクラス名。参照先は主に <span class="file-path">app/Controller/AppController.php</span>。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'Controller'</span></th>
+                    <td>そのクラスが置かれている種類やフォルダ。Controller系のクラスを探す、という指定。</td>
+                </tr>
+                <tr>
+                    <th>Laravelとの違い</th>
+                    <td>Laravelでは <span class="file-path">namespace</span> や <span class="file-path">use App\Http\Controllers\Controller;</span> をよく見る。CakePHP2では古い読み込み方式として <span class="file-path">App::uses()</span> がよく出る。</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="read-box">
+            <strong>この1行を読む時の結論</strong>
+            <p><span class="file-path">App::uses('AppController', 'Controller');</span> は、処理本体ではありません。画面の動きではなく、「この下で <span class="file-path">extends AppController</span> と書けるように、親クラスの場所をCakePHPへ教える準備」です。</p>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>Controllerでよく出る記号</h2>
         <p>
             Controllerのコードは、英語の命令文をCakePHPの形で書いているだけです。<br>
             読む時は、記号を先に日本語へ直すと追いやすくなります。
@@ -42,6 +82,14 @@
             <div class="read-card">
                 <strong><span class="file-path">array('key' =&gt; 'value')</span></strong>
                 <span>設定のまとまり。<span class="file-path">key</span> が項目名、<span class="file-path">value</span> が中身。Laravelの連想配列と同じ感覚で読む。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">=&gt;</span></strong>
+                <span>「左の名前に、右の値を対応させる」という意味。<span class="file-path">'action' =&gt; 'index'</span> は「actionはindex」。</span>
+            </div>
+            <div class="read-card">
+                <strong><span class="file-path">public function index()</span></strong>
+                <span>URLから呼ばれるaction。<span class="file-path">/users/index</span> が来たら、このメソッドが動く。</span>
             </div>
             <div class="read-card">
                 <strong><span class="file-path">if (...)</span></strong>
@@ -85,11 +133,11 @@ class UsersController extends AppController {
             <tbody>
                 <tr>
                     <th><span class="file-path">App::uses</span></th>
-                    <td>使うクラスを読み込む。古いCakePHP2のコードでよく見る。</td>
+                    <td>使うクラスの場所をCakePHPへ教える。ここでは <span class="file-path">AppController</span> がController系の場所にあると伝えている。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">extends AppController</span></th>
-                    <td>共通Controllerを継承する。ログイン判定などはAppController側にあることが多い。</td>
+                    <td>AppControllerを土台にしてUsersControllerを作る。ログイン判定、共通Component、共通HelperなどはAppController側にあることが多い。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">$components</span></th>
@@ -223,6 +271,10 @@ public function index() {
                 <tr>
                     <th><span class="file-path">$this-&gt;request-&gt;is('post')</span></th>
                     <td>フォーム送信された時だけ保存するための判定。最初に登録画面を開いただけの時は保存しない。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'post'</span></th>
+                    <td>HTTPメソッドのPOST。Laravelでいう <span class="file-path">Route::post()</span> に近い入口で送られてきた状態。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">create()</span></th>
