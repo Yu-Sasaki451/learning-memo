@@ -17,40 +17,13 @@
         <h2 class="header"><a href="../laravel/index.html">Laravelへ</a></h2>
     </div>
 
-    <h1 class="head">CakePHP 2.0 コードリーディング</h1>
+    <h1 class="head">CakePHP 2.0 コード読解</h1>
     <p class="head-text">
-        CakePHP 2.0のコードを読む時に、よく出る書き方を実例で見るページです。<br>
-        Laravel経験がある場合に対応関係も見られるようにしています。
+        読んでいるファイルに合わせて、必要なページだけ開く。
     </p>
 
     <section class="code-block">
-        <h2>このページ群で見ること</h2>
-        <p>
-            MVCの概念説明ではなく、実際のコードを読んだ時に迷いやすい部分を日本語へ直して見ます。<br>
-            どのファイルを参照しているのか、なぜその形で書くのか、Laravelだとどの感覚に近いのかを確認します。
-        </p>
-        <div class="read-grid">
-            <div class="read-card">
-                <strong>日本語に直す</strong>
-                <span><span class="file-path">$this-&gt;User-&gt;save($this-&gt;request-&gt;data)</span> を「フォーム入力をUserとして保存する」のように読む。</span>
-            </div>
-            <div class="read-card">
-                <strong>参照先を見る</strong>
-                <span><span class="file-path">$this-&gt;User</span> なら <span class="file-path">app/Model/User.php</span>、<span class="file-path">$this-&gt;set</span> ならViewの変数を見る。</span>
-            </div>
-            <div class="read-card">
-                <strong>形の理由を見る</strong>
-                <span><span class="file-path">array('conditions' =&gt; ...)</span> は検索条件をCakePHP2のORMへ渡すための形として読む。</span>
-            </div>
-        </div>
-    </section>
-
-    <section class="code-block">
-        <h2>まず見るページ</h2>
-        <p>
-            CakePHP 2.0は、Controller、Model、Viewの3つを行き来して読む。<br>
-            今日コードリーディングで迷った時は、まず「URLから処理を追う」を見てから、Controller、Model、Viewへ進む。
-        </p>
+        <h2>必要なページ</h2>
         <nav>
             <ul class="index-nav">
                 <li class="nav__item">
@@ -67,67 +40,23 @@
                 </li>
             </ul>
         </nav>
-    </section>
-
-    <section class="code-block">
-        <h2>公式で確認したこと</h2>
-        <p>
-            CakePHP 2.0のコードは、CakePHP 2.x公式を基準に見る。<br>
-            Laravelとの比較は理解補助で、実際の会社コードではCakePHP 2.0側の既存パターンを優先する。
-        </p>
-        <ul class="reference-list">
-            <li><a href="https://book.cakephp.org/2.x/controllers.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Controllers</a></li>
-            <li><a href="https://book.cakephp.org/2.x/models/retrieving-your-data.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Retrieving Your Data</a></li>
-            <li><a href="https://book.cakephp.org/2.x/models/saving-your-data.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Saving Your Data</a></li>
-            <li><a href="https://book.cakephp.org/2.x/models/data-validation.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Data Validation</a></li>
-            <li><a href="https://book.cakephp.org/2.x/views.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Views</a></li>
-            <li><a href="https://book.cakephp.org/2.x/core-libraries/helpers/form.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 FormHelper</a></li>
-            <li><a href="https://laravel.com/docs/12.x/controllers" target="_blank" rel="noreferrer">Laravel公式 Controllers</a></li>
-            <li><a href="https://laravel.com/docs/12.x/eloquent" target="_blank" rel="noreferrer">Laravel公式 Eloquent</a></li>
-            <li><a href="https://laravel.com/docs/12.x/blade" target="_blank" rel="noreferrer">Laravel公式 Blade</a></li>
-            <li><a href="https://laravel.com/docs/12.x/validation" target="_blank" rel="noreferrer">Laravel公式 Validation</a></li>
-        </ul>
-    </section>
-
-    <section class="code-block">
-        <h2>Laravelとのざっくり対応</h2>
-        <p>
-            完全に同じではない。<br>
-            ただ、読む時の入口としては次の対応で考えると迷いにくい。
-        </p>
         <table class="map-table">
             <tbody>
                 <tr>
-                    <th>CakePHP 2.0</th>
-                    <td>Laravelで近いもの</td>
+                    <th>URLから処理を追う</th>
+                    <td>画面URLから <span class="file-path">Controller</span>、<span class="file-path">action</span>、<span class="file-path">View</span> を特定する時に見る。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">app/Controller/UsersController.php</span></th>
-                    <td><span class="file-path">app/Http/Controllers/UserController.php</span>。画面や保存処理の入口。</td>
+                    <th>Controller</th>
+                    <td><span class="file-path">$this-&gt;User</span>、<span class="file-path">$this-&gt;request-&gt;data</span>、<span class="file-path">$this-&gt;set()</span>、<span class="file-path">redirect()</span> を読む時に見る。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">app/Model/User.php</span></th>
-                    <td><span class="file-path">app/Models/User.php</span>。DB取得、保存、関連、バリデーションを見る。</td>
+                    <th>Model</th>
+                    <td><span class="file-path">find()</span>、<span class="file-path">save()</span>、<span class="file-path">$validate</span>、関連、<span class="file-path">beforeSave()</span> を読む時に見る。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">app/View/Users/edit.ctp</span></th>
-                    <td><span class="file-path">resources/views/users/edit.blade.php</span>。HTMLと表示処理。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">$this-&gt;User-&gt;find('first')</span></th>
-                    <td><span class="file-path">User::where(...)-&gt;first()</span> に近い。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">$this-&gt;User-&gt;save($this-&gt;request-&gt;data)</span></th>
-                    <td><span class="file-path">$user-&gt;save()</span> や <span class="file-path">User::create()</span> に近い。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">public $validate</span></th>
-                    <td>FormRequestや <span class="file-path">$request-&gt;validate()</span> に近い。ただしCakePHP 2ではModelに書くことが多い。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">$this-&gt;set('user', $user)</span></th>
-                    <td><span class="file-path">return view(..., ['user' =&gt; $user])</span> に近い。</td>
+                    <th>View</th>
+                    <td><span class="file-path">.ctp</span>、<span class="file-path">FormHelper</span>、<span class="file-path">HtmlHelper</span>、<span class="file-path">Paginator</span>、<span class="file-path">element()</span> を読む時に見る。</td>
                 </tr>
             </tbody>
         </table>
