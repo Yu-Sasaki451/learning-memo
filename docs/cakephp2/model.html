@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Modelの書き方 - CakePHP2</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=1">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header"><a href="../index.html">memo</a></h1>
+        <h2 class="header"><a href="./index.html">CakePHP2へ</a></h2>
+        <h2 class="header"><a href="./controller.html">Controllerへ</a></h2>
+        <h2 class="header"><a href="./view.html">Viewへ</a></h2>
+    </div>
+
+    <h1 class="head">Modelの書き方</h1>
+    <p class="head-text">
+        Modelは、DB取得、保存、関連、バリデーションを見る場所です。<br>
+        CakePHP 2.0では、入力チェックがControllerではなくModelに書かれていることがよくあります。
+    </p>
+
+    <section class="code-block">
+        <h2>Modelの基本形</h2>
+        <p>
+            Model名は単数形です。<br>
+            <span class="file-path">User</span> モデルは、通常 <span class="file-path">users</span> テーブルを扱います。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>App::uses('AppModel', 'Model');
+
+class User extends AppModel {
+    public $useTable = 'users';
+    public $primaryKey = 'id';
+    public $displayField = 'name';
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">extends AppModel</span></th>
+                    <td>共通Modelを継承する。全Model共通の処理がAppModelにあることが多い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$useTable</span></th>
+                    <td>使うテーブル名を指定する。規約通りなら省略されていることもある。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$primaryKey</span></th>
+                    <td>主キー。通常はid。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$displayField</span></th>
+                    <td>一覧やselectで代表名として使う項目。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>関連 belongsTo / hasMany</h2>
+        <p>
+            関連は、別テーブルとつながる設定です。<br>
+            コードリーディングでは、取得結果の配列に別Modelのデータが混ざる理由をここで確認します。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>class Post extends AppModel {
+    public $belongsTo = array(
+        'User' =&gt; array(
+            'className' =&gt; 'User',
+            'foreignKey' =&gt; 'user_id'
+        )
+    );
+
+    public $hasMany = array(
+        'Comment' =&gt; array(
+            'className' =&gt; 'Comment',
+            'foreignKey' =&gt; 'post_id',
+            'dependent' =&gt; true
+        )
+    );
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">belongsTo</span></th>
+                    <td>このModelが親を持つ。PostはUserに所属する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">hasMany</span></th>
+                    <td>このModelが複数の子を持つ。PostはCommentを複数持つ。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">foreignKey</span></th>
+                    <td>関連に使う外部キー。<span class="file-path">user_id</span>、<span class="file-path">post_id</span> など。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">dependent</span></th>
+                    <td>親を削除した時に子も削除するか。影響が大きいので注意して読む。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>バリデーション</h2>
+        <p>
+            CakePHP 2.0では、Modelの <span class="file-path">$validate</span> に入力チェックが書かれていることがよくあります。<br>
+            保存できない時は、ControllerだけでなくModelのバリデーションを必ず見ます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public $validate = array(
+    'name' =&gt; array(
+        'notBlank' =&gt; array(
+            'rule' =&gt; 'notBlank',
+            'message' =&gt; '名前を入力してください'
+        ),
+        'maxLength' =&gt; array(
+            'rule' =&gt; array('maxLength', 50),
+            'message' =&gt; '名前は50文字以内で入力してください'
+        )
+    ),
+    'email' =&gt; array(
+        'email' =&gt; array(
+            'rule' =&gt; 'email',
+            'message' =&gt; 'メールアドレスの形式で入力してください'
+        )
+    )
+);</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">notBlank</span></th>
+                    <td>空欄を許可しない。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">maxLength</span></th>
+                    <td>文字数の上限を決める。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">email</span></th>
+                    <td>メールアドレス形式か確認する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">message</span></th>
+                    <td>入力エラー時に画面へ出る文言。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>findのよく使う形</h2>
+        <p>
+            CakePHP 2.0のDB取得では、<span class="file-path">find()</span> が頻繁に出ます。<br>
+            まず、何件取るのか、どんな条件か、どの項目を取るのかを見ます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>$user = $this-&gt;User-&gt;find('first', array(
+    'conditions' =&gt; array('User.id' =&gt; $id),
+    'recursive' =&gt; -1
+));
+
+$users = $this-&gt;User-&gt;find('all', array(
+    'conditions' =&gt; array('User.status' =&gt; 'active'),
+    'fields' =&gt; array('User.id', 'User.name', 'User.email'),
+    'order' =&gt; array('User.created' =&gt; 'desc'),
+    'limit' =&gt; 20
+));
+
+$count = $this-&gt;User-&gt;find('count', array(
+    'conditions' =&gt; array('User.status' =&gt; 'active')
+));
+
+$list = $this-&gt;User-&gt;find('list', array(
+    'fields' =&gt; array('User.id', 'User.name')
+));</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">first</span></th>
+                    <td>1件取得する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">all</span></th>
+                    <td>複数件取得する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">count</span></th>
+                    <td>件数だけ取得する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">list</span></th>
+                    <td>select用のidと表示名の配列を作る時によく使う。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">recursive</span></th>
+                    <td>関連データをどこまで取るか。重い画面ではここが原因になることがある。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>保存 create / save / saveAll</h2>
+        <p>
+            保存できない時は、送られてきた配列の形とModelのバリデーションを見ます。<br>
+            CakePHP2では配列のキーにModel名が入る形がよく出ます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>$data = array(
+    'User' =&gt; array(
+        'name' =&gt; '山田太郎',
+        'email' =&gt; 'yamada@example.com'
+    )
+);
+
+$this-&gt;User-&gt;create();
+$this-&gt;User-&gt;save($data);</code></pre>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>$data = array(
+    'User' =&gt; array(
+        'name' =&gt; '山田太郎',
+        'email' =&gt; 'yamada@example.com'
+    ),
+    'Profile' =&gt; array(
+        'birthday' =&gt; '1990-01-01'
+    )
+);
+
+$this-&gt;User-&gt;saveAll($data);</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">create()</span></th>
+                    <td>新規登録として保存する準備。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">save()</span></th>
+                    <td>1つのModelを保存する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">saveAll()</span></th>
+                    <td>関連する複数Modelをまとめて保存する。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>Model内に処理をまとめる</h2>
+        <p>
+            Controllerが長すぎる時は、検索条件や業務ルールがModelのメソッドに分けられていることがあります。<br>
+            <span class="file-path">$this-&gt;User-&gt;findActiveByEmail()</span> のような呼び出しを見たら、Model内の同名メソッドを探します。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function findActiveByEmail($email) {
+    return $this-&gt;find('first', array(
+        'conditions' =&gt; array(
+            'User.email' =&gt; $email,
+            'User.status' =&gt; 'active'
+        ),
+        'recursive' =&gt; -1
+    ));
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>この処理は</th>
+                    <td>有効なユーザーをメールアドレスで1件探す処理。</td>
+                </tr>
+                <tr>
+                    <th>読む時の注意</th>
+                    <td>Controllerだけ見ても条件が分からない。Modelのメソッド定義まで追う。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>beforeSave</h2>
+        <p>
+            保存前に値が変わる場合は、Modelのコールバックを確認します。<br>
+            画面では入力していない値がDBに入る時は、<span class="file-path">beforeSave()</span> を探します。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function beforeSave($options = array()) {
+    if (isset($this-&gt;data[$this-&gt;alias]['email'])) {
+        $this-&gt;data[$this-&gt;alias]['email'] = strtolower($this-&gt;data[$this-&gt;alias]['email']);
+    }
+
+    return true;
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">beforeSave</span></th>
+                    <td>saveの直前に自動で呼ばれる。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;data</span></th>
+                    <td>保存対象のデータ。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">return true</span></th>
+                    <td>保存を続ける。falseを返すと保存が止まる。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>Laravelなら近い形</h2>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>class User extends Model
+{
+    protected $fillable = ['name', 'email'];
+
+    public function posts()
+    {
+        return $this-&gt;hasMany(Post::class);
+    }
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>CakePHP 2.0</th>
+                    <td>Modelにfind、save、関連、validate、beforeSaveがまとまりやすい。</td>
+                </tr>
+                <tr>
+                    <th>Laravel</th>
+                    <td>Eloquent Modelに関連やfillableを書き、入力チェックはFormRequest側に分けることが多い。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>VS Codeで探す語</h2>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>rg "class User extends" app/Model
+rg "public \\$validate" app/Model
+rg "belongsTo" app/Model
+rg "hasMany" app/Model
+rg "find('first'" app
+rg "saveAll" app
+rg "beforeSave" app/Model</code></pre>
+    </section>
+</body>
+
+</html>

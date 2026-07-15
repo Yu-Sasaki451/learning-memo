@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>CakePHP2コード</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=1">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header"><a href="../index.html">memo</a></h1>
+        <h2 class="header"><a href="../development/index.html">開発手順へ</a></h2>
+        <h2 class="header"><a href="../laravel/index.html">Laravelへ</a></h2>
+    </div>
+
+    <h1 class="head">CakePHP 2.0 コードリーディング</h1>
+    <p class="head-text">
+        CakePHP 2.0のコードを読む時に、よく出る書き方を実例で見るページです。<br>
+        Laravel経験がある場合に対応関係も見られるようにしています。
+    </p>
+
+    <section class="code-block">
+        <h2>まず見るページ</h2>
+        <p>
+            CakePHP 2.0は、Controller、Model、Viewの3つを行き来して読む。<br>
+            今日コードリーディングで迷った時は、まず「URLから処理を追う」を見てから、Controller、Model、Viewへ進む。
+        </p>
+        <nav>
+            <ul class="index-nav">
+                <li class="nav__item">
+                    <a class="nav__link" href="./flow.html">URLから処理を追う</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./controller.html">Controllerの書き方</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./model.html">Modelの書き方</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="./view.html">Viewの書き方</a>
+                </li>
+            </ul>
+        </nav>
+    </section>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            CakePHP 2.0のコードは、CakePHP 2.x公式を基準に見る。<br>
+            Laravelとの比較は理解補助で、実際の会社コードではCakePHP 2.0側の既存パターンを優先する。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://book.cakephp.org/2.x/controllers.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Controllers</a></li>
+            <li><a href="https://book.cakephp.org/2.x/models/retrieving-your-data.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Retrieving Your Data</a></li>
+            <li><a href="https://book.cakephp.org/2.x/models/saving-your-data.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Saving Your Data</a></li>
+            <li><a href="https://book.cakephp.org/2.x/models/data-validation.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Data Validation</a></li>
+            <li><a href="https://book.cakephp.org/2.x/views.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 Views</a></li>
+            <li><a href="https://book.cakephp.org/2.x/core-libraries/helpers/form.html" target="_blank" rel="noreferrer">CakePHP 2.x公式 FormHelper</a></li>
+            <li><a href="https://laravel.com/docs/12.x/controllers" target="_blank" rel="noreferrer">Laravel公式 Controllers</a></li>
+            <li><a href="https://laravel.com/docs/12.x/eloquent" target="_blank" rel="noreferrer">Laravel公式 Eloquent</a></li>
+            <li><a href="https://laravel.com/docs/12.x/blade" target="_blank" rel="noreferrer">Laravel公式 Blade</a></li>
+            <li><a href="https://laravel.com/docs/12.x/validation" target="_blank" rel="noreferrer">Laravel公式 Validation</a></li>
+        </ul>
+    </section>
+
+    <section class="code-block">
+        <h2>Laravelとのざっくり対応</h2>
+        <p>
+            完全に同じではない。<br>
+            ただ、読む時の入口としては次の対応で考えると迷いにくい。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>CakePHP 2.0</th>
+                    <td>Laravelで近いもの</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">app/Controller/UsersController.php</span></th>
+                    <td><span class="file-path">app/Http/Controllers/UserController.php</span>。画面や保存処理の入口。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">app/Model/User.php</span></th>
+                    <td><span class="file-path">app/Models/User.php</span>。DB取得、保存、関連、バリデーションを見る。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">app/View/Users/edit.ctp</span></th>
+                    <td><span class="file-path">resources/views/users/edit.blade.php</span>。HTMLと表示処理。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;User-&gt;find('first')</span></th>
+                    <td><span class="file-path">User::where(...)-&gt;first()</span> に近い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;User-&gt;save($this-&gt;request-&gt;data)</span></th>
+                    <td><span class="file-path">$user-&gt;save()</span> や <span class="file-path">User::create()</span> に近い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">public $validate</span></th>
+                    <td>FormRequestや <span class="file-path">$request-&gt;validate()</span> に近い。ただしCakePHP 2ではModelに書くことが多い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;set('user', $user)</span></th>
+                    <td><span class="file-path">return view(..., ['user' =&gt; $user])</span> に近い。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>コードを読む時の検索語</h2>
+        <p>
+            分からないコードを読む時は、名前で追う。<br>
+            URL、Controller名、action名、Model名、View内の文言で検索する。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>rg "UsersController"
+rg "function edit"
+rg "User-&gt;save"
+rg "public \\$validate"
+rg "Form-&gt;input"
+rg "Session-&gt;setFlash"</code></pre>
+    </section>
+</body>
+
+</html>

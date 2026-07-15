@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>URLから処理を追う - CakePHP2</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=1">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header"><a href="../index.html">memo</a></h1>
+        <h2 class="header"><a href="./index.html">CakePHP2へ</a></h2>
+        <h2 class="header"><a href="../development/index.html">開発手順へ</a></h2>
+    </div>
+
+    <h1 class="head">URLから処理を追う</h1>
+    <p class="head-text">
+        画面で起きたことを、URL、routes、Controller、Model、Viewの順に追うためのページです。<br>
+        CakePHP 2.0のコードリーディングでは、最初にこの流れを作ると迷いにくいです。
+    </p>
+
+    <section class="code-block">
+        <h2>読む順番</h2>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>1. URL</th>
+                    <td><span class="file-path">/users/edit/5</span> なら、UsersControllerのedit actionを疑う。</td>
+                </tr>
+                <tr>
+                    <th>2. routes</th>
+                    <td><span class="file-path">app/Config/routes.php</span> に特別なURL設定がないか見る。</td>
+                </tr>
+                <tr>
+                    <th>3. Controller</th>
+                    <td><span class="file-path">app/Controller/UsersController.php</span> の <span class="file-path">edit()</span> を読む。</td>
+                </tr>
+                <tr>
+                    <th>4. Model</th>
+                    <td><span class="file-path">app/Model/User.php</span> の検索、保存、バリデーション、関連を見る。</td>
+                </tr>
+                <tr>
+                    <th>5. View</th>
+                    <td><span class="file-path">app/View/Users/edit.ctp</span> のフォーム、リンク、表示変数を見る。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>標準URLの読み方</h2>
+        <p>
+            CakePHP 2.0は、特別なroutesがなければURLからControllerとactionを推測できます。<br>
+            複数形のController、単数形のModelという名前の差に注意します。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>URL</th>
+                    <td><span class="file-path">/users/edit/5</span></td>
+                </tr>
+                <tr>
+                    <th>Controller</th>
+                    <td><span class="file-path">UsersController</span>。ファイルは <span class="file-path">app/Controller/UsersController.php</span>。</td>
+                </tr>
+                <tr>
+                    <th>action</th>
+                    <td><span class="file-path">edit($id = null)</span>。URLの5が引数に入ることが多い。</td>
+                </tr>
+                <tr>
+                    <th>Model</th>
+                    <td><span class="file-path">User</span>。Controller名は複数形、Model名は単数形。</td>
+                </tr>
+                <tr>
+                    <th>View</th>
+                    <td><span class="file-path">app/View/Users/edit.ctp</span>。Controller名のフォルダ、action名のctp。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>routes.phpに設定がある場合</h2>
+        <p>
+            URLとController名が一致しない時は、routesで別名が付いている可能性があります。<br>
+            画面のURLでControllerが見つからない時は、最初にroutesを検索します。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Router::connect(
+    '/member/profile/:id',
+    array('controller' =&gt; 'users', 'action' =&gt; 'profile'),
+    array('pass' =&gt; array('id'))
+);</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">/member/profile/5</span></th>
+                    <td>ブラウザで見えるURL。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'controller' =&gt; 'users'</span></th>
+                    <td><span class="file-path">UsersController</span> を呼ぶ。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'action' =&gt; 'profile'</span></th>
+                    <td><span class="file-path">profile()</span> を呼ぶ。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'pass' =&gt; array('id')</span></th>
+                    <td>URL内のidをactionの引数へ渡す。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>ControllerからViewへ値を渡す</h2>
+        <p>
+            ControllerでDBから取得した値は、<span class="file-path">$this-&gt;set()</span> でViewへ渡します。<br>
+            View側では、setした名前の変数として使います。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>class UsersController extends AppController {
+    public function profile($id = null) {
+        $user = $this-&gt;User-&gt;find('first', array(
+            'conditions' =&gt; array('User.id' =&gt; $id)
+        ));
+
+        if (empty($user)) {
+            throw new NotFoundException('ユーザーが見つかりません');
+        }
+
+        $this-&gt;set('user', $user);
+    }
+}</code></pre>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;h2&gt;&lt;?php echo h($user['User']['name']); ?&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;?php echo h($user['User']['email']); ?&gt;&lt;/p&gt;</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$this-&gt;User</span></th>
+                    <td>UsersControllerに対応するUserモデル。DB操作を担当する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">find('first')</span></th>
+                    <td>条件に合うデータを1件取得する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">empty($user)</span></th>
+                    <td>取得できなかった時の判定。見つからないなら404にする。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;set('user', $user)</span></th>
+                    <td>Viewで <span class="file-path">$user</span> として使えるようにする。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">h()</span></th>
+                    <td>HTMLとして危険な文字をそのまま出さないためのエスケープ。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>Laravelなら近い形</h2>
+        <p>
+            CakePHP 2.0ではControllerのaction名とViewファイル名が強く結びつきます。<br>
+            Laravelではroutesに明示して、Controllerからviewをreturnする形がよく使われます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>Route::get('/member/profile/{id}', [UserController::class, 'profile']);</code></pre>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>public function profile($id)
+{
+    $user = User::findOrFail($id);
+
+    return view('users.profile', ['user' =&gt; $user]);
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>CakePHP 2.0</th>
+                    <td>URL規約とroutesからController/action/Viewへ進む。</td>
+                </tr>
+                <tr>
+                    <th>Laravel</th>
+                    <td>routes/web.phpを入口にしてControllerとviewを追う。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>VS Codeで探す語</h2>
+        <p>
+            いきなり全部を読まず、URLやaction名から候補を絞ります。<br>
+            VS Codeなら <span class="file-path">Cmd + Shift + F</span>、ターミナルなら <span class="file-path">rg</span> を使います。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>rg "Router::connect" app/Config
+rg "UsersController" app/Controller
+rg "function profile" app/Controller
+rg "set('user'" app
+rg "View/Users/profile.ctp"</code></pre>
+    </section>
+</body>
+
+</html>
