@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Controllerの書き方 - CakePHP2</title>
+    <title>Controllerの読み方 - CakePHP2</title>
     <link rel="stylesheet" href="../reset.css">
     <link rel="stylesheet" href="./style.css?v=1">
     <script src="../script.js?v=3" defer></script>
@@ -18,459 +18,348 @@
         <h2 class="header"><a href="./view.html">Viewへ</a></h2>
     </div>
 
-    <h1 class="head">Controllerの書き方</h1>
+    <h1 class="head">Controllerの読み方</h1>
     <p class="head-text">
-        Controllerは、URLから呼ばれる処理の入口です。<br>
-        画面表示、入力受け取り、Model呼び出し、保存後のリダイレクトを読む場所です。
+        CakePHP2のControllerを、コードの形、参照先、日本語訳で読む。<br>
+        Laravelと見た目が違うところを先に潰す。
     </p>
 
     <section class="code-block">
-        <h2>CakePHP2特有の書き方</h2>
+        <h2>調べて採用した読み方</h2>
         <p>
-            Controllerの先頭に出る書き方は、LaravelのControllerと見た目がかなり違います。<br>
-            まずここを読んでから、下のコード例を見る。
+            CakePHP2公式は、Blog Tutorialで <span class="file-path">list / add / edit / delete</span> の小さい実例から説明している。<br>
+            その形に合わせて、このページも「編集処理」を1つ選び、上から順番に分解する。
         </p>
         <table class="map-table">
             <tbody>
                 <tr>
-                    <th><span class="file-path">App::uses('AppController', 'Controller');</span></th>
-                    <td>日本語にすると「AppControllerクラスはControllerフォルダ側にあるので、使う時に読めるようCakePHPへ場所を教える」です。</td>
+                    <th>公式Controller</th>
+                    <td>actionはURLから呼ばれ、<span class="file-path">$this-&gt;set()</span> でViewへ値を渡す。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">App</span></th>
-                    <td>CakePHP2が持っているクラス読み込み用の仕組み。ファイルの場所を探す役割。</td>
+                    <th>公式App Class</th>
+                    <td><span class="file-path">App::uses()</span> はクラス名と置き場所をCakePHPへ教える。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">::</span></th>
-                    <td>クラスそのものが持つ機能を呼ぶ記号。<span class="file-path">App::uses()</span> は「Appクラスのuses機能を呼ぶ」と読む。</td>
+                    <th>公式Request</th>
+                    <td><span class="file-path">$this-&gt;request</span> はリクエスト情報の入口。POST判定や入力値を読む。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">'AppController'</span></th>
-                    <td>読み込みたいクラス名。参照先は主に <span class="file-path">app/Controller/AppController.php</span>。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">'Controller'</span></th>
-                    <td>そのクラスが置かれている種類やフォルダ。Controller系のクラスを探す、という指定。</td>
-                </tr>
-                <tr>
-                    <th>Laravelとの違い</th>
-                    <td>Laravelでは <span class="file-path">namespace</span> や <span class="file-path">use App\Http\Controllers\Controller;</span> をよく見る。CakePHP2では古い読み込み方式として <span class="file-path">App::uses()</span> がよく出る。</td>
+                    <th>公式Saving Data</th>
+                    <td><span class="file-path">save($this-&gt;request-&gt;data)</span> はフォーム入力をModel経由で保存する基本形。</td>
                 </tr>
             </tbody>
         </table>
-        <div class="read-box">
-            <strong>この1行を読む時の結論</strong>
-            <p><span class="file-path">App::uses('AppController', 'Controller');</span> は、処理本体ではありません。画面の動きではなく、「この下で <span class="file-path">extends AppController</span> と書けるように、親クラスの場所をCakePHPへ教える準備」です。</p>
-        </div>
     </section>
 
     <section class="code-block">
-        <h2>Controllerでよく出る記号</h2>
+        <h2>まずこの1本を読む</h2>
         <p>
-            Controllerのコードは、英語の命令文をCakePHPの形で書いているだけです。<br>
-            読む時は、記号を先に日本語へ直すと追いやすくなります。
+            この処理は、ユーザー編集画面のController例です。<br>
+            URL、親Controller、Model、View、フォーム入力、保存、リダイレクトが全部入っているので、Controller読解の土台になります。
         </p>
-        <div class="read-grid">
-            <div class="read-card">
-                <strong><span class="file-path">$this</span></strong>
-                <span>「今このController自身」という意味。UsersController内なら、UsersControllerから見た部品やModelを呼ぶ。</span>
-            </div>
-            <div class="read-card">
-                <strong><span class="file-path">-&gt;</span></strong>
-                <span>「左のものが持っている右の機能を使う」という意味。<span class="file-path">$this-&gt;User</span> は「このControllerが持つUserモデル」。</span>
-            </div>
-            <div class="read-card">
-                <strong><span class="file-path">array('key' =&gt; 'value')</span></strong>
-                <span>設定のまとまり。<span class="file-path">key</span> が項目名、<span class="file-path">value</span> が中身。Laravelの連想配列と同じ感覚で読む。</span>
-            </div>
-            <div class="read-card">
-                <strong><span class="file-path">=&gt;</span></strong>
-                <span>「左の名前に、右の値を対応させる」という意味。<span class="file-path">'action' =&gt; 'index'</span> は「actionはindex」。</span>
-            </div>
-            <div class="read-card">
-                <strong><span class="file-path">public function index()</span></strong>
-                <span>URLから呼ばれるaction。<span class="file-path">/users/index</span> が来たら、このメソッドが動く。</span>
-            </div>
-            <div class="read-card">
-                <strong><span class="file-path">if (...)</span></strong>
-                <span>「もし条件に当てはまるなら」。保存できた時、POSTされた時、データが空の時などを分岐する。</span>
-            </div>
-            <div class="read-card">
-                <strong><span class="file-path">!</span></strong>
-                <span>否定。「そうではないなら」。<span class="file-path">!$this-&gt;User-&gt;exists($id)</span> は「そのidのUserが存在しないなら」。</span>
-            </div>
-            <div class="read-card">
-                <strong><span class="file-path">return</span></strong>
-                <span>そこで処理を返して終わる。redirectの前にreturnがある時は、移動して以降の処理を続けない。</span>
-            </div>
-        </div>
-    </section>
-
-    <section class="code-block">
-        <h2>Controllerの基本形</h2>
-        <p>
-            CakePHP 2.0では、Controller名は複数形にすることが多いです。<br>
-            <span class="file-path">UsersController</span> なら、基本的に <span class="file-path">User</span> モデルと <span class="file-path">app/View/Users</span> を使います。
-        </p>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>「UsersControllerという画面処理の置き場を作る。Session、Paginator、Html、Formを使えるようにする。indexが呼ばれたらUserテーブルから全件取り、Viewへusersという名前で渡す」です。</p>
-            <p>参照している先は、<span class="file-path">app/Controller/AppController.php</span>、<span class="file-path">app/Model/User.php</span>、<span class="file-path">app/View/Users/index.ctp</span> です。</p>
-        </div>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>App::uses('AppController', 'Controller');
 
 class UsersController extends AppController {
-    public $components = array('Session', 'Paginator');
-    public $helpers = array('Html', 'Form', 'Paginator');
+    public $components = array('Session');
+    public $helpers = array('Html', 'Form');
 
-    public function index() {
-        $users = $this-&gt;User-&gt;find('all');
-        $this-&gt;set('users', $users);
+    public function edit($id = null) {
+        if (!$this-&gt;User-&gt;exists($id)) {
+            throw new NotFoundException('ユーザーが見つかりません');
+        }
+
+        if ($this-&gt;request-&gt;is(array('post', 'put'))) {
+            if ($this-&gt;User-&gt;save($this-&gt;request-&gt;data)) {
+                $this-&gt;Session-&gt;setFlash('ユーザーを更新しました');
+                return $this-&gt;redirect(array('action' =&gt; 'index'));
+            }
+
+            $this-&gt;Session-&gt;setFlash('入力内容を確認してください');
+        } else {
+            $this-&gt;request-&gt;data = $this-&gt;User-&gt;find('first', array(
+                'conditions' =&gt; array('User.id' =&gt; $id)
+            ));
+        }
     }
 }</code></pre>
+        <div class="read-box">
+            <strong>日本語に直すと</strong>
+            <p>「UsersControllerのeditが呼ばれたら、まずidのUserが存在するか確認する。フォーム送信なら入力値を保存する。保存できたら一覧へ戻す。まだフォーム送信ではない初回表示なら、DBから既存データを取ってフォームへ入れる」です。</p>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>1. 読み込みと継承</h2>
+        <p>
+            この処理は、Controller本体が動く前の準備です。<br>
+            画面の保存や表示の処理ではなく、「このControllerは何を土台にしているか」を示します。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>App::uses('AppController', 'Controller');
+
+class UsersController extends AppController {</code></pre>
         <table class="map-table">
             <tbody>
                 <tr>
-                    <th><span class="file-path">App::uses</span></th>
-                    <td>使うクラスの場所をCakePHPへ教える。ここでは <span class="file-path">AppController</span> がController系の場所にあると伝えている。</td>
+                    <th><span class="file-path">App::uses('AppController', 'Controller');</span></th>
+                    <td>「AppControllerはController系の場所にある」とCakePHPへ教える。参照先は主に <span class="file-path">app/Controller/AppController.php</span>。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">App</span></th>
+                    <td>CakePHP2のクラス読み込み管理。LaravelのComposer autoloadや <span class="file-path">use</span> 文より古い書き方。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">::</span></th>
+                    <td>クラス自体の機能を呼ぶ記号。<span class="file-path">App::uses()</span> は「Appクラスのuses機能を呼ぶ」。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">class UsersController</span></th>
+                    <td>UsersControllerというControllerクラスを定義する。ファイルは <span class="file-path">app/Controller/UsersController.php</span>。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">extends AppController</span></th>
-                    <td>AppControllerを土台にしてUsersControllerを作る。ログイン判定、共通Component、共通HelperなどはAppController側にあることが多い。</td>
+                    <td>AppControllerを親にする。ログイン判定、共通Component、共通設定は親側にあることが多い。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">$components</span></th>
-                    <td>Controller側で使う部品を登録する。<span class="file-path">Session</span> はメッセージやログイン情報、<span class="file-path">Paginator</span> はページング処理で使う。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">$helpers</span></th>
-                    <td>View側で使う部品を登録する。ここにある名前が <span class="file-path">$this-&gt;Form</span> や <span class="file-path">$this-&gt;Html</span> としてctpで使われる。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">index()</span></th>
-                    <td>URLのactionに対応するメソッド。<span class="file-path">/users/index</span> や <span class="file-path">/users</span> から呼ばれ、終わると <span class="file-path">app/View/Users/index.ctp</span> が表示される。</td>
+                    <th>Laravelなら</th>
+                    <td><span class="file-path">use App\Http\Controllers\Controller;</span> と <span class="file-path">class UserController extends Controller</span> に近い。</td>
                 </tr>
             </tbody>
         </table>
     </section>
 
     <section class="code-block">
-        <h2>一覧表示 index</h2>
+        <h2>2. ComponentとHelper</h2>
         <p>
-            一覧画面では、ページング付きで取得する形がよく出ます。<br>
-            <span class="file-path">$this-&gt;paginate</span> に条件を書き、<span class="file-path">$this-&gt;Paginator-&gt;paginate()</span> で取得します。
+            この処理は、ControllerとViewで使う道具を指定しています。<br>
+            会社コードではここに <span class="file-path">Auth</span>、<span class="file-path">Paginator</span>、<span class="file-path">RequestHandler</span> などが増えることがあります。
         </p>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>「Userを20件ずつ、作成日の新しい順で、削除されていないものだけ取る。取った結果をusersという名前でViewへ渡す」です。</p>
-            <p>この形にする理由は、Controller内に一覧取得の条件をまとめ、View側では <span class="file-path">$users</span> を表示するだけにするためです。</p>
-        </div>
         <button class="copy-btn" type="button">Copy</button>
-        <pre><code>public $paginate = array(
-    'User' =&gt; array(
-        'limit' =&gt; 20,
-        'order' =&gt; array('User.created' =&gt; 'desc'),
-        'conditions' =&gt; array('User.deleted' =&gt; 0)
-    )
-);
-
-public function index() {
-    $users = $this-&gt;Paginator-&gt;paginate('User');
-    $this-&gt;set('users', $users);
-}</code></pre>
+        <pre><code>public $components = array('Session');
+public $helpers = array('Html', 'Form');</code></pre>
         <table class="map-table">
             <tbody>
                 <tr>
-                    <th><span class="file-path">limit</span></th>
-                    <td>1ページに何件表示するか。</td>
+                    <th><span class="file-path">public $components</span></th>
+                    <td>Controller内で使う部品。<span class="file-path">$this-&gt;Session</span> のように呼べる。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">order</span></th>
-                    <td>並び順。createdの新しい順など。</td>
+                    <th><span class="file-path">Session</span></th>
+                    <td>一時メッセージやセッション情報を扱う。ここでは <span class="file-path">setFlash()</span> のために使う。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">conditions</span></th>
-                    <td>取得条件。削除済みを除外するなど。</td>
+                    <th><span class="file-path">public $helpers</span></th>
+                    <td>Viewで使う部品。ctpで <span class="file-path">$this-&gt;Html</span>、<span class="file-path">$this-&gt;Form</span> として使える。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">set('users', $users)</span></th>
-                    <td>Controller内の <span class="file-path">$users</span> を、View内でも <span class="file-path">$users</span> という名前で使えるようにする。</td>
+                    <th><span class="file-path">array('Html', 'Form')</span></th>
+                    <td>PHPの配列。CakePHP2は設定をこの形で渡すことが多い。Laravelの <span class="file-path">['Html', 'Form']</span> に近い。</td>
                 </tr>
             </tbody>
         </table>
     </section>
 
     <section class="code-block">
-        <h2>詳細表示 view</h2>
+        <h2>3. actionとURL</h2>
         <p>
-            詳細画面では、idを受け取って1件だけ取得します。<br>
-            見つからない時は、何も表示せずに404へ流す形がよく使われます。
+            この処理は、ブラウザから呼ばれる入口です。<br>
+            <span class="file-path">public function edit($id = null)</span> は「編集画面の処理」という意味で、URLのidを受け取ります。
         </p>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>「URLから来たidでUserを1件探す。見つからなければ404にする。見つかったらuserという名前でViewへ渡す」です。</p>
-            <p><span class="file-path">conditions</span> はSQLのWHERE条件に近いです。ここでは「User.idがURLのidと同じもの」という条件です。</p>
-        </div>
         <button class="copy-btn" type="button">Copy</button>
-        <pre><code>public function view($id = null) {
-    $user = $this-&gt;User-&gt;find('first', array(
-        'conditions' =&gt; array('User.id' =&gt; $id)
-    ));
-
-    if (empty($user)) {
-        throw new NotFoundException('ユーザーが見つかりません');
-    }
-
-    $this-&gt;set('user', $user);
-}</code></pre>
+        <pre><code>public function edit($id = null) {</code></pre>
         <table class="map-table">
             <tbody>
+                <tr>
+                    <th><span class="file-path">public function</span></th>
+                    <td>URLから呼べるaction。CakePHP2ではController内のpublicメソッドがactionになる。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">edit</span></th>
+                    <td>action名。標準ルールなら <span class="file-path">/users/edit/5</span> で呼ばれる。</td>
+                </tr>
                 <tr>
                     <th><span class="file-path">$id = null</span></th>
-                    <td>URLからidが来ない場合も考えて、初期値をnullにしている。<span class="file-path">/users/view/5</span> なら5が入る。</td>
+                    <td>URL末尾の5などが入る。来なかった時はnullにしておく、という初期値。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">find('first')</span></th>
-                    <td>1件だけ取得する。</td>
+                    <th>参照するView</th>
+                    <td>通常は <span class="file-path">app/View/Users/edit.ctp</span>。action名とctp名が対応する。</td>
+                </tr>
+                <tr>
+                    <th>Laravelなら</th>
+                    <td><span class="file-path">public function edit($id)</span> と routes/web.php の <span class="file-path">Route::get('/users/{id}/edit', ...)</span> に近い。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>4. 対象データの存在確認</h2>
+        <p>
+            この処理は、不正なidや存在しないidで編集画面を開かれた時に止めるためのものです。<br>
+            <span class="file-path">!</span> は否定なので、「存在しないなら」と読みます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>if (!$this-&gt;User-&gt;exists($id)) {
+    throw new NotFoundException('ユーザーが見つかりません');
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$this</span></th>
+                    <td>今のUsersController自身。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">-&gt;</span></th>
+                    <td>左側が持っているものを呼ぶ記号。<span class="file-path">$this-&gt;User</span> は「このControllerが持つUserモデル」。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;User</span></th>
+                    <td>参照先は <span class="file-path">app/Model/User.php</span>。Controller名Usersに対応する主Model。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">exists($id)</span></th>
+                    <td>そのidのUserが存在するか確認する。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">throw new NotFoundException</span></th>
-                    <td>該当データがない時に404ページへする。</td>
+                    <td>404系の例外を出す。以降の保存処理には進まない。</td>
                 </tr>
             </tbody>
         </table>
     </section>
 
     <section class="code-block">
-        <h2>新規登録 add</h2>
+        <h2>5. 送信された時だけ保存する</h2>
         <p>
-            登録処理では、POSTで送られた時だけ保存します。<br>
-            保存成功なら一覧や詳細へ移動し、失敗なら同じ画面に戻して入力エラーを見せます。
+            この処理は、編集画面を開いただけなのか、保存ボタンを押した後なのかを分けています。<br>
+            保存ボタンを押すとPOSTまたはPUTとして来るので、その時だけ <span class="file-path">save()</span> します。
         </p>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>「登録フォームが送信された時だけ、Userを新規登録モードにして、フォームの入力値を保存する。保存できたらメッセージを出して一覧へ移動する。保存できなければ入力確認メッセージを出す」です。</p>
-            <p><span class="file-path">$this-&gt;request-&gt;data</span> は、ViewのFormHelperから送られた入力値です。たとえば <span class="file-path">User.name</span> と <span class="file-path">User.email</span> が入ります。</p>
-        </div>
         <button class="copy-btn" type="button">Copy</button>
-        <pre><code>public function add() {
-    if ($this-&gt;request-&gt;is('post')) {
-        $this-&gt;User-&gt;create();
-
-        if ($this-&gt;User-&gt;save($this-&gt;request-&gt;data)) {
-            $this-&gt;Session-&gt;setFlash('ユーザーを登録しました');
-            return $this-&gt;redirect(array('action' =&gt; 'index'));
-        }
-
-        $this-&gt;Session-&gt;setFlash('入力内容を確認してください');
+        <pre><code>if ($this-&gt;request-&gt;is(array('post', 'put'))) {
+    if ($this-&gt;User-&gt;save($this-&gt;request-&gt;data)) {
+        $this-&gt;Session-&gt;setFlash('ユーザーを更新しました');
+        return $this-&gt;redirect(array('action' =&gt; 'index'));
     }
+
+    $this-&gt;Session-&gt;setFlash('入力内容を確認してください');
 }</code></pre>
         <table class="map-table">
             <tbody>
                 <tr>
-                    <th><span class="file-path">$this-&gt;request-&gt;is('post')</span></th>
-                    <td>フォーム送信された時だけ保存するための判定。最初に登録画面を開いただけの時は保存しない。</td>
+                    <th><span class="file-path">$this-&gt;request</span></th>
+                    <td>ブラウザから来たリクエスト情報。POSTか、入力値は何か、URLパラメータは何かを持つ。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">'post'</span></th>
-                    <td>HTTPメソッドのPOST。Laravelでいう <span class="file-path">Route::post()</span> に近い入口で送られてきた状態。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">create()</span></th>
-                    <td>新規登録として保存する準備。</td>
+                    <th><span class="file-path">is(array('post', 'put'))</span></th>
+                    <td>POSTまたはPUTで送られてきたかを確認する。編集フォームの保存時だけtrueになる。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">$this-&gt;request-&gt;data</span></th>
-                    <td>フォームから送られた入力値。参照元は <span class="file-path">app/View/Users/add.ctp</span> の <span class="file-path">Form-&gt;input()</span>。</td>
+                    <td>フォーム入力値。参照元は <span class="file-path">app/View/Users/edit.ctp</span> の <span class="file-path">Form-&gt;input()</span>。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">save()</span></th>
-                    <td>Modelのバリデーションを通してDBへ保存する。</td>
+                    <th><span class="file-path">save(...)</span></th>
+                    <td>Userモデルで保存する。Modelの <span class="file-path">$validate</span> や <span class="file-path">beforeSave()</span> が関係する。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">return $this-&gt;redirect()</span></th>
-                    <td>保存後に別画面へ移動する。returnを書くと、その後の処理に進まない。</td>
+                    <th><span class="file-path">setFlash(...)</span></th>
+                    <td>次の画面に出す一時メッセージをセットする。表示場所はViewやLayoutの <span class="file-path">Session-&gt;flash()</span>。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">redirect(array('action' =&gt; 'index'))</span></th>
+                    <td>同じControllerのindexへ移動する。日本語では「保存できたら一覧へ戻る」。</td>
                 </tr>
             </tbody>
         </table>
     </section>
 
     <section class="code-block">
-        <h2>編集 edit</h2>
+        <h2>6. 初回表示ではフォームに既存値を入れる</h2>
         <p>
-            編集では、最初に既存データを表示し、送信されたら保存します。<br>
-            CakePHP2の古いコードでは <span class="file-path">$this-&gt;request-&gt;data</span> に既存データを入れて、FormHelperに初期値を出させる形がよく出ます。
+            この処理は、まだ保存ボタンを押していない時に動きます。<br>
+            DBから既存データを取り、<span class="file-path">$this-&gt;request-&gt;data</span> に入れることで、FormHelperが入力欄へ初期値を表示します。
         </p>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>「まずidのUserが存在するか確認する。フォームが送信されたら入力値を保存する。まだ送信されていない初回表示なら、DBから既存データを取ってフォームに入れる」です。</p>
-            <p><span class="file-path">else</span> 側は「保存失敗時」ではありません。初めて編集画面を開いた時に、既存の名前やメールをフォームに表示するための処理です。</p>
-        </div>
         <button class="copy-btn" type="button">Copy</button>
-        <pre><code>public function edit($id = null) {
-    if (!$this-&gt;User-&gt;exists($id)) {
-        throw new NotFoundException('ユーザーが見つかりません');
-    }
-
-    if ($this-&gt;request-&gt;is(array('post', 'put'))) {
-        if ($this-&gt;User-&gt;save($this-&gt;request-&gt;data)) {
-            $this-&gt;Session-&gt;setFlash('ユーザーを更新しました');
-            return $this-&gt;redirect(array('action' =&gt; 'index'));
-        }
-
-        $this-&gt;Session-&gt;setFlash('入力内容を確認してください');
-    } else {
-        $this-&gt;request-&gt;data = $this-&gt;User-&gt;find('first', array(
-            'conditions' =&gt; array('User.id' =&gt; $id)
-        ));
-    }
+        <pre><code>} else {
+    $this-&gt;request-&gt;data = $this-&gt;User-&gt;find('first', array(
+        'conditions' =&gt; array('User.id' =&gt; $id)
+    ));
 }</code></pre>
         <table class="map-table">
             <tbody>
                 <tr>
-                    <th><span class="file-path">exists($id)</span></th>
-                    <td>そのidのデータが存在するか確認する。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">array('post', 'put')</span></th>
-                    <td>登録系のPOSTと、更新系のPUTを受ける。CakePHPのFormHelperが編集フォームでPUT相当を送ることがあるため、この形で見る。</td>
-                </tr>
-                <tr>
                     <th><span class="file-path">else</span></th>
-                    <td>送信前の初回表示。DBから既存データを取り、フォームへ入れる。</td>
+                    <td>POSTでもPUTでもない時。つまり編集画面を最初に開いた時。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">find('first')</span></th>
+                    <td>条件に合うUserを1件取得する。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'conditions'</span></th>
+                    <td>検索条件。SQLのWHEREに近い。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'User.id' =&gt; $id</span></th>
+                    <td>「Userモデルのidが、URLから来たidと同じもの」。<span class="file-path">=&gt;</span> は左の項目に右の値を対応させる記号。</td>
                 </tr>
                 <tr>
                     <th><span class="file-path">$this-&gt;request-&gt;data = ...</span></th>
-                    <td>FormHelperが初期値として使うデータをセットする。Viewの <span class="file-path">Form-&gt;input('name')</span> がこの値を見て入力欄へ表示する。</td>
+                    <td>取得した既存データをフォームの初期値として置く。Viewの <span class="file-path">Form-&gt;input('name')</span> がこの値を見る。</td>
                 </tr>
             </tbody>
         </table>
     </section>
 
     <section class="code-block">
-        <h2>削除 delete</h2>
+        <h2>7. Laravelと見た目が違う場所</h2>
         <p>
-            削除はGETで実行させないのが基本です。<br>
-            リンクを開いただけで削除される事故を避けるため、POSTやDELETEだけ許可します。
+            同じ「編集保存」でも、Laravelとは書き方が違います。<br>
+            CakePHP2のコードをLaravelの感覚に置き換えると、次の対応で読むと迷いにくいです。
         </p>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>「この削除処理はPOSTかDELETEで来た時だけ許可する。Userを削除できたら成功メッセージ、できなければ失敗メッセージを出す。最後に一覧へ戻る」です。</p>
-            <p>参照元はViewの <span class="file-path">Form-&gt;postLink()</span> や削除フォームです。普通のリンクで削除しないために、この形になっています。</p>
-        </div>
-        <button class="copy-btn" type="button">Copy</button>
-        <pre><code>public function delete($id = null) {
-    $this-&gt;request-&gt;allowMethod('post', 'delete');
-
-    if ($this-&gt;User-&gt;delete($id)) {
-        $this-&gt;Session-&gt;setFlash('ユーザーを削除しました');
-    } else {
-        $this-&gt;Session-&gt;setFlash('削除できませんでした');
-    }
-
-    return $this-&gt;redirect(array('action' =&gt; 'index'));
-}</code></pre>
         <table class="map-table">
             <tbody>
                 <tr>
-                    <th><span class="file-path">allowMethod</span></th>
-                    <td>許可するHTTPメソッドを制限する。</td>
+                    <th><span class="file-path">App::uses(...)</span></th>
+                    <td>Laravelの <span class="file-path">namespace</span> や <span class="file-path">use</span> に近いが、CakePHP2では「クラスの置き場所を教える」書き方。</td>
                 </tr>
                 <tr>
-                    <th><span class="file-path">delete($id)</span></th>
-                    <td>指定したidのデータを削除する。</td>
+                    <th><span class="file-path">$this-&gt;request-&gt;data</span></th>
+                    <td>Laravelの <span class="file-path">$request-&gt;all()</span> や <span class="file-path">$request-&gt;validated()</span> に近い入力値。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;User-&gt;save(...)</span></th>
+                    <td>Laravelの <span class="file-path">$user-&gt;save()</span> や <span class="file-path">User::create()</span> に近い保存。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;set('user', $user)</span></th>
+                    <td>Laravelの <span class="file-path">return view(..., ['user' =&gt; $user])</span> に近いViewへの値渡し。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$this-&gt;Session-&gt;setFlash(...)</span></th>
+                    <td>Laravelの <span class="file-path">with('status', ...)</span> に近い一時メッセージ。</td>
                 </tr>
             </tbody>
         </table>
     </section>
 
     <section class="code-block">
-        <h2>ログイン許可や別Modelの利用</h2>
+        <h2>VS Codeで追う順番</h2>
         <p>
-            共通処理は <span class="file-path">beforeFilter()</span> にあることが多いです。<br>
-            Controller名と違うModelを使う場合は、<span class="file-path">loadModel()</span> を探します。
+            Controllerだけで完結しません。<br>
+            読む時は、次の順で検索します。
         </p>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>「このControllerの各actionが動く前に、親の共通処理を実行する。loginとlogoutはログイン前でも許可する。dashboardではOrderモデルを追加で読み込み、ログイン中ユーザーの注文を取得してViewへ渡す」です。</p>
-            <p><span class="file-path">parent::beforeFilter()</span> は特に重要です。AppController側のログイン設定や共通設定を飛ばさないために呼びます。</p>
-        </div>
-        <button class="copy-btn" type="button">Copy</button>
-        <pre><code>public function beforeFilter() {
-    parent::beforeFilter();
-    $this-&gt;Auth-&gt;allow('login', 'logout');
-}
-
-public function dashboard() {
-    $this-&gt;loadModel('Order');
-
-    $orders = $this-&gt;Order-&gt;find('all', array(
-        'conditions' =&gt; array('Order.user_id' =&gt; $this-&gt;Auth-&gt;user('id'))
-    ));
-
-    $this-&gt;set('orders', $orders);
-}</code></pre>
-        <table class="map-table">
-            <tbody>
-                <tr>
-                    <th><span class="file-path">parent::beforeFilter()</span></th>
-                    <td>AppController側の共通処理も実行する。消すとログイン判定などが壊れることがある。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">Auth-&gt;allow</span></th>
-                    <td>ログイン前でも見られるactionを指定する。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">loadModel('Order')</span></th>
-                    <td>このControllerの標準Model以外を使う。</td>
-                </tr>
-                <tr>
-                    <th><span class="file-path">Auth-&gt;user('id')</span></th>
-                    <td>ログイン中ユーザーのidを取る。</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="code-block">
-        <h2>Laravelなら近い形</h2>
-        <div class="read-box">
-            <strong>日本語に直すと</strong>
-            <p>CakePHP2の <span class="file-path">$this-&gt;User-&gt;save($this-&gt;request-&gt;data)</span> は、Laravelでいう「Requestで受け取った入力値をUserへ保存する」に近いです。</p>
-            <p>ただし、CakePHP2では入力値が <span class="file-path">$this-&gt;request-&gt;data</span> に入り、バリデーションはModelの <span class="file-path">$validate</span> にあることが多い点が違います。</p>
-        </div>
-        <button class="copy-btn" type="button">Copy</button>
-        <pre><code>public function store(Request $request)
-{
-    $user = User::create($request-&gt;validated());
-
-    return redirect()-&gt;route('users.index')
-        -&gt;with('status', 'ユーザーを登録しました');
-}</code></pre>
-        <table class="map-table">
-            <tbody>
-                <tr>
-                    <th>CakePHP 2.0</th>
-                    <td><span class="file-path">$this-&gt;request-&gt;data</span>、<span class="file-path">$this-&gt;User-&gt;save()</span>、<span class="file-path">$this-&gt;Session-&gt;setFlash()</span> をよく見る。</td>
-                </tr>
-                <tr>
-                    <th>Laravel</th>
-                    <td><span class="file-path">Request</span>、<span class="file-path">User::create()</span>、<span class="file-path">with()</span> をよく見る。</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="code-block">
-        <h2>VS Codeで探す語</h2>
         <button class="copy-btn" type="button">Copy</button>
         <pre><code>rg "class UsersController" app/Controller
-rg "public function add" app/Controller
-rg "request-&gt;data" app/Controller
-rg "Session-&gt;setFlash" app/Controller
-rg "redirect(array" app/Controller
-rg "beforeFilter" app/Controller</code></pre>
+rg "function edit" app/Controller
+rg "Form-&gt;create('User')" app/View
+rg "Form-&gt;input('name')" app/View
+rg "public \\$validate" app/Model/User.php
+rg "beforeSave" app/Model/User.php
+rg "Session-&gt;flash" app/View</code></pre>
     </section>
 </body>
 
