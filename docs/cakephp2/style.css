@@ -30,7 +30,7 @@
 
 .read-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px;
     margin: 16px 0;
 }
@@ -50,11 +50,16 @@
     font-size: 14px;
 }
 
-.read-card span {
+.read-card > span {
     display: block;
     color: #52606d;
     font-size: 13px;
     line-height: 1.65;
+}
+
+.read-card .file-path {
+    display: inline-block;
+    width: auto;
 }
 
 .plain-list {
