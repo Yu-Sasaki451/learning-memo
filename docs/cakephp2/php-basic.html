@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>PHP基礎とCakePHP2でよく見る書き方</title>
+    <link rel="stylesheet" href="../reset.css">
+    <link rel="stylesheet" href="./style.css?v=1">
+    <script src="../script.js?v=3" defer></script>
+</head>
+
+<body>
+    <div class="header__inner">
+        <h1 class="header"><a href="../index.html">memo</a></h1>
+        <h2 class="header"><a href="./index.html">CakePHP2へ</a></h2>
+        <h2 class="header"><a href="./controller.html">Controllerへ</a></h2>
+        <h2 class="header"><a href="./view.html">Viewへ</a></h2>
+    </div>
+
+    <h1 class="head">PHP基礎とCakePHP2でよく見る書き方</h1>
+    <p class="head-text">
+        会社コードで出てきやすいPHPの記号、配列、条件分岐、文字列連結を読むためのページです。<br>
+        まず生のPHPを理解してから、CakePHP2のController、Model、Viewでどう出てくるかを見ます。
+    </p>
+
+    <section class="code-block">
+        <h2>まず読む順番</h2>
+        <p>
+            PHPとCakePHP2のコードは、記号を1つずつ見るより「値を作る」「条件で分ける」「画面やDBへ渡す」の順で読むと分かりやすいです。
+        </p>
+        <div class="read-grid">
+            <div class="read-card">
+                <strong>1. 変数</strong>
+                <span><span class="file-path">$name</span> のように、値に名前を付けている場所を確認します。</span>
+            </div>
+            <div class="read-card">
+                <strong>2. 配列</strong>
+                <span><span class="file-path">['User']['name']</span> のように、どの箱の中を見ているか確認します。</span>
+            </div>
+            <div class="read-card">
+                <strong>3. 条件</strong>
+                <span><span class="file-path">if</span>、<span class="file-path">empty()</span>、<span class="file-path">===</span> で処理が分かれる条件を読みます。</span>
+            </div>
+            <div class="read-card">
+                <strong>4. 受け渡し</strong>
+                <span><span class="file-path">return</span>、<span class="file-path">$this-&gt;set()</span>、<span class="file-path">save()</span> で値がどこへ行くか見ます。</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>PHPファイルの基本形</h2>
+        <p>
+            この処理は、PHPを書く場所を示す基本形です。<br>
+            <span class="file-path">&lt;?php</span> からPHPが始まり、命令の最後には <span class="file-path">;</span> を付けます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$name = '田中';
+$age = 30;
+
+echo $name;
+echo $age;</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">&lt;?php</span></th>
+                    <td>ここからPHPを書くという開始記号。Viewの <span class="file-path">.ctp</span> でもよく出ます。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$name</span></th>
+                    <td>変数。値に名前を付けて、あとから使えるようにします。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">=</span></th>
+                    <td>右側の値を左側の変数へ入れる記号です。比較ではなく代入です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">;</span></th>
+                    <td>PHPの命令の終わりを示します。付け忘れると構文エラーになります。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">echo</span></th>
+                    <td>値を画面へ出力します。ViewでHTMLに値を表示する時によく使います。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>文字列と数値</h2>
+        <p>
+            この処理は、文字と数値の違いを示しています。<br>
+            PHPでは、文字列はクォートで囲み、数値はそのまま書きます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$name = '田中';
+$age = 30;
+$message = 'ログインしました';</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">'田中'</span></th>
+                    <td>文字列です。名前、メッセージ、日付文字列などはこの形で書きます。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">30</span></th>
+                    <td>数値です。計算や大小比較に使えます。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'30'</span></th>
+                    <td>数字に見えても、クォートで囲むと文字列です。<span class="file-path">===</span> では数値の30とは別物です。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>配列 array() と []</h2>
+        <p>
+            この処理は、複数の値を1つの変数にまとめる書き方です。<br>
+            CakePHP2の古いコードでは <span class="file-path">array()</span> が多く、最近のPHPでは <span class="file-path">[]</span> もよく使われます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$data = array(
+    'name' =&gt; '田中',
+    'age' =&gt; 30
+);
+
+$sameData = [
+    'name' =&gt; '田中',
+    'age' =&gt; 30
+];</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">array(...)</span></th>
+                    <td>配列を作る古い書き方です。CakePHP2のサンプルや会社コードでよく見ます。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">[...]</span></th>
+                    <td>配列を作る短い書き方です。意味は <span class="file-path">array()</span> と同じです。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'name' =&gt; '田中'</span></th>
+                    <td><span class="file-path">name</span> というキーに、<span class="file-path">田中</span> という値を入れています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">=&gt;</span></th>
+                    <td>配列の「キー」と「値」をつなぐ記号です。左が名前、右が中身です。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>連想配列</h2>
+        <p>
+            この処理は、文字列のキーで値を保存する配列です。<br>
+            エラー結果、ログイン結果、Modelの検索条件などでよく使います。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$result = [
+    'status' =&gt; 'error',
+    'msg' =&gt; null,
+    'posted_data' =&gt; null
+];
+
+$status = $result['status'];</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$result</span></th>
+                    <td>処理結果をまとめて入れている変数です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'status'</span></th>
+                    <td>配列のキーです。どの値を取り出すかを指定する名前です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">null</span></th>
+                    <td>値がまだない、何も入っていない、という意味です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$result['status']</span></th>
+                    <td><span class="file-path">$result</span> 配列の中にある <span class="file-path">status</span> の値を取り出します。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>多次元配列</h2>
+        <p>
+            この処理は、配列の中にさらに配列が入っている状態です。<br>
+            CakePHP2のModel取得結果では、<span class="file-path">$userData['Nursery']['id']</span> のような形がよく出ます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$userData = [
+    'Nursery' =&gt; [
+        'id' =&gt; 10,
+        'force' =&gt; 0
+    ]
+];
+
+$nurseryId = $userData['Nursery']['id'];</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$userData['Nursery']</span></th>
+                    <td><span class="file-path">$userData</span> の中にある <span class="file-path">Nursery</span> 配列を見ています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">['id']</span></th>
+                    <td><span class="file-path">Nursery</span> 配列の中にある <span class="file-path">id</span> を見ています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$nurseryId</span></th>
+                    <td>取り出したIDを入れておく変数です。この例では10が入ります。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>配列へ値を追加する</h2>
+        <p>
+            この処理は、保存用の配列にあとから値を追加しています。<br>
+            CakePHP2では、Modelの <span class="file-path">save()</span> へ渡す前に保存データを作る時によく出ます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$saveData = [
+    'logged_in' =&gt; date('Y-m-d H:i:s')
+];
+
+$saveData['force'] = 0;</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$saveData['force'] = 0;</span></th>
+                    <td><span class="file-path">force</span> というキーを追加し、値として0を入れています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">date('Y-m-d H:i:s')</span></th>
+                    <td>現在日時を <span class="file-path">2026-07-16 15:30:00</span> のような形で作ります。</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="read-box">
+            <strong>注意点</strong>
+            <p><span class="file-path">+</span> で配列を足す書き方もありますが、同じキーがある場合は左側の値が優先されます。上書きしたい時は <span class="file-path">$saveData['force'] = 0;</span> の方が読みやすいです。</p>
+        </div>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$saveData += [
+    'force' =&gt; 0
+];</code></pre>
+    </section>
+
+    <section class="code-block">
+        <h2>文字列の連結 . と .=</h2>
+        <p>
+            この処理は、文字列をつなげています。<br>
+            PHPでは文字列をつなぐ時に <span class="file-path">.</span> を使います。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$name = '田中';
+$text = '名前：' . $name;
+
+$output = 'A';
+$output .= 'B';</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">.</span></th>
+                    <td>左の文字列と右の文字列をつなげます。この例では <span class="file-path">名前：田中</span> になります。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">.=</span></th>
+                    <td>今ある文字列の後ろに、右側の文字列を追加します。この例では <span class="file-path">AB</span> になります。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$output .= 'B';</span></th>
+                    <td><span class="file-path">$output = $output . 'B';</span> と同じ意味です。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>HTMLをPHPの文字列として作る</h2>
+        <p>
+            この処理は、PHPの文字列としてHTMLタグを作っています。<br>
+            CakePHP2の古いViewやHelper周辺では、文字列を連結してリンクや表示文を作るコードがあります。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$tmp = '&lt;a id="approval_10_1_2026-07-16" href="#"&gt;承認&lt;/a&gt;';
+
+echo $tmp;</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$tmp</span></th>
+                    <td>HTMLの <span class="file-path">&lt;a&gt;</span> タグを文字列として入れている変数です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">echo $tmp;</span></th>
+                    <td>文字列を画面に出します。この場合、画面では「承認」というリンクとして表示されます。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">id="approval_10_1_2026-07-16"</span></th>
+                    <td>JavaScriptやCSSからこのリンクを指定するための名前です。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>条件分岐 if</h2>
+        <p>
+            この処理は、条件を満たした時だけ中の処理を実行します。<br>
+            <span class="file-path">if</span> の丸括弧の中が成立した場合だけ、波括弧の中へ進みます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+if ($userData['Nursery']['force'] &lt; 0) {
+    $saveData['force'] = 0;
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">if (...)</span></th>
+                    <td>条件を確認する書き方です。条件が正しい時だけ中の処理が動きます。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">&lt; 0</span></th>
+                    <td>0より小さいかを確認しています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$saveData['force'] = 0;</span></th>
+                    <td><span class="file-path">force</span> がマイナスなら、保存する値を0に直しています。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>&amp;&amp; は両方成立</h2>
+        <p>
+            この処理は、2つの条件が両方とも成立しているか確認しています。<br>
+            <span class="file-path">&amp;&amp;</span> は「かつ」という意味です。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+if (
+    !empty($tmpLogin[1])
+    &amp;&amp; $tmpLogin[1] === APP_ACCOUNT_MAINTENANCE
+) {
+    $mode = 'maintenance';
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">!empty($tmpLogin[1])</span></th>
+                    <td><span class="file-path">$tmpLogin[1]</span> が空ではないかを確認しています。<span class="file-path">!</span> は否定です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">&amp;&amp;</span></th>
+                    <td>左の条件と右の条件が両方成立した時だけ、全体が成立します。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">===</span></th>
+                    <td>値だけでなく型も含めて完全に一致するか確認します。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">APP_ACCOUNT_MAINTENANCE</span></th>
+                    <td>定数です。固定の名前に固定の値を持たせているものです。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>|| はどちらか成立</h2>
+        <p>
+            この処理は、2つの条件のどちらか1つでも成立しているか確認しています。<br>
+            <span class="file-path">||</span> は「または」という意味です。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+if ($role === 'admin' || $role === 'manager') {
+    $canApprove = true;
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$role === 'admin'</span></th>
+                    <td>権限がadminか確認しています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">||</span></th>
+                    <td>左か右のどちらかが成立すれば、全体が成立します。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$role === 'manager'</span></th>
+                    <td>権限がmanagerか確認しています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$canApprove = true;</span></th>
+                    <td>承認できる状態として、真偽値のtrueを入れています。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>empty() と !empty()</h2>
+        <p>
+            この処理は、変数が空かどうかを確認しています。<br>
+            <span class="file-path">empty()</span> は空ならtrue、<span class="file-path">!empty()</span> は空ではないならtrueです。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+if (!empty($result)) {
+    $status = $result['status'];
+}</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">empty($result)</span></th>
+                    <td><span class="file-path">$result</span> が空かどうかを確認します。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">!empty($result)</span></th>
+                    <td><span class="file-path">$result</span> が空ではないかを確認します。</td>
+                </tr>
+                <tr>
+                    <th>空として扱われやすい値</th>
+                    <td><span class="file-path">null</span>、空文字、<span class="file-path">0</span>、空配列、<span class="file-path">false</span> などです。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>関数とreturn</h2>
+        <p>
+            この処理は、まとまった処理に名前を付けて、結果を呼び出し元へ返しています。<br>
+            <span class="file-path">return</span> は「この関数の結果はこれです」と返す命令です。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+function getName()
+{
+    return '田中';
+}
+
+$name = getName();</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">function getName()</span></th>
+                    <td><span class="file-path">getName</span> という関数を作っています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">return '田中';</span></th>
+                    <td>呼び出し元へ <span class="file-path">田中</span> という文字列を返しています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$name = getName();</span></th>
+                    <td>関数の戻り値を <span class="file-path">$name</span> に入れています。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>list() で複数の戻り値を受け取る</h2>
+        <p>
+            この処理は、配列で返された複数の値を、それぞれ別の変数へ入れています。<br>
+            古いPHPやCakePHP2の会社コードでは <span class="file-path">list()</span> が出ることがあります。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+list($result, $userData, $authValid)
+    = $this-&gt;authCheck($loginId, $passWord, $office);</code></pre>
+        <p>
+            この処理は、次のように配列で返された値を順番に受け取る前提です。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+return [
+    $result,
+    $userData,
+    $authValid
+];</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$result</span></th>
+                    <td>戻り値の1番目が入ります。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$userData</span></th>
+                    <td>戻り値の2番目が入ります。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">$authValid</span></th>
+                    <td>戻り値の3番目が入ります。</td>
+                </tr>
+                <tr>
+                    <th>注意点</th>
+                    <td>順番で代入されるため、返す配列の順番と <span class="file-path">list()</span> 側の順番を合わせる必要があります。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>key()</h2>
+        <p>
+            この処理は、配列の現在位置にあるキーを取得しています。<br>
+            値ではなく、配列のキー名を取りたい時に使われます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$serviceData = [
+    '保育サービス' =&gt; [
+        'service' =&gt; 1
+    ]
+];
+
+$serviceName = key($serviceData);</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$serviceData</span></th>
+                    <td>サービス名をキーにした配列です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">key($serviceData)</span></th>
+                    <td>現在位置のキーを取得します。この例では <span class="file-path">保育サービス</span> が入ります。</td>
+                </tr>
+                <tr>
+                    <th>注意点</th>
+                    <td>配列の中身ではなくキーを取っています。<span class="file-path">service</span> の値である1を取っているわけではありません。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>mb_substr()</h2>
+        <p>
+            この処理は、日本語を含む文字列の一部を切り出しています。<br>
+            <span class="file-path">mb_</span> で始まる関数は、日本語のようなマルチバイト文字を扱う時によく使います。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$text = 'あいうえお';
+$result = mb_substr($text, 0, 3);</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$text</span></th>
+                    <td>切り出し元の文字列です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">0</span></th>
+                    <td>開始位置です。0は先頭を意味します。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">3</span></th>
+                    <td>取り出す文字数です。この例では <span class="file-path">あいう</span> になります。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>HTMLのidとJavaScriptの#</h2>
+        <p>
+            この処理は、HTMLの特定の要素をJavaScriptで指定しています。<br>
+            HTML側の <span class="file-path">id</span> をJavaScriptやCSSで指定する時は、先頭に <span class="file-path">#</span> を付けます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;a id="approval_10_1_2026-07-16"&gt;承認&lt;/a&gt;</code></pre>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>$('#approval_10_1_2026-07-16')</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">id="approval_10_1_2026-07-16"</span></th>
+                    <td>HTML要素に付けた名前です。同じページ内では基本的に重複させません。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">#approval_10_1_2026-07-16</span></th>
+                    <td>JavaScriptやCSSで、そのidを持つ要素を指定する書き方です。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>セレクタ文字列を作る</h2>
+        <p>
+            この処理は、複数のHTML要素をまとめて選択するための文字列を作っています。<br>
+            これは配列ではなく、カンマ区切りの1つの文字列です。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$approvalList .=
+    '#approval_' .
+    $nurseryId . '_' .
+    $thisData['service'] . '_' .
+    $thisData['date'] .
+    ',';</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$approvalList .=</span></th>
+                    <td>既存の文字列の後ろに、新しいセレクタ文字列を追加しています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'#approval_'</span></th>
+                    <td>JavaScriptやCSSでidを指定するための先頭部分です。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">.</span></th>
+                    <td>文字列や変数をつなげています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">','</span></th>
+                    <td>複数のセレクタを区切るためのカンマです。</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="read-box">
+            <strong>作られる文字列の例</strong>
+            <p><span class="file-path">#approval_10_2_2026-07-16,#approval_11_3_2026-07-17,</span></p>
+            <p>最後に余ったカンマは、<span class="file-path">mb_substr()</span> などで削除することがあります。</p>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>文字列とHTMLを組み合わせる</h2>
+        <p>
+            この処理は、サービス名、括弧、リンクHTMLをつなげて表示用の文字列を作っています。<br>
+            画面ではリンク部分だけクリックできる文字として表示されます。
+        </p>
+        <button class="copy-btn" type="button">Copy</button>
+        <pre><code>&lt;?php
+$output .= '' . key($serviceData) . '（' . $tmp . '）';</code></pre>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th><span class="file-path">$output .=</span></th>
+                    <td>表示用の文字列に、今回作った文字列を追加しています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">key($serviceData)</span></th>
+                    <td>配列のキーからサービス名を取り出しています。</td>
+                </tr>
+                <tr>
+                    <th><span class="file-path">'（' . $tmp . '）'</span></th>
+                    <td>全角括弧の中に、<span class="file-path">$tmp</span> のリンクHTMLを入れています。</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="read-box">
+            <strong>完成例</strong>
+            <p><span class="file-path">延長保育（&lt;a href="#"&gt;承認&lt;/a&gt;）</span></p>
+            <p>画面では <span class="file-path">延長保育（承認）</span> のように見え、承認の部分がリンクになります。</p>
+        </div>
+    </section>
+
+    <section class="code-block">
+        <h2>CakePHP2のController / Model / View</h2>
+        <p>
+            この処理は、CakePHP2で役割が分かれる3つの場所です。<br>
+            PHPの基礎を読めるようになると、どのファイルで何をしているか追いやすくなります。
+        </p>
+        <table class="map-table">
+            <tbody>
+                <tr>
+                    <th>Controller</th>
+                    <td>画面からのリクエストを受け取り、Modelを呼び、Viewへ値を渡す場所です。例は <span class="file-path">app/Controller/UsersController.php</span> です。</td>
+                </tr>
+                <tr>
+                    <th>Model</th>
+                    <td>データベースの検索、登録、更新、削除を担当します。例は <span class="file-path">$this-&gt;Nursery-&gt;save($saveData)</span> です。</td>
+                </tr>
+                <tr>
+                    <th>View</th>
+                    <td>ユーザーに表示するHTMLを作る場所です。CakePHP2では <span class="file-path">.ctp</span> に生のPHPを書くことがよくあります。</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="code-block">
+        <h2>公式で確認したこと</h2>
+        <p>
+            PHP公式マニュアルでは、配列はキーと値を結び付ける構造で、<span class="file-path">array()</span> と短い <span class="file-path">[]</span> の両方が説明されています。<br>
+            文字列連結は <span class="file-path">.</span>、追記代入は <span class="file-path">.=</span> です。CakePHP2公式では、Viewファイルは通常 <span class="file-path">.ctp</span> で、プレーンなPHPで書かれると説明されています。
+        </p>
+        <ul class="reference-list">
+            <li><a href="https://www.php.net/manual/en/language.types.array.php">PHP公式マニュアル: Arrays</a></li>
+            <li><a href="https://www.php.net/manual/en/language.operators.string.php">PHP公式マニュアル: String Operators</a></li>
+            <li><a href="https://book.cakephp.org/2.x/controllers.html">CakePHP2公式: Controllers</a></li>
+            <li><a href="https://book.cakephp.org/2.x/views.html">CakePHP2公式: Views</a></li>
+        </ul>
+    </section>
+</body>
+
+</html>
